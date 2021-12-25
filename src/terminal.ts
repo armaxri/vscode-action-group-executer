@@ -44,9 +44,9 @@ export async function createTerminal(terminalName: string, terminalAction: Termi
 		// At this point the name is set or overridden with the earlier result.
 		terminalAction.extendedOptions.name = terminalName;
 
-		terminal = await vscode.window.createTerminal(terminalAction.extendedOptions);
+		terminal = vscode.window.createTerminal(terminalAction.extendedOptions);
 	} else {
-		terminal = await vscode.window.createTerminal(terminalName);
+		terminal = vscode.window.createTerminal(terminalName);
 	}
 
 	return terminal;
