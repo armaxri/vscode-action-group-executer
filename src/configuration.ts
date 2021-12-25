@@ -28,10 +28,12 @@ export interface ActionGroup {
 }
 
 export function getActionGroups() {
-	let configuration = vscode.workspace.getConfiguration().get('actionGroupExecuter.actionGroups');
+	let commands = vscode.workspace.getConfiguration().get<Array<ActionGroup>>('actionGroupExecuter.actionGroups');
 
-	// TODO: First type can be removed?
-	let commands: Array<ActionGroup> = <Array<ActionGroup>>configuration;
+	if (!commands) {
+		vscode.window.showWarningMessage('No configuration for ActionGroupExecuter found in settings. Set "actionGroupExecuter.actionGroups" in your settings.');
+		return new Array<ActionGroup>();
+	}
 
 	// Consider more filtering.
 	let filteredCommands = commands.filter(command => utils.isNotEmptyString(command.name));
