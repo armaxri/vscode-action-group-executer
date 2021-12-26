@@ -4,6 +4,7 @@ import * as vscode from 'vscode';
 
 import { TerminalAction, getActionGroups } from "./configuration";
 import { getTerminalName, prepareTerminalInst } from "./terminal";
+import { delay } from "./utils";
 
 async function runTerminalAction(actionGroupName: string, terminalAction: TerminalAction) {
 	const terminalName = getTerminalName(actionGroupName, terminalAction);
@@ -19,7 +20,7 @@ async function runTerminalAction(actionGroupName: string, terminalAction: Termin
 	}
 
 	if (terminalAction.delayCommand && (typeof terminalAction.delayCommand === 'number')) {
-		await new Promise(f => setTimeout(f, terminalAction.delayCommand));
+		await delay(terminalAction.delayCommand);
 	}
 
 	console.log(`Executing command "${terminalAction.command}" in terminal "${terminalName}".`);
