@@ -1,70 +1,91 @@
-# action-group-executer README
+# Action Group Executer
 
-This is the README for your extension "action-group-executer". After writing up a brief description, we recommend including the following sections.
+The "action-group-executer" is designed to easily trigger different actions in your VS Code instance. The first major function is to start different terminal sessions at the same time.
+
+This extension might share similarities with other existing extensions (well "might shares" is a nice alternative for "is sharing"). It's developed taking certain workflows useful for one company in mind and extended based on the needs of users in similar environments. Therefore extensions are added based on new experiences within the given workflow.
 
 ## Features
 
-Describe specific features of your extension including screenshots of your extension in action. Image paths are relative to this README file.
+The following settings can be set:
 
-For example if there is an image subfolder under your extension project workspace:
+```json
+{
+    "actionGroupExecuter.actionGroups": [
+        {
+            "name": "Example1",
+            "terminals": [
+                {
+                    // Optional name of the terminal window.
+                    // If not set it will use the action name.
+                    "name": "Window1Name",
+                    "command": "echo Hello",
+                    // Force the extension to create new terminal
+                    // instances. If a terminal with the name 
+                    // "Window1Name" exists a new terminal with the
+                    // name "Window1Name (1)" will be created.
+                    "alwaysNewTerminal": true,
+                    // If set pushes the terminal in the front.
+                    "showTerminal": true
+                },
+                {
+                    "name": "Window2Name",
+                    "command": "echo Hello",
+                    // The command will be delayed by 5000 ms.
+                    "delayCommand": 5000,
+                    // If a terminal with the name "Window2Name"
+                    // already exists, the instance will be
+                    // destroyed and replaced by a new instance
+                    // with the same name.
+                    "disposeOldTerminal": true
+                }
+            ]
+        },
+        {
+            "name": "Example2",
+            "terminals": [
+                {
+                    // There is no need for a name since there
+                    // is only one command. And the group
+                    // name is enough.
+                    "command": "echo Hello && sleep 5 && echo Hallo"
+                }
+            ]
+        },
+        {
+            "name": "Example3",
+            "terminals": [
+                {
+                    "command": "echo Hallo && sleep 5 && echo Hello",
+                    // "extendedOptions" is used to simply pass
+                    // arguments to the VS Code terminal creation
+                    // function.
+                    "extendedOptions": {
+                        "name": "Example3Override",
+                        "cwd": "C:\\"
+                    }
+                }
+            ]
+        }
+    ]
+}
+```
 
-\!\[feature X\]\(images/feature-x.png\)
-
-> Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
-
-## Requirements
-
-If you have any requirements or dependencies, add a section describing those and how to install and configure them.
+Due to the interface the extension is limited to only execute one command on the command line. Combinations of different commands need additional scripts or functions like `echo Hello1 && sleep 10 && echo Hello2`. As terminal `extendedOptions` the [VS Code TerminalOptions](https://code.visualstudio.com/api/references/vscode-api#TerminalOptions) can be used to use the exposed VS Code terminal construction settings.
 
 ## Extension Settings
 
-Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
-
-For example:
-
-This extension contributes the following settings:
-
-* `myExtension.enable`: enable/disable this extension
-* `myExtension.thing`: set to `blah` to do something
-
-## Known Issues
-
-Calling out known issues can help limit users opening duplicate issues against your extension.
+At the moment the extension supports only supports a simply configuration of groups. Execution groups can be added under the `actionGroupExecuter.actionGroups` setting.
 
 ## Release Notes
 
-Users appreciate release notes as you update your extension.
+### 0.0.1
 
-### 1.0.0
+Initial release of Action Group Executer.
 
-Initial release of ...
+## Known Issues
 
-### 1.0.1
+Not applying (yet).
 
-Fixed issue #.
+## Requirements
 
-### 1.1.0
-
-Added features X, Y, and Z.
-
------------------------------------------------------------------------------------------------------------
-## Following extension guidelines
-
-Ensure that you've read through the extensions guidelines and follow the best practices for creating your extension.
-
-* [Extension Guidelines](https://code.visualstudio.com/api/references/extension-guidelines)
-
-## Working with Markdown
-
-**Note:** You can author your README using Visual Studio Code.  Here are some useful editor keyboard shortcuts:
-
-* Split the editor (`Cmd+\` on macOS or `Ctrl+\` on Windows and Linux)
-* Toggle preview (`Shift+CMD+V` on macOS or `Shift+Ctrl+V` on Windows and Linux)
-* Press `Ctrl+Space` (Windows, Linux) or `Cmd+Space` (macOS) to see a list of Markdown snippets
-
-### For more information
-
-* [Visual Studio Code's Markdown Support](http://code.visualstudio.com/docs/languages/markdown)
-* [Markdown Syntax Reference](https://help.github.com/articles/markdown-basics/)
-
-**Enjoy!**
+Not applying (yet).
