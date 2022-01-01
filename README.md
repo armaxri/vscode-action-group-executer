@@ -6,7 +6,7 @@ This extension might share similarities with other existing extensions (well "mi
 
 ## Features
 
-The following settings can be set:
+The following settings can be set and enter `Execute an Action Group` as command to select your prepared settings:
 
 ```json
 {
@@ -20,7 +20,7 @@ The following settings can be set:
                     "name": "Window1Name",
                     "command": "echo Hello",
                     // Force the extension to create new terminal
-                    // instances. If a terminal with the name 
+                    // instances. If a terminal with the name
                     // "Window1Name" exists a new terminal with the
                     // name "Window1Name (1)" will be created.
                     "alwaysNewTerminal": true,
