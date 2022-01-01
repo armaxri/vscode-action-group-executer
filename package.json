@@ -8,6 +8,7 @@
         "shell",
         "script"
     ],
+    "publisher": "armaxri",
     "repository": {
         "type": "git",
         "url": "https://github.com/armaxri/vscode-action-group-executer"
