@@ -3,6 +3,11 @@
     "displayName": "Action Group Executer",
     "description": "",
     "version": "0.0.1",
+    "keywords": [
+        "terminal",
+        "shell",
+        "script"
+    ],
     "engines": {
         "vscode": "^1.63.0"
     },
