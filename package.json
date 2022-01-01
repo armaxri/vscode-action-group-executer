@@ -8,6 +8,13 @@
         "shell",
         "script"
     ],
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/armaxri/vscode-action-group-executer"
+    },
+    "bugs": {
+        "url": "https://github.com/armaxri/vscode-action-group-executer/issues"
+    },
     "engines": {
         "vscode": "^1.63.0"
     },
