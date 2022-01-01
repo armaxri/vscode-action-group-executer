@@ -15,14 +15,14 @@
         "Other"
     ],
     "activationEvents": [
-        "onCommand:action-group-executer.helloWorld"
+        "onCommand:action-group-executer.executeActionGroup"
     ],
     "main": "./out/extension.js",
     "contributes": {
         "commands": [
             {
-                "command": "action-group-executer.helloWorld",
-                "title": "Hello World"
+                "command": "action-group-executer.executeActionGroup",
+                "title": "Execute an Action Group"
             }
         ]
     },
