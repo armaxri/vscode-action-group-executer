@@ -28,20 +28,27 @@ async function runTerminalAction(actionGroupName: string, terminalAction: Termin
 }
 
 async function selectAndRunGroup(uri: vscode.Uri | undefined) {
+    console.log(`selectAndRunGroup was triggered.`);
     const commands = getActionGroups();
     const commandNames = commands.map(command => command.name);
 
     const selection = await vscode.window.showQuickPick(commandNames);
 
     if (!selection) {
+        console.log(`No valid selection was taken.`);
         return;
     }
+    console.log(`Executing command selection "${selection}".`);
     vscode.window.showInformationMessage(`Executing command selection "${selection}".`);
 
     const command = commands.find(command => command.name === selection);
-    command?.terminals.forEach(terminal =>
-        runTerminalAction(selection, terminal)
-    );
+    console.log(`Picked command.`);
+
+    if (command) {
+        command.terminals.forEach(terminal =>
+            runTerminalAction(selection, terminal)
+        );
+    }
 }
 
 // this method is called when your extension is activated
