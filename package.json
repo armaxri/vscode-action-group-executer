@@ -30,7 +30,8 @@
         "commands": [
             {
                 "command": "action-group-executer.executeActionGroup",
-                "title": "Execute an Action Group"
+                "title": "Execute Action Group",
+                "category": "ActionGroupExec"
             }
         ]
     },

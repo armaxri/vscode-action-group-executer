@@ -6,7 +6,7 @@ This extension might share similarities with other existing extensions (well "mi
 
 ## Features
 
-The following settings can be set and enter `Execute an Action Group` as command to select your prepared settings:
+The following settings can be set and enter `ActionGroupExec: Execute Action Group` as command to select your prepared settings:
 
 ```json
 {
