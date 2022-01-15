@@ -1,0 +1,58 @@
+{
+    "actionGroupExecuter.actionGroups": [
+        {
+            "name": "Example1",
+            "terminals": [
+                {
+                    // Optional name of the terminal window.
+                    // If not set it will use the action name.
+                    "name": "Window1Name",
+                    "command": "echo Hello",
+                    // Force the extension to create new terminal
+                    // instances. If a terminal with the name
+                    // "Window1Name" exists a new terminal with the
+                    // name "Window1Name (1)" will be created.
+                    "alwaysNewTerminal": true,
+                    // If set pushes the terminal in the front.
+                    "showTerminal": true
+                },
+                {
+                    "name": "Window2Name",
+                    "command": "echo Hello",
+                    // The command will be delayed by 5000 ms.
+                    "delayCommand": 5000,
+                    // If a terminal with the name "Window2Name"
+                    // already exists, the instance will be
+                    // destroyed and replaced by a new instance
+                    // with the same name.
+                    "disposeOldTerminal": true
+                }
+            ]
+        },
+        {
+            "name": "Example2",
+            "terminals": [
+                {
+                    // There is no need for a name since there
+                    // is only one command. And the group
+                    // name is enough.
+                    "command": "echo Hello && sleep 5 && echo Hallo"
+                }
+            ]
+        },
+        {
+            "name": "Example3",
+            "terminals": [
+                {
+                    "command": "echo Hallo && sleep 5 && echo Hello",
+                    // "extendedOptions" is used to simply pass
+                    // arguments to the VS Code terminal creation
+                    // function.
+                    "extendedOptions": {
+                        "name": "Example3Override"
+                    }
+                }
+            ]
+        }
+    ]
+}
