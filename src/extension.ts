@@ -42,7 +42,7 @@ async function selectAndRunGroup(uri: vscode.Uri | undefined) {
     vscode.window.showInformationMessage(`Executing command selection "${selection}".`);
 
     const command = commands.find(command => command.name === selection);
-    console.log(`Picked command.`);
+    console.log(`Picked command named "${command?.name}".`);
 
     if (command) {
         command.terminals.forEach(terminal =>
