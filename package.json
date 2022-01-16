@@ -40,6 +40,7 @@
                 "properties": {
                     "actionGroupExecuter.actionGroups": {
                         "type": "array",
+                        "uniqueItems": true,
                         "default": [
                             {
                                 "name": "Add a name here!",
@@ -62,6 +63,7 @@
                                 "terminals": {
                                     "type": "array",
                                     "default": [],
+                                    "uniqueItems": true,
                                     "description": "List of terminals that should be started.",
                                     "items": {
                                         "type": "object",
@@ -113,6 +115,7 @@
                                                 }
                                             }
                                         },
+                                        "required": ["command"],
                                         "default": {
                                             "name": "Optional Name",
                                             "command": "echo Hello"
@@ -120,6 +123,7 @@
                                     }
                                 }
                             },
+                            "required": ["name"],
                             "default": {
                                 "name": "Add a name here!",
                                 "terminals": [
