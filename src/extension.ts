@@ -2,46 +2,31 @@
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
 
-import { TerminalAction, getActionGroups } from "./configuration";
-import { getTerminalName, prepareTerminalInst } from "./terminal";
-import { delay } from "./utils";
-
-async function runTerminalAction(actionGroupName: string, terminalAction: TerminalAction) {
-    const terminalName = getTerminalName(actionGroupName, terminalAction);
-
-    let terminal = await prepareTerminalInst(terminalName, terminalAction);
-    if (!terminal) {
-        vscode.window.showErrorMessage(`Failed to get or create a terminal instance named "${terminalName}".`);
-        return;
-    }
-
-    if (terminalAction.showTerminal) {
-        terminal.show();
-    }
-
-    if (terminalAction.delayCommand && (typeof terminalAction.delayCommand === 'number')) {
-        await delay(terminalAction.delayCommand);
-    }
-
-    console.log(`Executing command "${terminalAction.command}" in terminal "${terminalName}".`);
-    terminal.sendText(terminalAction.command, true);
-}
+import { getActionGroups } from "./configuration";
+import { runTerminalAction } from "./terminal";
 
 async function selectAndRunGroup(uri: vscode.Uri | undefined) {
+    console.log(`selectAndRunGroup was triggered.`);
     const commands = getActionGroups();
     const commandNames = commands.map(command => command.name);
 
     const selection = await vscode.window.showQuickPick(commandNames);
 
     if (!selection) {
+        console.log(`No valid selection was taken.`);
         return;
     }
+    console.log(`Executing command selection "${selection}".`);
     vscode.window.showInformationMessage(`Executing command selection "${selection}".`);
 
     const command = commands.find(command => command.name === selection);
-    command?.terminals.forEach(terminal =>
-        runTerminalAction(selection, terminal)
-    );
+    console.log(`Picked command named "${command?.name}".`);
+
+    if (command) {
+        command.terminals.forEach(terminal =>
+            runTerminalAction(selection, terminal)
+        );
+    }
 }
 
 // this method is called when your extension is activated

@@ -1,14 +1,3 @@
-# Action Group Executer
-
-The "action-group-executer" is designed to easily trigger different actions in your VS Code instance. The first major function is to start different terminal sessions at the same time.
-
-This extension might share similarities with other existing extensions (well "might shares" is a nice alternative for "is sharing"). It's developed taking certain workflows useful for one company in mind and extended based on the needs of users in similar environments. Therefore extensions are added based on new experiences within the given workflow.
-
-## Features
-
-The following settings can be set and enter `ActionGroupExec: Execute Action Group` as command to select your prepared settings:
-
-```json
 {
     "actionGroupExecuter.actionGroups": [
         {
@@ -60,32 +49,10 @@ The following settings can be set and enter `ActionGroupExec: Execute Action Gro
                     // arguments to the VS Code terminal creation
                     // function.
                     "extendedOptions": {
-                        "name": "Example3Override",
-                        "cwd": "C:\\"
+                        "name": "Example3Override"
                     }
                 }
             ]
         }
     ]
 }
-```
-
-Due to the interface the extension is limited to only execute one command on the command line. Combinations of different commands need additional scripts or functions like `echo Hello1 && sleep 10 && echo Hello2`. As terminal `extendedOptions` the [VS Code TerminalOptions](https://code.visualstudio.com/api/references/vscode-api#TerminalOptions) can be used to use the exposed VS Code terminal construction settings.
-
-## Extension Settings
-
-At the moment the extension supports only supports a simply configuration of groups. Execution groups can be added under the `actionGroupExecuter.actionGroups` setting.
-
-## Release Notes
-
-### 0.0.1
-
-Initial release of Action Group Executer.
-
-## Known Issues
-
-Not applying (yet).
-
-## Requirements
-
-Not applying (yet).

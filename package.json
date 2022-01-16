@@ -30,7 +30,130 @@
         "commands": [
             {
                 "command": "action-group-executer.executeActionGroup",
-                "title": "Execute an Action Group"
+                "title": "Execute Action Group",
+                "category": "ActionGroupExec"
+            }
+        ],
+        "configuration":[
+            {
+                "title": "ActionGroupExecuter",
+                "properties": {
+                    "actionGroupExecuter.actionGroups": {
+                        "type": "array",
+                        "uniqueItems": true,
+                        "default": [
+                            {
+                                "name": "Add a name here!",
+                                "terminals": [
+                                    {
+                                        "name": "Add a terminal name here! (Or remove this - it's optional setting as long as you have one terminal.)",
+                                        "command": "echo Hello"
+                                    }
+                                ]
+                            }
+                        ],
+                        "description": "Define a list of callable action groups.",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "name": {
+                                    "type": "string",
+                                    "description": "Name of the callable action group."
+                                },
+                                "terminals": {
+                                    "type": "array",
+                                    "default": [],
+                                    "uniqueItems": true,
+                                    "description": "List of terminals that should be started.",
+                                    "items": {
+                                        "type": "object",
+                                        "properties": {
+                                            "name": {
+                                                "type": "string",
+                                                "description": "Name the terminal should have. If not set uses command name."
+                                            },
+                                            "command": {
+                                                "type": "string",
+                                                "description": "Command that will be passed to the terminal!"
+                                            },
+                                            "showTerminal": {
+                                                "type": "boolean",
+                                                "default": false,
+                                                "description": "Put the terminal in the foreground."
+                                            },
+                                            "delayCommand": {
+                                                "type": "number",
+                                                "default": 0,
+                                                "description": "Start delay in ms."
+                                            },
+                                            "alwaysNewTerminal": {
+                                                "type": "boolean",
+                                                "default": false,
+                                                "description": "Force the extension to create a new terminal. If a already exists create a new with up counting numbers as postfix."
+                                            },
+                                            "disposeOldTerminal": {
+                                                "type": "boolean",
+                                                "default": false,
+                                                "description": "Destroys old terminal instances with the same name before getting started."
+                                            },
+                                            "extendedOptions": {
+                                                "type": "object",
+                                                "description": "Add options based on VS Codes 'TerminalOptions' type.",
+                                                "properties": {
+                                                    "name": {
+                                                        "type": "string",
+                                                        "description": "Name that will be used as most dominant terminal name."
+                                                    },
+                                                    "shellPath": {
+                                                        "type": "string",
+                                                        "description": "A path to a custom shell executable to be used in the terminal."
+                                                    },
+                                                    "cwd": {
+                                                        "type": "string",
+                                                        "description": "Working directory of the terminal."
+                                                    },
+                                                    "env": {
+                                                        "type": "object",
+                                                        "description": "Simple mapping of environment name to value (both string). Dispose old terminals when you changed values here."
+                                                    },
+                                                    "strictEnv": {
+                                                        "type": "boolean",
+                                                        "description": "If set to true: only declared environment variables are used in the terminal.",
+                                                        "default": false
+                                                    },
+                                                    "hideFromUser": {
+                                                        "type": "boolean",
+                                                        "description": "Hide the terminal until show is called upon the terminal name.",
+                                                        "default": false
+                                                    },
+                                                    "message": {
+                                                        "type": "string",
+                                                        "description": "Welcome message that will be displayed on terminal start."
+                                                    }
+                                                }
+                                            }
+                                        },
+                                        "required": ["command"],
+                                        "default": {
+                                            "name": "Optional Name",
+                                            "command": "echo Hello"
+                                        }
+                                    }
+                                }
+                            },
+                            "required": ["name"],
+                            "default": {
+                                "name": "Add a name here!",
+                                "terminals": [
+                                    {
+                                        "name": "Add a terminal name here! (Or remove this - it's optional setting as long as you have one terminal.)",
+                                        "command": "echo Hello"
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                }
             }
         ]
     },
