@@ -111,6 +111,24 @@
                                                     "cwd": {
                                                         "type": "string",
                                                         "description": "Working directory of the terminal."
+                                                    },
+                                                    "env": {
+                                                        "type": "object",
+                                                        "description": "Simple mapping of environment name to value (both string). Dispose old terminals when you changed values here."
+                                                    },
+                                                    "strictEnv": {
+                                                        "type": "boolean",
+                                                        "description": "If set to true: only declared environment variables are used in the terminal.",
+                                                        "default": false
+                                                    },
+                                                    "hideFromUser": {
+                                                        "type": "boolean",
+                                                        "description": "Hide the terminal until show is called upon the terminal name.",
+                                                        "default": false
+                                                    },
+                                                    "message": {
+                                                        "type": "string",
+                                                        "description": "Welcome message that will be displayed on terminal start."
                                                     }
                                                 }
                                             }
