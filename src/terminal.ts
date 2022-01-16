@@ -95,7 +95,7 @@ export async function runTerminalAction(actionGroupName: string, terminalAction:
     }
 
     if (terminalAction.delayCommand && (typeof terminalAction.delayCommand === 'number')) {
-        await delay(terminalAction.delayCommand);
+        await utils.delay(terminalAction.delayCommand);
     }
 
     console.log(`Executing command "${terminalAction.command}" in terminal "${terminalName}".`);

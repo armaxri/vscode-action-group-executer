@@ -2,9 +2,8 @@
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
 
-import { TerminalAction, getActionGroups } from "./configuration";
+import { getActionGroups } from "./configuration";
 import { runTerminalAction } from "./terminal";
-import { delay } from "./utils";
 
 async function selectAndRunGroup(uri: vscode.Uri | undefined) {
     console.log(`selectAndRunGroup was triggered.`);
