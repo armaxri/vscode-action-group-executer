@@ -80,3 +80,24 @@ export async function prepareTerminalInst(terminalName: string, terminalAction: 
 
     return getTerminalWithName(terminalName);
 }
+
+export async function runTerminalAction(actionGroupName: string, terminalAction: TerminalAction) {
+    const terminalName = getTerminalName(actionGroupName, terminalAction);
+
+    let terminal = await prepareTerminalInst(terminalName, terminalAction);
+    if (!terminal) {
+        vscode.window.showErrorMessage(`Failed to get or create a terminal instance named "${terminalName}".`);
+        return;
+    }
+
+    if (terminalAction.showTerminal) {
+        terminal.show();
+    }
+
+    if (terminalAction.delayCommand && (typeof terminalAction.delayCommand === 'number')) {
+        await delay(terminalAction.delayCommand);
+    }
+
+    console.log(`Executing command "${terminalAction.command}" in terminal "${terminalName}".`);
+    terminal.sendText(terminalAction.command, true);
+}

@@ -3,29 +3,8 @@
 import * as vscode from 'vscode';
 
 import { TerminalAction, getActionGroups } from "./configuration";
-import { getTerminalName, prepareTerminalInst } from "./terminal";
+import { runTerminalAction } from "./terminal";
 import { delay } from "./utils";
-
-async function runTerminalAction(actionGroupName: string, terminalAction: TerminalAction) {
-    const terminalName = getTerminalName(actionGroupName, terminalAction);
-
-    let terminal = await prepareTerminalInst(terminalName, terminalAction);
-    if (!terminal) {
-        vscode.window.showErrorMessage(`Failed to get or create a terminal instance named "${terminalName}".`);
-        return;
-    }
-
-    if (terminalAction.showTerminal) {
-        terminal.show();
-    }
-
-    if (terminalAction.delayCommand && (typeof terminalAction.delayCommand === 'number')) {
-        await delay(terminalAction.delayCommand);
-    }
-
-    console.log(`Executing command "${terminalAction.command}" in terminal "${terminalName}".`);
-    terminal.sendText(terminalAction.command, true);
-}
 
 async function selectAndRunGroup(uri: vscode.Uri | undefined) {
     console.log(`selectAndRunGroup was triggered.`);
