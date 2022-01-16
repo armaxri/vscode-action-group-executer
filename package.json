@@ -33,6 +33,106 @@
                 "title": "Execute Action Group",
                 "category": "ActionGroupExec"
             }
+        ],
+        "configuration":[
+            {
+                "title": "ActionGroupExecuter",
+                "properties": {
+                    "actionGroupExecuter.actionGroups": {
+                        "type": "array",
+                        "default": [
+                            {
+                                "name": "Add a name here!",
+                                "terminals": [
+                                    {
+                                        "name": "Add a terminal name here! (Or remove this - it's optional setting as long as you have one terminal.)",
+                                        "command": "echo Hello"
+                                    }
+                                ]
+                            }
+                        ],
+                        "description": "Define a list of callable action groups.",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "name": {
+                                    "type": "string",
+                                    "description": "Name of the callable action group."
+                                },
+                                "terminals": {
+                                    "type": "array",
+                                    "default": [],
+                                    "description": "List of terminals that should be started.",
+                                    "items": {
+                                        "type": "object",
+                                        "properties": {
+                                            "name": {
+                                                "type": "string",
+                                                "description": "Name the terminal should have. If not set uses command name."
+                                            },
+                                            "command": {
+                                                "type": "string",
+                                                "description": "Command that will be passed to the terminal!"
+                                            },
+                                            "showTerminal": {
+                                                "type": "boolean",
+                                                "default": false,
+                                                "description": "Put the terminal in the foreground."
+                                            },
+                                            "delayCommand": {
+                                                "type": "number",
+                                                "default": 0,
+                                                "description": "Start delay in ms."
+                                            },
+                                            "alwaysNewTerminal": {
+                                                "type": "boolean",
+                                                "default": false,
+                                                "description": "Force the extension to create a new terminal. If a already exists create a new with up counting numbers as postfix."
+                                            },
+                                            "disposeOldTerminal": {
+                                                "type": "boolean",
+                                                "default": false,
+                                                "description": "Destroys old terminal instances with the same name before getting started."
+                                            },
+                                            "extendedOptions": {
+                                                "type": "object",
+                                                "description": "Add options based on VS Codes 'TerminalOptions' type.",
+                                                "properties": {
+                                                    "name": {
+                                                        "type": "string",
+                                                        "description": "Name that will be used as most dominant terminal name."
+                                                    },
+                                                    "shellPath": {
+                                                        "type": "string",
+                                                        "description": "A path to a custom shell executable to be used in the terminal."
+                                                    },
+                                                    "cwd": {
+                                                        "type": "string",
+                                                        "description": "Working directory of the terminal."
+                                                    }
+                                                }
+                                            }
+                                        },
+                                        "default": {
+                                            "name": "Optional Name",
+                                            "command": "echo Hello"
+                                        }
+                                    }
+                                }
+                            },
+                            "default": {
+                                "name": "Add a name here!",
+                                "terminals": [
+                                    {
+                                        "name": "Add a terminal name here! (Or remove this - it's optional setting as long as you have one terminal.)",
+                                        "command": "echo Hello"
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                }
+            }
         ]
     },
     "scripts": {
