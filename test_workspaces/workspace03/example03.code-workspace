@@ -1,0 +1,22 @@
+{
+    "folders": [
+        {
+            "path": "dir00"
+        },
+        {
+            "path": "dir01"
+        }
+    ],
+    "settings": {
+        "actionGroupExecuter.actionGroups": [
+            {
+                "name": "Example00",
+                "terminals": [
+                    {
+                        "command": "echo Hello && sleep 5 && echo Hallo"
+                    }
+                ]
+            }
+        ]
+    }
+}

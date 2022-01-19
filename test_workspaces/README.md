@@ -13,3 +13,7 @@ Workspace with two directories holding settings and run configuration in the wor
 ## workspace02
 
 Workspace with two directories holding settings and run configuration in the workspace directories.
+
+## workspace03
+
+Workspace with two directories holding settings in the workspace file and run configurations in the workspace directories.
