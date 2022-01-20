@@ -1,10 +1,10 @@
 {
     "folders": [
         {
-            "path": "dir00"
+            "path": "../dir00"
         },
         {
-            "path": "dir01"
+            "path": "../dir01"
         }
     ],
     "settings": {
@@ -18,17 +18,5 @@
                 ]
             }
         ]
-    },
-    "launch": {
-        "configurations": [
-            {
-                "name": "debug_test_file",
-                "type": "python",
-                "request": "launch",
-                "program": "${file}",
-                "console": "integratedTerminal"
-            }
-        ],
-        "compounds": []
     }
 }

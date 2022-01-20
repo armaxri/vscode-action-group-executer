@@ -1,10 +1,10 @@
 {
     "folders": [
         {
-            "path": "dir00"
+            "path": "../dir00"
         },
         {
-            "path": "dir01"
+            "path": "../dir01"
         }
     ],
     "settings": {}
