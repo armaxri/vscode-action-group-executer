@@ -17,3 +17,7 @@ Workspace with two directories holding settings and run configuration in the wor
 ## workspace03
 
 Workspace with two directories holding settings in the workspace file and run configurations in the workspace directories.
+
+## workspace04
+
+A workspace using two directories holding settings in the workspace file and in the settings file, designed to test the merged settings.
