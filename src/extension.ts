@@ -5,7 +5,7 @@ import * as vscode from 'vscode';
 import { getActionGroups } from "./configuration";
 import { runTerminalAction } from "./terminal";
 
-async function selectAndRunGroup(uri: vscode.Uri | undefined) {
+async function selectAndRunGroup() {
     console.log(`selectAndRunGroup was triggered.`);
     const commands = getActionGroups();
     const commandNames = commands.map(command => command.name);
