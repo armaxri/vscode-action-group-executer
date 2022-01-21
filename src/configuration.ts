@@ -35,11 +35,9 @@ export function getActionGroups() {
     console.log(`Using workspace "${correspondingWorkspace?.name}".`);
     const config = vscode.workspace.getConfiguration('actionGroupExecuter', correspondingWorkspace);
 
-    const rawCommands = config.get('actionGroups');
-
     const inspect = config.inspect('actionGroups');
+
     console.log('---------');
-    console.log(`actionGroups: "${rawCommands}"`);
     console.log(`inspect.key: "${inspect?.key}"`);
     console.log(`inspect.defaultValue: "${inspect?.defaultValue}"`);
     console.log(`inspect.globalValue: "${inspect?.globalValue}"`);
@@ -47,7 +45,13 @@ export function getActionGroups() {
     console.log(`inspect.workspaceFolderValue: "${inspect?.workspaceFolderValue}"`);
     console.log('---------');
 
-    const commands = <Array<ActionGroup>>(rawCommands);
+    var mergedCommands = Array();
+    mergedCommands = inspect?.defaultValue ? mergedCommands.concat(inspect.defaultValue) : mergedCommands;
+    mergedCommands = inspect?.globalValue ? mergedCommands.concat(inspect.globalValue) : mergedCommands;
+    mergedCommands = inspect?.workspaceValue ? mergedCommands.concat(inspect.workspaceValue) : mergedCommands;
+    mergedCommands = inspect?.workspaceFolderValue ? mergedCommands.concat(inspect.workspaceFolderValue) : mergedCommands;
+
+    const commands = <Array<ActionGroup>>(mergedCommands);
 
     if (!commands) {
         vscode.window.showWarningMessage('No configuration for ActionGroupExecuter found in settings. Set "actionGroupExecuter.actionGroups" in your settings.');
