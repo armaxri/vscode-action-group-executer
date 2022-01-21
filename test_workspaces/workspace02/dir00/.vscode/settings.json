@@ -4,7 +4,8 @@
             "name": "Example00",
             "terminals": [
                 {
-                    "command": "echo Hello && sleep 5 && echo Hallo"
+                    "command": "echo Hello && sleep 5 && echo Hallo",
+                    "showTerminal": true
                 }
             ]
         }
