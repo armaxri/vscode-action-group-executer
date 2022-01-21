@@ -29,15 +29,15 @@ export interface ActionGroup {
 
 export function getActionGroups() {
     // Get the configuration based on the current file.
-    let currentFileUri = vscode.window.activeTextEditor?.document.uri;
+    const currentFileUri = vscode.window.activeTextEditor?.document.uri;
     console.log(`Using file URI "${currentFileUri}" to determine workspace.`);
-    let correspondingWorkspace = currentFileUri ? vscode.workspace.getWorkspaceFolder(currentFileUri) : null;
+    const correspondingWorkspace = currentFileUri ? vscode.workspace.getWorkspaceFolder(currentFileUri) : null;
     console.log(`Using workspace "${correspondingWorkspace?.name}".`);
-    let config = vscode.workspace.getConfiguration('actionGroupExecuter', correspondingWorkspace);
+    const config = vscode.workspace.getConfiguration('actionGroupExecuter', correspondingWorkspace);
 
-    let rawCommands = config.get('actionGroups');
+    const rawCommands = config.get('actionGroups');
 
-    let inspect = config.inspect('actionGroups');
+    const inspect = config.inspect('actionGroups');
     console.log('---------');
     console.log(`actionGroups: "${rawCommands}"`);
     console.log(`inspect.key: "${inspect?.key}"`);
@@ -47,7 +47,7 @@ export function getActionGroups() {
     console.log(`inspect.workspaceFolderValue: "${inspect?.workspaceFolderValue}"`);
     console.log('---------');
 
-    let commands = <Array<ActionGroup>>(rawCommands);
+    const commands = <Array<ActionGroup>>(rawCommands);
 
     if (!commands) {
         vscode.window.showWarningMessage('No configuration for ActionGroupExecuter found in settings. Set "actionGroupExecuter.actionGroups" in your settings.');
@@ -55,7 +55,7 @@ export function getActionGroups() {
     }
 
     // Consider more filtering.
-    let filteredCommands = commands.filter(command => utils.isNotEmptyString(command.name));
+    const filteredCommands = commands.filter(command => utils.isNotEmptyString(command.name));
 
     return filteredCommands;
 }
