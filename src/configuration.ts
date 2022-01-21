@@ -28,7 +28,26 @@ export interface ActionGroup {
 }
 
 export function getActionGroups() {
-    let commands = vscode.workspace.getConfiguration().get<Array<ActionGroup>>('actionGroupExecuter.actionGroups');
+    // Get the configuration based on the current file.
+    let currentFileUri = vscode.window.activeTextEditor?.document.uri;
+    console.log(`Using file URI "${currentFileUri}" to determine workspace.`);
+    let correspondingWorkspace = currentFileUri ? vscode.workspace.getWorkspaceFolder(currentFileUri) : null;
+    console.log(`Using workspace "${correspondingWorkspace?.name}".`);
+    let config = vscode.workspace.getConfiguration('actionGroupExecuter', correspondingWorkspace);
+
+    let rawCommands = config.get('actionGroups');
+
+    let inspect = config.inspect('actionGroups');
+    console.log('---------');
+    console.log(`actionGroups: "${rawCommands}"`);
+    console.log(`inspect.key: "${inspect?.key}"`);
+    console.log(`inspect.defaultValue: "${inspect?.defaultValue}"`);
+    console.log(`inspect.globalValue: "${inspect?.globalValue}"`);
+    console.log(`inspect.workspaceValue: "${inspect?.workspaceValue}"`);
+    console.log(`inspect.workspaceFolderValue: "${inspect?.workspaceFolderValue}"`);
+    console.log('---------');
+
+    let commands = <Array<ActionGroup>>(rawCommands);
 
     if (!commands) {
         vscode.window.showWarningMessage('No configuration for ActionGroupExecuter found in settings. Set "actionGroupExecuter.actionGroups" in your settings.');
