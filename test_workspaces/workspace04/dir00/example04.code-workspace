@@ -10,7 +10,7 @@
     "settings": {
         "actionGroupExecuter.actionGroups": [
             {
-                "name": "Example00",
+                "name": "Example02",
                 "terminals": [
                     {
                         "command": "echo Hello && sleep 5 && echo Hallo",

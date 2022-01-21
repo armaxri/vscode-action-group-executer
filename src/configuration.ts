@@ -29,17 +29,15 @@ export interface ActionGroup {
 
 export function getActionGroups() {
     // Get the configuration based on the current file.
-    let currentFileUri = vscode.window.activeTextEditor?.document.uri;
+    const currentFileUri = vscode.window.activeTextEditor?.document.uri;
     console.log(`Using file URI "${currentFileUri}" to determine workspace.`);
-    let correspondingWorkspace = currentFileUri ? vscode.workspace.getWorkspaceFolder(currentFileUri) : null;
+    const correspondingWorkspace = currentFileUri ? vscode.workspace.getWorkspaceFolder(currentFileUri) : null;
     console.log(`Using workspace "${correspondingWorkspace?.name}".`);
-    let config = vscode.workspace.getConfiguration('actionGroupExecuter', correspondingWorkspace);
+    const config = vscode.workspace.getConfiguration('actionGroupExecuter', correspondingWorkspace);
 
-    let rawCommands = config.get('actionGroups');
+    const inspect = config.inspect('actionGroups');
 
-    let inspect = config.inspect('actionGroups');
     console.log('---------');
-    console.log(`actionGroups: "${rawCommands}"`);
     console.log(`inspect.key: "${inspect?.key}"`);
     console.log(`inspect.defaultValue: "${inspect?.defaultValue}"`);
     console.log(`inspect.globalValue: "${inspect?.globalValue}"`);
@@ -47,7 +45,13 @@ export function getActionGroups() {
     console.log(`inspect.workspaceFolderValue: "${inspect?.workspaceFolderValue}"`);
     console.log('---------');
 
-    let commands = <Array<ActionGroup>>(rawCommands);
+    var mergedCommands = Array();
+    mergedCommands = inspect?.defaultValue ? mergedCommands.concat(inspect.defaultValue) : mergedCommands;
+    mergedCommands = inspect?.globalValue ? mergedCommands.concat(inspect.globalValue) : mergedCommands;
+    mergedCommands = inspect?.workspaceValue ? mergedCommands.concat(inspect.workspaceValue) : mergedCommands;
+    mergedCommands = inspect?.workspaceFolderValue ? mergedCommands.concat(inspect.workspaceFolderValue) : mergedCommands;
+
+    const commands = <Array<ActionGroup>>(mergedCommands);
 
     if (!commands) {
         vscode.window.showWarningMessage('No configuration for ActionGroupExecuter found in settings. Set "actionGroupExecuter.actionGroups" in your settings.');
@@ -55,7 +59,7 @@ export function getActionGroups() {
     }
 
     // Consider more filtering.
-    let filteredCommands = commands.filter(command => utils.isNotEmptyString(command.name));
+    const filteredCommands = commands.filter(command => utils.isNotEmptyString(command.name));
 
     return filteredCommands;
 }

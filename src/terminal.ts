@@ -5,7 +5,7 @@ import { TerminalAction } from "./configuration";
 
 export function getTerminalName(actionGroupName: string, terminalAction: TerminalAction) {
     // Use the group name as fallback solution.
-    let terminalName = actionGroupName;
+    const terminalName = actionGroupName;
 
     // The extended options are the most specific selection.
     if (terminalAction.extendedOptions) {
@@ -61,7 +61,7 @@ export async function prepareTerminalInst(terminalName: string, terminalAction: 
     // The following options are based on the assumptions that a terminal with the same name exists.
 
     if (terminalAction.disposeOldTerminal) {
-        let terminal = getTerminalWithName(terminalName);
+        const terminal = getTerminalWithName(terminalName);
         terminal?.dispose();
         return await createTerminal(terminalName, terminalAction);
     }
@@ -84,7 +84,7 @@ export async function prepareTerminalInst(terminalName: string, terminalAction: 
 export async function runTerminalAction(actionGroupName: string, terminalAction: TerminalAction) {
     const terminalName = getTerminalName(actionGroupName, terminalAction);
 
-    let terminal = await prepareTerminalInst(terminalName, terminalAction);
+    const terminal = await prepareTerminalInst(terminalName, terminalAction);
     if (!terminal) {
         vscode.window.showErrorMessage(`Failed to get or create a terminal instance named "${terminalName}".`);
         return;

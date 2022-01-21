@@ -5,7 +5,7 @@ import * as vscode from 'vscode';
 import { getActionGroups } from "./configuration";
 import { runTerminalAction } from "./terminal";
 
-async function selectAndRunGroup(uri: vscode.Uri | undefined) {
+async function selectAndRunGroup() {
     console.log(`selectAndRunGroup was triggered.`);
     const commands = getActionGroups();
     const commandNames = commands.map(command => command.name);
@@ -40,7 +40,7 @@ export function activate(context: vscode.ExtensionContext) {
     // The command has been defined in the package.json file
     // Now provide the implementation of the command with registerCommand
     // The commandId parameter must match the command field in package.json
-    let disposable = vscode.commands.registerCommand('action-group-executer.executeActionGroup', selectAndRunGroup);
+    const disposable = vscode.commands.registerCommand('action-group-executer.executeActionGroup', selectAndRunGroup);
 
     context.subscriptions.push(disposable);
 }
