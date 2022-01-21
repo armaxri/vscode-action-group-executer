@@ -1,0 +1,12 @@
+{
+    "actionGroupExecuter.actionGroups": [
+        {
+            "name": "Example01",
+            "terminals": [
+                {
+                    "command": "echo Hello && sleep 5 && echo Hallo"
+                }
+            ]
+        }
+    ]
+}

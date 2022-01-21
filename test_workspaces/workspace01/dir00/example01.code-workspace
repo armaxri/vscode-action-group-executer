@@ -1,0 +1,34 @@
+{
+    "folders": [
+        {
+            "path": "../dir00"
+        },
+        {
+            "path": "../dir01"
+        }
+    ],
+    "settings": {
+        "actionGroupExecuter.actionGroups": [
+            {
+                "name": "Example00",
+                "terminals": [
+                    {
+                        "command": "echo Hello && sleep 5 && echo Hallo"
+                    }
+                ]
+            }
+        ]
+    },
+    "launch": {
+        "configurations": [
+            {
+                "name": "debug_test_file",
+                "type": "python",
+                "request": "launch",
+                "program": "${file}",
+                "console": "integratedTerminal"
+            }
+        ],
+        "compounds": []
+    }
+}

@@ -41,6 +41,7 @@
                     "actionGroupExecuter.actionGroups": {
                         "type": "array",
                         "uniqueItems": true,
+                        "scope": "resource",
                         "default": [
                             {
                                 "name": "Add a name here!",
