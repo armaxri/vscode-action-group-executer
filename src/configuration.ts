@@ -29,10 +29,7 @@ export interface ActionGroup {
 
 export function getActionGroups() {
     // Get the configuration based on the current file.
-    const currentFileUri = vscode.window.activeTextEditor?.document.uri;
-    console.log(`Using file URI "${currentFileUri}" to determine workspace.`);
-    const correspondingWorkspace = currentFileUri ? vscode.workspace.getWorkspaceFolder(currentFileUri) : null;
-    console.log(`Using workspace "${correspondingWorkspace?.name}".`);
+    const correspondingWorkspace = utils.getCurrentWorkspace();
     const config = vscode.workspace.getConfiguration('actionGroupExecuter', correspondingWorkspace);
 
     const inspect = config.inspect('actionGroups');
