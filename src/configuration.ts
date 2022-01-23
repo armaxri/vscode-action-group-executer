@@ -22,9 +22,25 @@ export interface TerminalAction {
     command: string;
 }
 
+export interface DebugSession {
+    // The name of a debug configuration added to a launch configuration.
+    // Mainly used but if not set, a "newConfiguration" is used instead.
+    namedConfiguration?: string;
+    // Configuration of a launch setting. Will only be used if no name is set.
+    newConfiguration?: vscode.DebugConfiguration;
+    // Name of the workspace the debug session should be executed in.
+    // If none is set, the workspace will be taken from the current opened
+    // file. Only useful in a multi root workspace.
+    workspaceName?: string;
+    // Delay the start of the debug session by the given number of milliseconds.
+    delaySession?: number;
+}
+
 export interface ActionGroup {
     name: string;
-    terminals: Array<TerminalAction>;
+    terminals?: Array<TerminalAction>;
+    debugSession?: DebugSession;
+    selectedWorkspace?: vscode.WorkspaceFolder | null | undefined;
 }
 
 export function getActionGroups() {
@@ -56,7 +72,11 @@ export function getActionGroups() {
     }
 
     // Consider more filtering.
-    const filteredCommands = commands.filter(command => utils.isNotEmptyString(command.name));
+    const filteredGroup = commands.filter(command => utils.isNotEmptyString(command.name));
 
-    return filteredCommands;
+    filteredGroup.forEach(group =>
+        group.selectedWorkspace = correspondingWorkspace
+    );
+
+    return filteredGroup;
 }

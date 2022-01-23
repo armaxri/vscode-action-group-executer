@@ -23,9 +23,11 @@ async function selectAndRunGroup() {
     console.log(`Picked command named "${command?.name}".`);
 
     if (command) {
-        command.terminals.forEach(terminal =>
-            runTerminalAction(selection, terminal)
-        );
+        if (command.terminals) {
+            command.terminals.forEach(terminal =>
+                runTerminalAction(selection, terminal)
+            );
+        }
     }
 }
 
