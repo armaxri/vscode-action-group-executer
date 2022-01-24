@@ -78,6 +78,13 @@ At the moment the extension supports only supports a simply configuration of gro
 
 ## Release Notes
 
+### 0.0.2
+
+* Changed the command to start the execution.
+* Added autocompletion and documentation for the settings.
+* The action group arrays are now merged over the different setting groups (user, workspace file and workspace folder).
+* Now debug sessions can be started in the same row as terminal actions (start a server with terminal and debug a client or vice versa).
+
 ### 0.0.1
 
 Initial release of Action Group Executer.
