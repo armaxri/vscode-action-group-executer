@@ -7,7 +7,41 @@
                     "command": "echo Hello && sleep 5 && echo Hallo",
                     "showTerminal": true
                 }
-            ]
+            ],
+            "debugSession": {
+                "namedConfiguration": "test01_file"
+            }
+        },
+        {
+            "name": "Example02 - Execute run in other workspace dir.",
+            "terminals": [
+                {
+                    "command": "echo Hello && sleep 5 && echo Hallo",
+                    "showTerminal": true
+                }
+            ],
+            "debugSession": {
+                "namedConfiguration": "test00_file",
+                "workspaceName": "dir00"
+            }
+        },
+        {
+            "name": "Example03 - Execute run with custom configuration.",
+            "terminals": [
+                {
+                    "command": "echo Hello && sleep 5 && echo Hallo",
+                    "showTerminal": true
+                }
+            ],
+            "debugSession": {
+                "newConfiguration": {
+                    "name": "test01_file",
+                    "type": "python",
+                    "request": "launch",
+                    "program": "${workspaceFolder}/test01.py",
+                    "console": "integratedTerminal"
+                }
+            }
         }
     ]
 }

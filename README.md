@@ -49,7 +49,19 @@ The following settings can be set and enter `ActionGroupExec: Execute Action Gro
                     // name is enough.
                     "command": "echo Hello && sleep 5 && echo Hallo"
                 }
-            ]
+            ],
+            // Debug the selected python file.
+            "debugSession": {
+                // Use a standard launch configuration and place it
+                // under "newConfiguration" for execution.
+                "newConfiguration": {
+                    "name": "debug_test_file",
+                    "type": "python",
+                    "request": "launch",
+                    "program": "${file}",
+                    "console": "integratedTerminal"
+                }
+            }
         },
         {
             "name": "Example3",
@@ -64,7 +76,19 @@ The following settings can be set and enter `ActionGroupExec: Execute Action Gro
                         "cwd": "C:\\"
                     }
                 }
-            ]
+            ],
+            // Debug with a given launch configuration by it's name.
+            "debugSession": {
+                // Specify the launch configuration by it's name.
+                "namedConfiguration": "test00_file",
+                // Optionally add a workspace name, which is useful
+                // in multi root workspace environments to get
+                // a guaranteed workspace for the execution.
+                "workspaceName": "dir00",
+                // Optionally add a delay to allow terminal tasks
+                // to setup your execution environment.
+                "delaySession": 10000
+            }
         }
     ]
 }
@@ -77,6 +101,13 @@ Due to the interface the extension is limited to only execute one command on the
 At the moment the extension supports only supports a simply configuration of groups. Execution groups can be added under the `actionGroupExecuter.actionGroups` setting.
 
 ## Release Notes
+
+### 0.0.2
+
+* Changed the command to start the execution.
+* Added autocompletion and documentation for the settings.
+* The action group arrays are now merged over the different setting groups (user, workspace file and workspace folder).
+* Now debug sessions can be started in the same row as terminal actions (start a server with terminal and debug a client or vice versa).
 
 ### 0.0.1
 

@@ -130,6 +130,44 @@
                                             "command": "echo Hello"
                                         }
                                     }
+                                },
+                                "debugSession": {
+                                    "type": "object",
+                                    "description": "Debug session based on a launch configuration.",
+                                    "properties": {
+                                        "namedConfiguration": {
+                                            "type": "string",
+                                            "description": "Name of a launch configuration.",
+                                            "default": "Add launch configuration name here!"
+                                        },
+                                        "newConfiguration": {
+                                            "type": "object",
+                                            "description": "Launch configuration based on VS Codes 'DebugConfiguration' type (limited autocompletion support).",
+                                            "properties": {
+                                                "type": {
+                                                    "type": "string",
+                                                    "description": "The type of the debug session."
+                                                },
+                                                "name": {
+                                                    "type": "string",
+                                                    "description": "The name of the debug session."
+                                                },
+                                                "request": {
+                                                    "type": "string",
+                                                    "description": "The request type of the debug session."
+                                                }
+                                            }
+                                        },
+                                        "workspaceName": {
+                                            "type": "string",
+                                            "description": "Name of the workspace the launch configuration is executed in (default is based on the current file)."
+                                        },
+                                        "delaySession": {
+                                            "type": "number",
+                                            "default": 0,
+                                            "description": "Start delay in ms."
+                                        }
+                                    }
                                 }
                             },
                             "required": ["name"],
