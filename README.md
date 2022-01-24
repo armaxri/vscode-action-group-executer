@@ -49,7 +49,19 @@ The following settings can be set and enter `ActionGroupExec: Execute Action Gro
                     // name is enough.
                     "command": "echo Hello && sleep 5 && echo Hallo"
                 }
-            ]
+            ],
+            // Debug the selected python file.
+            "debugSession": {
+                // Use a standard launch configuration and place it
+                // under "newConfiguration" for execution.
+                "newConfiguration": {
+                    "name": "debug_test_file",
+                    "type": "python",
+                    "request": "launch",
+                    "program": "${file}",
+                    "console": "integratedTerminal"
+                }
+            }
         },
         {
             "name": "Example3",
@@ -64,7 +76,19 @@ The following settings can be set and enter `ActionGroupExec: Execute Action Gro
                         "cwd": "C:\\"
                     }
                 }
-            ]
+            ],
+            // Debug with a given launch configuration by it's name.
+            "debugSession": {
+                // Specify the launch configuration by it's name.
+                "namedConfiguration": "test00_file",
+                // Optionally add a workspace name, which is useful
+                // in multi root workspace environments to get
+                // a guaranteed workspace for the execution.
+                "workspaceName": "dir00",
+                // Optionally add a delay to allow terminal tasks
+                // to setup your execution environment.
+                "delaySession": 10000
+            }
         }
     ]
 }
