@@ -102,6 +102,10 @@ At the moment the extension supports only supports a simply configuration of gro
 
 ## Release Notes
 
+### 0.0.3
+
+* ...
+
 ### 0.0.2
 
 * Changed the command to start the execution.
