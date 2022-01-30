@@ -8,7 +8,7 @@ This extension might share similarities with other existing extensions (well "mi
 
 The following settings can be set and enter `ActionGroupExec: Execute Action Group` as command to select your prepared settings:
 
-```json
+```jsonc
 {
     "actionGroupExecuter.actionGroups": [
         {
