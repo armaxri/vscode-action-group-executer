@@ -1,9 +1,21 @@
 # Change Log
 
-All notable changes to the "action-group-executer" extension will be documented in this file.
+## [0.0.3]
 
-Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
+* ...
 
-## [Unreleased]
+## [0.0.2]
 
-- Initial release
+### Added
+
+* Added autocompletion and documentation for the settings.
+* Now debug sessions can be started in the same row as terminal actions (start a server with terminal and debug a client or vice versa).
+
+### Changed
+
+* Changed the command to start the execution.
+* The action group arrays are now merged over the different setting groups (user, workspace file and workspace folder).
+
+## [0.0.1]
+
+Initial release of Action Group Executer.
