@@ -90,7 +90,7 @@ export async function runTerminalAction(actionGroupName: string, terminalAction:
         return;
     }
 
-    if (terminalAction.showTerminal) {
+    if (typeof terminalAction.showTerminal === "undefined" || terminalAction.showTerminal) {
         terminal.show();
     }
 

@@ -4,8 +4,7 @@
             "name": "Example01",
             "terminals": [
                 {
-                    "command": "echo Hello && sleep 5 && echo Hallo",
-                    "showTerminal": true
+                    "command": "echo Hello && sleep 5 && echo Hallo"
                 }
             ],
             "debugSession": {
@@ -16,8 +15,7 @@
             "name": "Example02 - Execute run in other workspace dir.",
             "terminals": [
                 {
-                    "command": "echo Hello && sleep 5 && echo Hallo",
-                    "showTerminal": true
+                    "command": "echo Hello && sleep 5 && echo Hallo"
                 }
             ],
             "debugSession": {
@@ -29,8 +27,7 @@
             "name": "Example03 - Execute run with custom configuration.",
             "terminals": [
                 {
-                    "command": "echo Hello && sleep 5 && echo Hallo",
-                    "showTerminal": true
+                    "command": "echo Hello && sleep 5 && echo Hallo"
                 }
             ],
             "debugSession": {

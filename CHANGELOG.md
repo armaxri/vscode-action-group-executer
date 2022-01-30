@@ -2,7 +2,9 @@
 
 ## [0.0.3]
 
-* ...
+### Changed
+
+* Show terminal is now the new default setting.
 
 ## [0.0.2]
 

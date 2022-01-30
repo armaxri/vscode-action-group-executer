@@ -12,9 +12,7 @@
                     // instances. If a terminal with the name
                     // "Window1Name" exists a new terminal with the
                     // name "Window1Name (1)" will be created.
-                    "alwaysNewTerminal": true,
-                    // If set pushes the terminal in the front.
-                    "showTerminal": true
+                    "alwaysNewTerminal": true
                 },
                 {
                     "name": "Window2Name",
@@ -25,7 +23,10 @@
                     // already exists, the instance will be
                     // destroyed and replaced by a new instance
                     // with the same name.
-                    "disposeOldTerminal": true
+                    "disposeOldTerminal": true,
+                    // If set to false the terminal won't be
+                    // displayed directly.
+                    "showTerminal": false
                 }
             ]
         },

@@ -104,7 +104,7 @@ At the moment the extension supports only supports a simply configuration of gro
 
 ### 0.0.3
 
-* ...
+* Show terminal is now the new default setting.
 
 ### 0.0.2
 
