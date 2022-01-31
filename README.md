@@ -67,7 +67,7 @@ The following settings can be set and enter `ActionGroupExec: Execute Action Gro
             "name": "Example3",
             "terminals": [
                 {
-                    "command": "echo Hallo && sleep 5 && echo Hello",
+                    "command": "echo Hallo && sleep 5 && cat ${file}",
                     // "extendedOptions" is used to simply pass
                     // arguments to the VS Code terminal creation
                     // function.
@@ -89,6 +89,15 @@ The following settings can be set and enter `ActionGroupExec: Execute Action Gro
                 // to setup your execution environment.
                 "delaySession": 10000
             }
+        },
+        {
+            "name": "Example4",
+            "terminals": [
+                {
+                    // Get environment variables for your commands.
+                    "command": "ls -la ${env:HOME}"
+                }
+            ]
         }
     ]
 }
@@ -96,14 +105,21 @@ The following settings can be set and enter `ActionGroupExec: Execute Action Gro
 
 Due to the interface the extension is limited to only execute one command on the command line. Combinations of different commands need additional scripts or functions like `echo Hello1 && sleep 10 && echo Hello2`. As terminal `extendedOptions` the [VS Code TerminalOptions](https://code.visualstudio.com/api/references/vscode-api#TerminalOptions) can be used to use the exposed VS Code terminal construction settings.
 
+The debug sessions `newConfiguration` and the `extendedOptions` for the terminals support the full [VS Code predefined variables](https://code.visualstudio.com/docs/editor/variables-reference) set.
+
+Terminal commands can be configured using a subset of [VS Code predefined variables](https://code.visualstudio.com/docs/editor/variables-reference). The supported predefined variables are:
+`${cwd}`, `${fileBasenameNoExtensions}`, `${fileBasename}`, `${fileDirname}`, `${fileExtname}`, `${file}`, `${lineNumber}`, `${pathSeparator}`, `${relativeFileDirname}`, `${relativeFile}`, `${selectedText}`, `${workspaceFolderBasename}` and `${workspaceFolder}`.
+An additional `${env:<add env var name here>}` was added to allow the usage of environment variables.
+
 ## Extension Settings
 
 At the moment the extension supports only supports a simply configuration of groups. Execution groups can be added under the `actionGroupExecuter.actionGroups` setting.
 
 ## Release Notes
 
-### 0.0.3
+### [Unreleased]
 
+* Added variables for the terminal commands configuration.
 * Show terminal is now the new default setting.
 
 ### 0.0.2
