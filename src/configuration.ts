@@ -107,6 +107,11 @@ class StringReplacer {
         resultString = resultString.replace(/\${workspaceFolderBasename}/g, this.workspaceFolderBasename);
         resultString = resultString.replace(/\${workspaceFolder}/g, this.workspaceFolder);
 
+        resultString = resultString.replace(/\${env\:([^}]+)}/g, function(substring, envName) {
+            const envVariable = process.env[envName];
+            return envVariable ? envVariable : '';
+        });
+
         return resultString;
     }
 
