@@ -1,6 +1,10 @@
 # Change Log
 
-## [0.0.3]
+## [Unreleased]
+
+### Added
+
+* Added variables for the terminal commands configuration.
 
 ### Changed
 
