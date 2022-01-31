@@ -43,11 +43,7 @@ export interface ActionGroup {
     selectedWorkspace?: vscode.WorkspaceFolder | null | undefined;
 }
 
-export function getActionGroups() {
-    // Get the configuration based on the current file.
-    const correspondingWorkspace = utils.getCurrentWorkspace();
-    const config = vscode.workspace.getConfiguration('actionGroupExecuter', correspondingWorkspace);
-
+function mergeConfig(config: vscode.WorkspaceConfiguration) {
     const inspect = config.inspect('actionGroups');
 
     console.log('---------');
@@ -64,19 +60,27 @@ export function getActionGroups() {
     mergedCommands = inspect?.workspaceValue ? mergedCommands.concat(inspect.workspaceValue) : mergedCommands;
     mergedCommands = inspect?.workspaceFolderValue ? mergedCommands.concat(inspect.workspaceFolderValue) : mergedCommands;
 
-    const commands = <Array<ActionGroup>>(mergedCommands);
+    return <Array<ActionGroup>>(mergedCommands);
+}
+
+export function getActionGroups() {
+    // Get the configuration based on the current file.
+    const correspondingWorkspace = utils.getCurrentWorkspace();
+    const config = vscode.workspace.getConfiguration('actionGroupExecuter', correspondingWorkspace);
+    const commands = mergeConfig(config);
 
     if (!commands) {
         vscode.window.showWarningMessage('No configuration for ActionGroupExecuter found in settings. Set "actionGroupExecuter.actionGroups" in your settings.');
         return new Array<ActionGroup>();
     }
 
-    // Consider more filtering.
-    const filteredGroup = commands.filter(command => utils.isNotEmptyString(command.name));
-
-    filteredGroup.forEach(group =>
+    // Attach the workspace that is currently selected, so the context of the calling is known.
+    commands.forEach(group =>
         group.selectedWorkspace = correspondingWorkspace
     );
+
+    // Consider more filtering.
+    const filteredGroup = commands.filter(command => utils.isNotEmptyString(command.name));
 
     return filteredGroup;
 }
