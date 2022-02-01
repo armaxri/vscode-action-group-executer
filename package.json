@@ -51,6 +51,57 @@
                                     "type": "string",
                                     "description": "Name of the callable action group."
                                 },
+                                "processes": {
+                                    "type": "array",
+                                    "default": [],
+                                    "description": "List of processes that should be spawned, where the output will be displayed within a text file tab.",
+                                    "items": {
+                                        "type": "object",
+                                        "properties": {
+                                            "command": {
+                                                "type": "object",
+                                                "description": "Command that should be executed and printed to a text file.",
+                                                "properties": {
+                                                    "call": {
+                                                        "type": "array",
+                                                        "description": "The call and each argument as a single string",
+                                                        "items": {
+                                                            "type": "string"
+                                                        }
+                                                    }
+                                                },
+                                                "required": ["call"],
+                                                "default": { "call": [] }
+                                            },
+                                            "commands": {
+                                                "type": "array",
+                                                "description": "Commands that should be executed sequentially and printed to a text file.",
+                                                "items": {
+                                                    "type": "object",
+                                                    "description": "Command that should be executed and printed to a text file.",
+                                                    "properties": {
+                                                        "call": {
+                                                            "type": "array",
+                                                            "description": "The call and each argument as a single string",
+                                                            "items": {
+                                                                "type": "string"
+                                                            }
+                                                        }
+                                                    },
+                                                    "required": ["call"],
+                                                    "default": { "call": [] }
+                                                }
+                                            }
+                                        },
+                                        "oneOf": [
+                                            { "required": ["command"] },
+                                            { "required": ["commands"] }
+                                        ],
+                                        "default": {
+                                            "command": { "call": ["ls", "-la", "usr"] }
+                                        }
+                                    }
+                                },
                                 "terminals": {
                                     "type": "array",
                                     "default": [],
