@@ -149,7 +149,11 @@ function mergeConfig(config: vscode.WorkspaceConfiguration) {
     var mergedCommands = Array();
     mergedCommands = inspect?.defaultValue ? mergedCommands.concat(inspect.defaultValue) : mergedCommands;
     mergedCommands = inspect?.globalValue ? mergedCommands.concat(inspect.globalValue) : mergedCommands;
-    mergedCommands = inspect?.workspaceValue ? mergedCommands.concat(inspect.workspaceValue) : mergedCommands;
+    // If we have no workspace file, the content of the workspaceValue will equal the workspaceFolderValue.
+    // In that case we get all declarations doubled, that is actually not cool :/
+    if (vscode.workspace.workspaceFile) {
+        mergedCommands = inspect?.workspaceValue ? mergedCommands.concat(inspect.workspaceValue) : mergedCommands;
+    }
     mergedCommands = inspect?.workspaceFolderValue ? mergedCommands.concat(inspect.workspaceFolderValue) : mergedCommands;
 
     return <Array<ActionGroup>>(mergedCommands);
