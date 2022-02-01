@@ -24,6 +24,16 @@ export interface TerminalAction {
     command: string;
 }
 
+export interface ProcessCommand {
+    // Command in a splitted array.
+    call: Array<string>;
+}
+
+export interface ProcessAction {
+    command?: ProcessCommand;
+    commands?: Array<ProcessCommand>;
+}
+
 export interface DebugSession {
     // The name of a debug configuration added to a launch configuration.
     // Mainly used but if not set, a "newConfiguration" is used instead.
@@ -43,6 +53,7 @@ export interface ActionGroup {
     terminals?: Array<TerminalAction>;
     debugSession?: DebugSession;
     selectedWorkspace?: vscode.WorkspaceFolder | null | undefined;
+    processes?: Array<ProcessAction>;
 }
 
 class StringReplacer {
