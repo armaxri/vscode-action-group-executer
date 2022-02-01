@@ -35,3 +35,17 @@ export function getWorkspaceFromName(workspaceName: string) {
     vscode.window.showErrorMessage(`No workspace with the name "${workspaceName}" was found.`);
     return null;
 }
+
+export function replaceAllStrings(currentObject: any, replaceFunction: (currentString: string) => string) {
+    if (currentObject instanceof Object) {
+        const objectKeys = Object.keys(currentObject);
+        objectKeys.forEach(elementKey => {
+            const element = currentObject[elementKey];
+            if (typeof element === 'string') {
+                currentObject[elementKey] = replaceFunction(element);
+            } else {
+                replaceAllStrings(element, replaceFunction);
+            }
+        });
+    }
+}

@@ -54,6 +54,14 @@
                     }
                 }
             ]
+        },
+        {
+            "name": "Example4 - ls -la ${env:HOME}",
+            "terminals": [
+                {
+                    "command": "ls -la ${env:HOME}"
+                }
+            ]
         }
     ]
 }

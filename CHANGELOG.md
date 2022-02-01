@@ -4,7 +4,7 @@
 
 ### Added
 
-* Added variables for the terminal commands configuration.
+* Added variables for the configuration.
 
 ### Changed
 

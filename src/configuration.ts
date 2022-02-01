@@ -162,11 +162,9 @@ function mergeConfig(config: vscode.WorkspaceConfiguration) {
 function applyReplacementsInGroups(actionGroups: Array<ActionGroup>) {
     const replacer = new StringReplacer();
 
-    actionGroups.forEach(actionGroup =>
-        actionGroup.terminals?.forEach(terminalAction =>
-            terminalAction.command = replacer.replaceMatches(terminalAction.command)
-        )
-    );
+    utils.replaceAllStrings(actionGroups, currentString => {
+        return replacer.replaceMatches(currentString);
+    });
 
     return actionGroups;
 }
@@ -182,15 +180,17 @@ export function getActionGroups() {
         return new Array<ActionGroup>();
     }
 
-    // Attach the workspace that is currently selected, so the context of the calling is known.
-    commands.forEach(group =>
-        group.selectedWorkspace = correspondingWorkspace
-    );
-
     // Consider more filtering.
     const filteredGroups = commands.filter(command => utils.isNotEmptyString(command.name));
 
+    // Apply adjustments before adding the corresponding workspace, so the strings in the object
+    // will not be touched be recursive object analysis.
     const adjustedGroups = applyReplacementsInGroups(filteredGroups);
+
+    // Attach the workspace that is currently selected, so the context of the calling is known.
+    adjustedGroups.forEach(group =>
+        group.selectedWorkspace = correspondingWorkspace
+    );
 
     return adjustedGroups;
 }
