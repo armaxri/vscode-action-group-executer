@@ -119,6 +119,7 @@ At the moment the extension supports only supports a simply configuration of gro
 
 ### [Unreleased]
 
+* Fixed double inclusion of groups when no workspace file is used.
 * Added variables for the terminal commands configuration.
 * Show terminal is now the new default setting.
 

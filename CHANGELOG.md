@@ -10,6 +10,10 @@
 
 * Show terminal is now the new default setting.
 
+### Fixed
+
+* Fixed double inclusion of groups when no workspace file is used.
+
 ## [0.0.2]
 
 ### Added
