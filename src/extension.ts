@@ -5,7 +5,7 @@ import * as vscode from 'vscode';
 import { getActionGroups } from "./configuration";
 import { runTerminalAction } from "./terminal";
 import { runDebugSession } from "./debugSession";
-
+import { runProcesses } from "./process";
 
 async function selectAndRunGroup() {
     console.log(`selectAndRunGroup was triggered.`);
@@ -32,6 +32,9 @@ async function selectAndRunGroup() {
             command.terminals.forEach(terminal =>
                 runTerminalAction(selection, terminal)
             );
+        }
+        if (command.processes) {
+            runProcesses(command);
         }
     }
 }

@@ -1,0 +1,99 @@
+{
+    "actionGroupExecuter.actionGroups": [
+        {
+            "name": "Example1 - ls -la ${env:HOME}",
+            "processes": [{
+                "command": {
+                    "call": [
+                        "ls",
+                        "-la",
+                        "${env:HOME}"
+                    ]
+                }
+            }]
+        },
+        {
+            "name": "Example2 - count to 60",
+            "processes": [
+                {
+                    "command": {
+                        "call": [
+                            "${workspaceFolder}/testCnt.sh",
+                            "60",
+                            "A"
+                        ]
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Example3 - two sequential counts to 20",
+            "processes": [
+                {
+                    "commands": [
+                        {
+                           "call": [
+                               "${workspaceFolder}/testCnt.sh",
+                               "20",
+                               "A"
+                           ]
+                       },
+                       {
+                          "call": [
+                              "${workspaceFolder}/testCnt.sh",
+                              "20",
+                              "B"
+                          ]
+                      }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Example4 - two parallel counts to 20",
+            "processes": [
+                {
+                    "command": {
+                        "call": [
+                            "${workspaceFolder}/testCnt.sh",
+                            "20",
+                            "A"
+                        ]
+                    }
+                },
+                {
+                    "command": {
+                        "call": [
+                            "${workspaceFolder}/testCnt.sh",
+                            "20",
+                            "B"
+                        ]
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Example5 - two parallel counts to 60",
+            "processes": [
+                {
+                    "command": {
+                        "call": [
+                            "${workspaceFolder}/testCnt.sh",
+                            "60",
+                            "A"
+                        ]
+                    }
+                },
+                {
+                    "command": {
+                        "call": [
+                            "${workspaceFolder}/testCnt.sh",
+                            "60",
+                            "B"
+                        ]
+                    }
+                }
+            ]
+        }
+    ]
+}

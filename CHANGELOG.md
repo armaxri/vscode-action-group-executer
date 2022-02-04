@@ -5,6 +5,7 @@
 ### Added
 
 * Added variables for the configuration.
+* Process execution with output to file tabs.
 
 ### Changed
 

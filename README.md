@@ -100,6 +100,42 @@ The following settings can be set and enter `ActionGroupExec: Execute Action Gro
                     "command": "ls -la ${env:HOME}"
                 }
             ]
+        },
+        {
+            "name": "Example5 - ls -la ${env:HOME}",
+            // This will open a new file tab and past the stout content into the tab.
+            "processes": [{
+                "command": {
+                    // Note that the command and all arguments are separated strings.
+                    "call": [
+                        "ls",
+                        "-la",
+                        "${env:HOME}"
+                    ]
+                }
+            }]
+        },
+        {
+            "name": "Example5 - ls -la ${env:HOME} and / in parallel",
+            "processes": [{
+                // Note that each command group will be spawned in a separate file tab.
+                "commands": [
+                    {
+                        "call": [
+                            "ls",
+                            "-la",
+                            "${env:HOME}"
+                        ]
+                    },
+                    {
+                        "call": [
+                            "ls",
+                            "-la",
+                            "/"
+                        ]
+                    }
+                ]
+            }]
         }
     ]
 }
@@ -121,6 +157,7 @@ At the moment the extension supports only supports a simply configuration of gro
 
 ### [Unreleased]
 
+* Added process execution with output to file tabs.
 * Fixed double inclusion of groups when no workspace file is used.
 * Added variables for configuration.
 * Show terminal is now the new default setting.
@@ -138,7 +175,7 @@ Initial release of Action Group Executer.
 
 ## Known Issues
 
-Not applying (yet).
+* Process execution is not saved when a window is close.
 
 ## Requirements
 
