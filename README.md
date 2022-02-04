@@ -155,7 +155,7 @@ At the moment the extension supports only supports a simply configuration of gro
 
 ## Release Notes
 
-### [0.0.3]
+### 0.0.3
 
 * Added process execution with output to file tabs.
 * Fixed double inclusion of groups when no workspace file is used.
