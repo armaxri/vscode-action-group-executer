@@ -21,3 +21,7 @@ Workspace with two directories holding settings in the workspace file and run co
 ## workspace04
 
 A workspace using two directories holding settings in the workspace file and in the settings file, designed to test the merged settings.
+
+## workspace05
+
+Simple one directory workspace to test processes intensively.
