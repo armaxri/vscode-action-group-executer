@@ -155,6 +155,10 @@ At the moment the extension supports only supports a simply configuration of gro
 
 ## Release Notes
 
+### 0.0.4
+
+* Fixed documentation.
+
 ### 0.0.3
 
 * Added process execution with output to file tabs.

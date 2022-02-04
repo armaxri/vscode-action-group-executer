@@ -1,5 +1,11 @@
 # Change Log
 
+## [0.0.4]
+
+### Fixed
+
+' Fixed displayed version.
+
 ## [0.0.3]
 
 ### Added
