@@ -108,17 +108,15 @@
             }]
         },
         {
-            "name": "Example7 - ls -la $HOME",
+            "name": "Example7 - run echoTEST_WORLD.sh with \"Hello World.\"",
             "processes": [{
                 "command": {
                     "call": [
-                        "ls",
-                        "-la",
-                        "$HOME"
+                        "${workspaceFolder}/echoTEST_WORLD.sh"
                     ],
                     "extendedOptions": {
                         "env": {
-                            "HOME": "${workspaceFolder}"
+                            "TEST_WORLD": "Hello World."
                         }
                     }
                 }
