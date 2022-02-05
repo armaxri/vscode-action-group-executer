@@ -94,6 +94,49 @@
                     }
                 }
             ]
+        },
+        {
+            "name": "Example6 - ls -la ${workspaceFolder}",
+            "processes": [{
+                "command": {
+                    "call": [
+                        "ls",
+                        "-la",
+                        "${workspaceFolder}"
+                    ]
+                }
+            }]
+        },
+        {
+            "name": "Example7 - ls -la $HOME",
+            "processes": [{
+                "command": {
+                    "call": [
+                        "ls",
+                        "-la",
+                        "$HOME"
+                    ],
+                    "extendedOptions": {
+                        "env": {
+                            "HOME": "${workspaceFolder}"
+                        }
+                    }
+                }
+            }]
+        },
+        {
+            "name": "Example8 - ls -la cwd",
+            "processes": [{
+                "command": {
+                    "call": [
+                        "ls",
+                        "-la"
+                    ],
+                    "extendedOptions": {
+                        "cwd": "${workspaceFolder}"
+                    }
+                }
+            }]
         }
     ]
 }

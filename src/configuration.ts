@@ -1,5 +1,6 @@
 import * as vscode from 'vscode';
 import * as path from 'path';
+import * as child_process from 'child_process';
 
 import * as utils from "./utils";
 
@@ -27,6 +28,10 @@ export interface TerminalAction {
 export interface ProcessCommand {
     // Command in a splitted array.
     call: Array<string>;
+    // Delay the process start by the given number of milliseconds.
+    delayProcess?: number;
+    // USe the full set of the node.js child_process API.
+    extendedOptions: child_process.SpawnOptionsWithoutStdio;
 }
 
 export interface ProcessAction {
