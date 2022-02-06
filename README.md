@@ -124,15 +124,23 @@ The following settings can be set and enter `ActionGroupExec: Execute Action Gro
                         "call": [
                             "ls",
                             "-la",
+                            // Note that "$HOME" will not work but "${env:HOME}" is a valid alternative.
                             "${env:HOME}"
                         ]
                     },
                     {
                         "call": [
                             "ls",
-                            "-la",
-                            "/"
-                        ]
+                            "-la"
+                        ],
+                        // Use the "extendedOptions" to directly access node.js spawn process
+                        // "SpawnOptionsWithoutStdio" setting for configuration of the execution.
+                        "extendedOptions": {
+                            "cwd": "${workspaceFolder}",
+                            "env": {
+                                "TEST_WORLD": "Hello World."
+                            }
+                        }
                     }
                 ]
             }]
@@ -154,6 +162,11 @@ The debug sessions `newConfiguration` and the `extendedOptions` for the terminal
 At the moment the extension supports only supports a simply configuration of groups. Execution groups can be added under the `actionGroupExecuter.actionGroups` setting.
 
 ## Release Notes
+
+### 0.0.5
+
+* Added configuration of processes.
+* Improvements of documentation.
 
 ### 0.0.4
 
@@ -180,6 +193,7 @@ Initial release of Action Group Executer.
 ## Known Issues
 
 * Process execution is not saved when a window is close.
+* In processes resolving of environment variables like `$HOME` will not work and will just be interpreted as strings. Use `${env:HOME}` instead.
 
 ## Requirements
 

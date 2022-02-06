@@ -94,6 +94,47 @@
                     }
                 }
             ]
+        },
+        {
+            "name": "Example6 - ls -la ${workspaceFolder}",
+            "processes": [{
+                "command": {
+                    "call": [
+                        "ls",
+                        "-la",
+                        "${workspaceFolder}"
+                    ]
+                }
+            }]
+        },
+        {
+            "name": "Example7 - run echoTEST_WORLD.sh with \"Hello World.\"",
+            "processes": [{
+                "command": {
+                    "call": [
+                        "${workspaceFolder}/echoTEST_WORLD.sh"
+                    ],
+                    "extendedOptions": {
+                        "env": {
+                            "TEST_WORLD": "Hello World."
+                        }
+                    }
+                }
+            }]
+        },
+        {
+            "name": "Example8 - ls -la cwd",
+            "processes": [{
+                "command": {
+                    "call": [
+                        "ls",
+                        "-la"
+                    ],
+                    "extendedOptions": {
+                        "cwd": "${workspaceFolder}"
+                    }
+                }
+            }]
         }
     ]
 }

@@ -60,11 +60,15 @@ async function runCall(documentHandle: DocumentHandler, commands: ProcessCommand
         return;
     }
 
+    if (currentCommand.delayProcess) {
+        await utils.delay(currentCommand.delayProcess);
+    }
+
     const spawnCommand = currentCommand.call[0];
     const spawnArguments = currentCommand.call.slice(1);
     const printableArguments = spawnArguments.join('", "');
     console.log(`Spawning process with command "${spawnCommand}" using arguments "${printableArguments}".`);
-    const subprocess = child_process.spawn(spawnCommand, spawnArguments);
+    const subprocess = child_process.spawn(spawnCommand, spawnArguments, currentCommand.extendedOptions);
 
     subprocess.stdout.on('data', (data) => {
         const dataAsString = `${data}`;

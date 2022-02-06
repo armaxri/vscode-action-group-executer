@@ -2,7 +2,7 @@
     "name": "action-group-executer",
     "displayName": "Action Group Executer",
     "description": "",
-    "version": "0.0.4",
+    "version": "0.0.5",
     "keywords": [
         "terminal",
         "shell",
@@ -68,6 +68,56 @@
                                                         "items": {
                                                             "type": "string"
                                                         }
+                                                    },
+                                                    "delayProcess": {
+                                                        "type": "integer",
+                                                        "default": 0,
+                                                        "description": "Start delay in ms."
+                                                    },
+                                                    "extendedOptions": {
+                                                        "type": "object",
+                                                        "description": "Add options based on node.js 'SpawnOptionsWithoutStdio' type.",
+                                                        "properties": {
+                                                            "argv0": {
+                                                                "type": "string",
+                                                                "description": "Replacement string for the argv[0] element of the call."
+                                                            },
+                                                            "cwd": {
+                                                                "type": "string",
+                                                                "description": "Working directory for the command to be executed.",
+                                                                "default": "${workspaceFolder}"
+                                                            },
+                                                            "detached": {
+                                                                "type": "boolean",
+                                                                "description": "Start the subprocess independent to the VS Code Window.",
+                                                                "default": false
+                                                            },
+                                                            "env": {
+                                                                "type": "object",
+                                                                "description": "Simple mapping of environment name to value (both string)."
+                                                            },
+                                                            "uid": {
+                                                                "type": "integer",
+                                                                "description": "Set the ID of the user that runs the process."
+                                                            },
+                                                            "gid": {
+                                                                "type": "integer",
+                                                                "description": "Set the ID of the group that runs the process."
+                                                            },
+                                                            "shell": {
+                                                                "type": "string",
+                                                                "description": "Specify a specific shell the process should be executed in."
+                                                            },
+                                                            "timeout": {
+                                                                "type": "integer",
+                                                                "description": "Timeout of the process in milliseconds."
+                                                            },
+                                                            "windowsHide": {
+                                                                "type": "boolean",
+                                                                "description": "Prevent Windows from starting a console window (only applies to Windows - hopefully obviously...).",
+                                                                "default": true
+                                                            }
+                                                        }
                                                     }
                                                 },
                                                 "required": ["call"],
@@ -85,6 +135,56 @@
                                                             "description": "The call and each argument as a single string",
                                                             "items": {
                                                                 "type": "string"
+                                                            }
+                                                        },
+                                                        "delayProcess": {
+                                                            "type": "integer",
+                                                            "default": 0,
+                                                            "description": "Start delay in ms."
+                                                        },
+                                                        "extendedOptions": {
+                                                            "type": "object",
+                                                            "description": "Add options based on node.js 'SpawnOptionsWithoutStdio' type.",
+                                                            "properties": {
+                                                                "argv0": {
+                                                                    "type": "string",
+                                                                    "description": "Replacement string for the argv[0] element of the call."
+                                                                },
+                                                                "cwd": {
+                                                                    "type": "string",
+                                                                    "description": "Working directory for the command to be executed.",
+                                                                    "default": "${workspaceFolder}"
+                                                                },
+                                                                "detached": {
+                                                                    "type": "boolean",
+                                                                    "description": "Start the subprocess independent to the VS Code Window.",
+                                                                    "default": false
+                                                                },
+                                                                "env": {
+                                                                    "type": "object",
+                                                                    "description": "Simple mapping of environment name to value (both string)."
+                                                                },
+                                                                "uid": {
+                                                                    "type": "integer",
+                                                                    "description": "Set the ID of the user that runs the process."
+                                                                },
+                                                                "gid": {
+                                                                    "type": "integer",
+                                                                    "description": "Set the ID of the group that runs the process."
+                                                                },
+                                                                "shell": {
+                                                                    "type": "string",
+                                                                    "description": "Specify a specific shell the process should be executed in."
+                                                                },
+                                                                "timeout": {
+                                                                    "type": "integer",
+                                                                    "description": "Timeout of the process in milliseconds."
+                                                                },
+                                                                "windowsHide": {
+                                                                    "type": "boolean",
+                                                                    "description": "Prevent Windows from starting a console window (only applies to Windows - hopefully obviously...).",
+                                                                    "default": true
+                                                                }
                                                             }
                                                         }
                                                     },

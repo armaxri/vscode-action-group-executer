@@ -1,10 +1,20 @@
 # Change Log
 
+## [0.0.5]
+
+### Added
+
+* Added configuration of processes.
+
+### Fixed
+
+* Improvements of documentation.
+
 ## [0.0.4]
 
 ### Fixed
 
-' Fixed displayed version.
+* Fixed displayed version.
 
 ## [0.0.3]
 
