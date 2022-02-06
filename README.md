@@ -163,6 +163,11 @@ At the moment the extension supports only supports a simply configuration of gro
 
 ## Release Notes
 
+### 0.0.5
+
+* Added configuration of processes.
+* Improvements of documentation.
+
 ### 0.0.4
 
 * Fixed documentation.
