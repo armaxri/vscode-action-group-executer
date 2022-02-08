@@ -70,9 +70,9 @@ async function runCall(documentHandle: DocumentHandler, commands: ProcessCommand
     console.log(`Spawning process with command "${spawnCommand}" using arguments "${printableArguments}".`);
     const subprocess = child_process.spawn(spawnCommand, spawnArguments, currentCommand.extendedOptions);
 
-    subprocess.stdout.on('data', (data) => {
+    function handleData(data: any, source: string) {
         const dataAsString = `${data}`;
-        console.log(`stdout: ${dataAsString.replace('\n', '')}`);
+        console.log(`${source}: ${dataAsString.replace('\n', '')}`);
 
         // If the document is already closed, we should also stop the process execution.
         if (documentHandle.document.isClosed) {
@@ -81,6 +81,14 @@ async function runCall(documentHandle: DocumentHandler, commands: ProcessCommand
         } else {
             documentHandle.addNewData(dataAsString);
         }
+    }
+
+    subprocess.stdout.on('data', (data) => {
+        handleData(data, 'stdout');
+    });
+
+    subprocess.stderr.on('data', (data) => {
+        handleData(data, 'stderr');
     });
 
     subprocess.on('exit', (code) => {
