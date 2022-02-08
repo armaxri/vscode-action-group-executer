@@ -163,6 +163,10 @@ At the moment the extension supports only supports a simply configuration of gro
 
 ## Release Notes
 
+### 0.0.6
+
+* Output of stderr is handled in processes.
+
 ### 0.0.5
 
 * Added configuration of processes.
