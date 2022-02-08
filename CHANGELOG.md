@@ -1,5 +1,11 @@
 # Change Log
 
+## [0.0.6]
+
+### Fixed
+
+* Output of stderr is handled in processes.
+
 ## [0.0.5]
 
 ### Added

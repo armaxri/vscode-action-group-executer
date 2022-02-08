@@ -135,6 +135,19 @@
                     }
                 }
             }]
+        },
+        {
+            "name": "Example9 - python stdio check",
+            "processes": [{
+                "command": {
+                    "call": [
+                        "./stdioCheck.py"
+                    ],
+                    "extendedOptions": {
+                        "cwd": "${workspaceFolder}"
+                    }
+                }
+            }]
         }
     ]
 }
