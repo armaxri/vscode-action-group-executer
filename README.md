@@ -163,6 +163,10 @@ At the moment the extension supports only supports a simply configuration of gro
 
 ## Release Notes
 
+## [Unreleased]
+
+* Ensured that file tabs are kept opened when the processes have a delayed start.
+
 ### 0.0.6
 
 * Output of stderr is handled in processes.
