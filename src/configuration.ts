@@ -30,8 +30,12 @@ export interface ProcessCommand {
     call: Array<string>;
     // Delay the process start by the given number of milliseconds.
     delayProcess?: number;
-    // USe the full set of the node.js child_process API.
+    // Use the full set of the node.js child_process API.
     extendedOptions: child_process.SpawnOptionsWithoutStdio;
+    // Message that is printed at the end of the command.
+    processEndMessage?: string;
+    // Don't print message at process end.
+    hideProcessEndMessage?: boolean;
 }
 
 export interface ProcessAction {
@@ -59,6 +63,7 @@ export interface ActionGroup {
     debugSession?: DebugSession;
     selectedWorkspace?: vscode.WorkspaceFolder | null | undefined;
     processes?: Array<ProcessAction>;
+    defaultProcessEndMessage?: string;
 }
 
 class StringReplacer {
@@ -179,7 +184,24 @@ function mergeConfig(config: vscode.WorkspaceConfiguration) {
     return <Array<ActionGroup>>(mergedCommands);
 }
 
-function applyReplacementsInGroups(actionGroups: Array<ActionGroup>) {
+function applyReplacementsInGroups(actionGroups: Array<ActionGroup>, defaultProcessEndMessage: string | undefined) {
+    if (defaultProcessEndMessage) {
+        actionGroups.forEach(group => {
+            group.processes?.forEach(process => {
+                if (process.command) {
+                    if (!process.command.processEndMessage) {
+                        process.command.processEndMessage = defaultProcessEndMessage;
+                    }
+                }
+                process.commands?.forEach(command => {
+                    if (!command.processEndMessage) {
+                        command.processEndMessage = defaultProcessEndMessage;
+                    }
+                });
+            });
+        });
+    }
+
     const replacer = new StringReplacer();
 
     utils.replaceAllStrings(actionGroups, currentString => {
@@ -205,12 +227,12 @@ export function getActionGroups() {
 
     // Apply adjustments before adding the corresponding workspace, so the strings in the object
     // will not be touched be recursive object analysis.
-    const adjustedGroups = applyReplacementsInGroups(filteredGroups);
+    const adjustedGroups = applyReplacementsInGroups(filteredGroups, config.get<string>('defaultProcessEndMessage'));
 
     // Attach the workspace that is currently selected, so the context of the calling is known.
-    adjustedGroups.forEach(group =>
-        group.selectedWorkspace = correspondingWorkspace
-    );
+    adjustedGroups.forEach(group => {
+        group.selectedWorkspace = correspondingWorkspace;
+    });
 
     return adjustedGroups;
 }
