@@ -38,6 +38,11 @@
             {
                 "title": "ActionGroupExecuter",
                 "properties": {
+                    "actionGroupExecuter.defaultProcessEndMessage": {
+                        "type": "string",
+                        "description": "Message that is added to process file tabs when a command was executed.",
+                        "default": "\n\n\nProcess has ended!\n\n\n"
+                    },
                     "actionGroupExecuter.actionGroups": {
                         "type": "array",
                         "uniqueItems": true,
@@ -73,6 +78,16 @@
                                                         "type": "integer",
                                                         "default": 0,
                                                         "description": "Start delay in ms."
+                                                    },
+                                                    "processEndMessage": {
+                                                        "type": "string",
+                                                        "description": "Override of the default message that is added to process file tabs when the command was executed.",
+                                                        "default": "\n\n\nProcess has end!\n\n\n"
+                                                    },
+                                                    "hideProcessEndMessage": {
+                                                        "type": "boolean",
+                                                        "description": "Don't print the process end message.",
+                                                        "default": true
                                                     },
                                                     "extendedOptions": {
                                                         "type": "object",
@@ -141,6 +156,16 @@
                                                             "type": "integer",
                                                             "default": 0,
                                                             "description": "Start delay in ms."
+                                                        },
+                                                        "processEndMessage": {
+                                                            "type": "string",
+                                                            "description": "Override of the default message that is added to process file tabs when all commands are executed.",
+                                                            "default": "\n\n\n\nProcess End!"
+                                                        },
+                                                        "hideProcessEndMessage": {
+                                                            "type": "boolean",
+                                                            "description": "Don't print the process end message.",
+                                                            "default": true
                                                         },
                                                         "extendedOptions": {
                                                             "type": "object",
