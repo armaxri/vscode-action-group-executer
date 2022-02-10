@@ -1,5 +1,11 @@
 # Change Log
 
+## [Unreleased]
+
+### Fixed
+
+* Ensured that file tabs are kept opened when the processes have a delayed start.
+
 ## [0.0.6]
 
 ### Fixed

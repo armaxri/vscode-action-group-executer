@@ -163,6 +163,10 @@ At the moment the extension supports only supports a simply configuration of gro
 
 ## Release Notes
 
+## [Unreleased]
+
+* Ensured that file tabs are kept opened when the processes have a delayed start.
+
 ### 0.0.6
 
 * Output of stderr is handled in processes.
@@ -198,6 +202,7 @@ Initial release of Action Group Executer.
 
 * Process execution is not saved when a window is close.
 * In processes resolving of environment variables like `$HOME` will not work and will just be interpreted as strings. Use `${env:HOME}` instead.
+* File tabs for processes are created with a 500 ms delay. Otherwise VS Code will fail creating the next window.
 
 ## Requirements
 

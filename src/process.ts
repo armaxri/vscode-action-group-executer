@@ -4,6 +4,8 @@ import * as child_process from 'child_process';
 import { ActionGroup, ProcessAction, ProcessCommand } from "./configuration";
 import * as utils from "./utils";
 
+const FILE_INITIAL_STRING = ' ';
+
 function getMatchingEditor(document: vscode.TextDocument) {
     const editors = vscode.window.visibleTextEditors;
     for (let i = 0; i < editors.length; i++) {
@@ -17,6 +19,7 @@ function getMatchingEditor(document: vscode.TextDocument) {
 class DocumentHandler {
     document: vscode.TextDocument;
     processesStillRunning: boolean = true;
+    freshInitialized: boolean = true;
     data: Array<string> = new Array<string>();
 
     constructor(document: vscode.TextDocument) {
@@ -33,7 +36,18 @@ class DocumentHandler {
                         do {
                             var data = this.data.shift();
                             if (data) {
-                                textEditorEdit.insert(new vscode.Position(this.document.lineCount + 1, 0), data);
+                                if (this.freshInitialized) {
+                                    // If not initialized and still with the same text, replace it with the new text.
+                                    // Otherwise if input was entered just extend the content.
+                                    if (this.document.getText() === FILE_INITIAL_STRING) {
+                                        textEditorEdit.replace(this.document.lineAt(this.document.lineCount - 1).range, data);
+                                    } else {
+                                        textEditorEdit.insert(new vscode.Position(this.document.lineCount + 1, 0), data);
+                                    }
+                                    this.freshInitialized = false;
+                                } else {
+                                    textEditorEdit.insert(new vscode.Position(this.document.lineCount + 1, 0), data);
+                                }
                             }
                         } while (data);
                     });
@@ -119,7 +133,9 @@ async function runProcess(process: ProcessAction, spawnNumber: number) {
     await utils.delay(500 * spawnNumber);
 
     console.log('Preparing document for process.');
-    const document = await vscode.workspace.openTextDocument({language: 'plaintext'});
+    // Use an initial string to force the creation of the document.
+    // Remove it on the first write action.
+    const document = await vscode.workspace.openTextDocument({language: 'plaintext', content: FILE_INITIAL_STRING});
     await vscode.window.showTextDocument(document);
     var documentHandle = new DocumentHandler(document);
     documentHandle.updateDocumentInBackground();

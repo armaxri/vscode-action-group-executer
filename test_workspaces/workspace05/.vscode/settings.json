@@ -148,6 +148,31 @@
                     }
                 }
             }]
+        },
+        {
+            "name": "Example10 - two parallel counts to 20 with delay",
+            "processes": [
+                {
+                    "command": {
+                        "call": [
+                            "${workspaceFolder}/testCnt.sh",
+                            "20",
+                            "A"
+                        ],
+                        "delayProcess": 1000
+                    }
+                },
+                {
+                    "command": {
+                        "call": [
+                            "${workspaceFolder}/testCnt.sh",
+                            "20",
+                            "B"
+                        ],
+                        "delayProcess": 3000
+                    }
+                }
+            ]
         }
     ]
 }
