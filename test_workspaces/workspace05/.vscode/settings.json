@@ -8,7 +8,8 @@
                         "ls",
                         "-la",
                         "${env:HOME}"
-                    ]
+                    ],
+                    "processEndMessage": "\nNothing more!"
                 }
             }]
         },
@@ -103,7 +104,8 @@
                         "ls",
                         "-la",
                         "${workspaceFolder}"
-                    ]
+                    ],
+                    "hideProcessEndMessage": true
                 }
             }]
         },

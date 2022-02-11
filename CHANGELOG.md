@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### Added
+
+* Added process end messages after the process execution.
+
 ### Fixed
 
 * Ensured that file tabs are kept opened when the processes have a delayed start.

@@ -10,6 +10,7 @@ The following settings can be set and enter `ActionGroupExec: Execute Action Gro
 
 ```jsonc
 {
+    "actionGroupExecuter.defaultProcessEndMessage": "\n\nStop of work!",
     "actionGroupExecuter.actionGroups": [
         {
             "name": "Example1",
@@ -111,7 +112,9 @@ The following settings can be set and enter `ActionGroupExec: Execute Action Gro
                         "ls",
                         "-la",
                         "${env:HOME}"
-                    ]
+                    ],
+                    // Print nothing after the end of the process.
+                    "hideProcessEndMessage": true
                 }
             }]
         },
@@ -126,7 +129,8 @@ The following settings can be set and enter `ActionGroupExec: Execute Action Gro
                             "-la",
                             // Note that "$HOME" will not work but "${env:HOME}" is a valid alternative.
                             "${env:HOME}"
-                        ]
+                        ],
+                        "processEndMessage": "\nEnded first process!"
                     },
                     {
                         "call": [
@@ -140,7 +144,8 @@ The following settings can be set and enter `ActionGroupExec: Execute Action Gro
                             "env": {
                                 "TEST_WORLD": "Hello World."
                             }
-                        }
+                        },
+                        "processEndMessage": "\nEnded second process!"
                     }
                 ]
             }]
@@ -159,12 +164,13 @@ The debug sessions `newConfiguration` and the `extendedOptions` for the terminal
 
 ## Extension Settings
 
-At the moment the extension supports only supports a simply configuration of groups. Execution groups can be added under the `actionGroupExecuter.actionGroups` setting.
+Execution groups can be added under the `actionGroupExecuter.actionGroups` setting. `actionGroupExecuter.defaultProcessEndMessage` can be used to define a user specific message that is displayed after the execution of a process which output is placed the file tab.
 
 ## Release Notes
 
 ## [Unreleased]
 
+* Added process end messages after the process execution.
 * Ensured that file tabs are kept opened when the processes have a delayed start.
 
 ### 0.0.6
