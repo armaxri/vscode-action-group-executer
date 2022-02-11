@@ -168,7 +168,7 @@ Execution groups can be added under the `actionGroupExecuter.actionGroups` setti
 
 ## Release Notes
 
-## [Unreleased]
+### 0.0.7
 
 * Added process end messages after the process execution.
 * Ensured that file tabs are kept opened when the processes have a delayed start.
