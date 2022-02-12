@@ -173,6 +173,7 @@ Execution groups can be added under the `actionGroupExecuter.actionGroups` setti
 ### [Unreleased]
 
 * Added string replacement for `processEndMessage` printing the return code of the process.
+* Changed the default `processEndMessage` to print the return code of the process.
 
 ### 0.0.7
 
