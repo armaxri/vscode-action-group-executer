@@ -1,5 +1,11 @@
 # Change Log
 
+## [Unreleased]
+
+### Added
+
+* Added string replacement for `processEndMessage` printing the return code of the process.
+
 ## [0.0.7]
 
 ### Added
