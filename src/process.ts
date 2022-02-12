@@ -108,7 +108,8 @@ async function runCall(documentHandle: DocumentHandler, commands: ProcessCommand
     subprocess.on('exit', (code) => {
         console.log(`Child process exited with code ${code}.`);
         if (!currentCommand.hideProcessEndMessage) {
-            handleData(currentCommand.processEndMessage, 'exit');
+            const message = currentCommand.processEndMessage?.replace('${returnCode}', `${code}`);
+            handleData(message, 'exit');
         }
     });
 

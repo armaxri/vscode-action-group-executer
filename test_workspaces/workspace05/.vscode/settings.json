@@ -9,7 +9,7 @@
                         "-la",
                         "${env:HOME}"
                     ],
-                    "processEndMessage": "\nNothing more!"
+                    "processEndMessage": "\nNothing more! Return ${returnCode}"
                 }
             }]
         },
