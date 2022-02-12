@@ -145,7 +145,7 @@ The following settings can be set and enter `ActionGroupExec: Execute Action Gro
                                 "TEST_WORLD": "Hello World."
                             }
                         },
-                        "processEndMessage": "\nEnded second process!"
+                        "processEndMessage": "\nEnded second process! Return code was ${returnCode}."
                     }
                 ]
             }]
@@ -160,6 +160,8 @@ All elements can be configured using a subset of [VS Code predefined variables](
 `${cwd}`, `${fileBasenameNoExtensions}`, `${fileBasename}`, `${fileDirname}`, `${fileExtname}`, `${file}`, `${lineNumber}`, `${pathSeparator}`, `${relativeFileDirname}`, `${relativeFile}`, `${selectedText}`, `${workspaceFolderBasename}` and `${workspaceFolder}`.
 An additional `${env:<add env var name here>}` was added to allow the usage of environment variables.
 
+Processes allow adjustments of the `processEndMessage` in terms of replacing the pattern `${returnCode}` with the process return code.
+
 The debug sessions `newConfiguration` and the `extendedOptions` for the terminals support the full [VS Code predefined variables](https://code.visualstudio.com/docs/editor/variables-reference) set.
 
 ## Extension Settings
@@ -167,6 +169,11 @@ The debug sessions `newConfiguration` and the `extendedOptions` for the terminal
 Execution groups can be added under the `actionGroupExecuter.actionGroups` setting. `actionGroupExecuter.defaultProcessEndMessage` can be used to define a user specific message that is displayed after the execution of a process which output is placed the file tab.
 
 ## Release Notes
+
+### [Unreleased]
+
+* Added string replacement for `processEndMessage` printing the return code of the process.
+* Changed the default `processEndMessage` to print the return code of the process.
 
 ### 0.0.7
 

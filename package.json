@@ -41,7 +41,7 @@
                     "actionGroupExecuter.defaultProcessEndMessage": {
                         "type": "string",
                         "description": "Message that is added to process file tabs when a command was executed.",
-                        "default": "\n\n\nProcess has ended!\n\n\n"
+                        "default": "\n\n\nProcess has ended with return code ${returnCode}!\n\n\n"
                     },
                     "actionGroupExecuter.actionGroups": {
                         "type": "array",
