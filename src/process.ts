@@ -26,31 +26,48 @@ class DocumentHandler {
         this.document = document;
     }
 
+    private writeDataToDocument(editor: vscode.TextEditor) {
+        editor.edit((textEditorEdit) => {
+            do {
+                var data = this.data.shift();
+                if (data) {
+                    if (this.freshInitialized) {
+                        // If not initialized and still with the same text, replace it with the new text.
+                        // Otherwise if input was entered just extend the content.
+                        if (this.document.getText() === FILE_INITIAL_STRING) {
+                            textEditorEdit.replace(this.document.lineAt(this.document.lineCount - 1).range, data);
+                        } else {
+                            textEditorEdit.insert(new vscode.Position(this.document.lineCount + 1, 0), data);
+                        }
+                        this.freshInitialized = false;
+                    } else {
+                        textEditorEdit.insert(new vscode.Position(this.document.lineCount + 1, 0), data);
+                    }
+                }
+            } while (data);
+        });
+    }
+
+    private updateDocumentViewRange(editor: vscode.TextEditor) {
+        const currentSelection = editor.selection;
+        const fileEndPosition = new vscode.Position(editor.document.lineCount - 1, 0);
+        if (currentSelection.active.isEqual(fileEndPosition)) {
+            editor.revealRange(new vscode.Range(fileEndPosition, fileEndPosition));
+        }
+    }
+
     public async updateDocumentInBackground() {
         console.log('Start document handling in background.');
         while (!this.document.isClosed) {
             if (this.data.length > 0) {
                 const editor = getMatchingEditor(this.document);
                 if (editor) {
-                    editor.edit((textEditorEdit) => {
-                        do {
-                            var data = this.data.shift();
-                            if (data) {
-                                if (this.freshInitialized) {
-                                    // If not initialized and still with the same text, replace it with the new text.
-                                    // Otherwise if input was entered just extend the content.
-                                    if (this.document.getText() === FILE_INITIAL_STRING) {
-                                        textEditorEdit.replace(this.document.lineAt(this.document.lineCount - 1).range, data);
-                                    } else {
-                                        textEditorEdit.insert(new vscode.Position(this.document.lineCount + 1, 0), data);
-                                    }
-                                    this.freshInitialized = false;
-                                } else {
-                                    textEditorEdit.insert(new vscode.Position(this.document.lineCount + 1, 0), data);
-                                }
-                            }
-                        } while (data);
-                    });
+                    // Start with adding t he new data to the file.
+                    this.writeDataToDocument(editor);
+
+                    // Continue with updating view range. This is only done when new data arrived before.
+                    // Otherwise this might lead to strange behavior.
+                    this.updateDocumentViewRange(editor);
                 }
             } else if (!this.processesStillRunning) {
                 // If no process is running and there are no new data, simply quit.

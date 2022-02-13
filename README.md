@@ -172,6 +172,7 @@ Execution groups can be added under the `actionGroupExecuter.actionGroups` setti
 
 ### [Unreleased]
 
+* On process execution, the file tab will automatically scroll down when you have selected the last line in the file tab.
 * Added string replacement for `processEndMessage` printing the return code of the process.
 * Changed the default `processEndMessage` to print the return code of the process.
 
