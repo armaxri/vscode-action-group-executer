@@ -82,7 +82,7 @@
                                                     "processEndMessage": {
                                                         "type": "string",
                                                         "description": "Override of the default message that is added to process file tabs when the command was executed.",
-                                                        "default": "\n\n\nProcess has end!\n\n\n"
+                                                        "default": "\n\n\nProcess has ended with return code ${returnCode}!\n\n\n"
                                                     },
                                                     "hideProcessEndMessage": {
                                                         "type": "boolean",
@@ -160,7 +160,7 @@
                                                         "processEndMessage": {
                                                             "type": "string",
                                                             "description": "Override of the default message that is added to process file tabs when all commands are executed.",
-                                                            "default": "\n\n\n\nProcess End!"
+                                                            "default": "\n\n\nProcess has ended with return code ${returnCode}!\n\n\n"
                                                         },
                                                         "hideProcessEndMessage": {
                                                             "type": "boolean",
