@@ -32,6 +32,7 @@ class DocumentHandler {
             if (this.data.length > 0) {
                 const editor = getMatchingEditor(this.document);
                 if (editor) {
+                    // Start with adding t he new data to the file.
                     editor.edit((textEditorEdit) => {
                         do {
                             var data = this.data.shift();
@@ -51,6 +52,11 @@ class DocumentHandler {
                             }
                         } while (data);
                     });
+
+                    // Continue with updating view range. This is only done when new data arrived before.
+                    // Otherwise this might lead to strange behavior.
+                    const viewPosition = new vscode.Position(editor.document.lineCount - 1, 0);
+                    editor.revealRange(new vscode.Range(viewPosition, viewPosition));
                 }
             } else if (!this.processesStillRunning) {
                 // If no process is running and there are no new data, simply quit.
