@@ -10,6 +10,7 @@
 ### Changed
 
 * Changed the default `processEndMessage` to print the return code of the process.
+* Replace `\r\n` with `\n` of process output, so on Windows no double new lines are displayed on Windows.
 
 ## [0.0.7]
 
