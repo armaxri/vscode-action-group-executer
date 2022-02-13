@@ -49,8 +49,11 @@ class DocumentHandler {
     }
 
     private updateDocumentViewRange(editor: vscode.TextEditor) {
-        const viewPosition = new vscode.Position(editor.document.lineCount - 1, 0);
-        editor.revealRange(new vscode.Range(viewPosition, viewPosition));
+        const currentSelection = editor.selection;
+        const fileEndPosition = new vscode.Position(editor.document.lineCount - 1, 0);
+        if (currentSelection.active.isEqual(fileEndPosition)) {
+            editor.revealRange(new vscode.Range(fileEndPosition, fileEndPosition));
+        }
     }
 
     public async updateDocumentInBackground() {
