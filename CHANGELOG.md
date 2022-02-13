@@ -5,6 +5,7 @@
 ### Added
 
 * Added string replacement for `processEndMessage` printing the return code of the process.
+* On process execution, the file tab will automatically scroll down when you have selected the last line in the file tab.
 
 ### Changed
 
