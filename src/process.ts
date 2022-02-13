@@ -102,7 +102,10 @@ async function runCall(documentHandle: DocumentHandler, commands: ProcessCommand
     const subprocess = child_process.spawn(spawnCommand, spawnArguments, currentCommand.extendedOptions);
 
     function handleData(data: any, source: string) {
-        const dataAsString = `${data}`;
+        // When running on Windows "\r\n" is used by some programs and will cause two
+        // new lines to be displayed. Prevent it by removing the '\r' and simply use
+        // '\n' as only line ending.
+        const dataAsString = `${data}`.replace('\r', '');
         console.log(`${source}: ${dataAsString.replace('\n', '')}`);
 
         // If the document is already closed, we should also stop the process execution.

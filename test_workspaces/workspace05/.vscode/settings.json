@@ -175,6 +175,25 @@
                     }
                 }
             ]
+        },
+        {
+            "name": "Example11 - python stdio check",
+            "processes": [{
+                "command": {
+                    "call": [
+                        "./lineEndingsCheck.py"
+                    ],
+                    "extendedOptions": {
+                        "cwd": "${workspaceFolder}"
+                    }
+                }
+            }],
+            "terminals": [{
+                "command": "./lineEndingsCheck.py",
+                "extendedOptions": {
+                    "cwd": "${workspaceFolder}"
+                }
+            }]
         }
     ]
 }
