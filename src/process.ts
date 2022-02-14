@@ -164,10 +164,6 @@ async function runProcess(process: ProcessAction, spawnNumber: number) {
     var documentHandle = new DocumentHandler(document);
     documentHandle.updateDocumentInBackground();
 
-    if (process.command) {
-        process.commands = [process.command];
-    }
-
     if (process.commands) {
         runCall(documentHandle, process.commands, 0);
     } else {

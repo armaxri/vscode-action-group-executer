@@ -4,7 +4,7 @@ import * as child_process from 'child_process';
 
 import * as utils from "./utils";
 
-export interface TerminalAction {
+export interface EITerminalAction {
     name?: string;
     extendedOptions?: vscode.TerminalOptions;
     showTerminal?: boolean;
@@ -14,7 +14,7 @@ export interface TerminalAction {
     command: string;
 }
 
-export interface ProcessCommand {
+export interface EIProcessCommand {
     call: Array<string>;
     delayProcess?: number;
     extendedOptions: child_process.SpawnOptionsWithoutStdio;
@@ -22,9 +22,90 @@ export interface ProcessCommand {
     hideProcessEndMessage?: boolean;
 }
 
-export interface ProcessAction {
-    command?: ProcessCommand;
-    commands?: Array<ProcessCommand>;
+export interface EIProcessAction {
+    command?: EIProcessCommand;
+    commands?: Array<EIProcessCommand>;
+}
+
+export interface EIDebugSession {
+    namedConfiguration?: string;
+    newConfiguration?: vscode.DebugConfiguration;
+    workspaceName?: string;
+    delaySession?: number;
+}
+
+export interface EIActionGroup {
+    name: string;
+    terminals?: Array<EITerminalAction>;
+    debugSession?: EIDebugSession;
+    processes?: Array<EIProcessAction>;
+}
+
+export class TerminalAction {
+    name: string;
+    extendedOptions?: vscode.TerminalOptions;
+    showTerminal: boolean = true;
+    disposeOldTerminal: boolean = false;
+    alwaysNewTerminal: boolean = false;
+    delayCommand: number = 0;
+    command: string;
+
+    constructor(config: EITerminalAction, groupName: string) {
+        if (config?.extendedOptions && config?.extendedOptions.name) {
+            this.name = config.extendedOptions.name;
+        } else {
+            this.name = config.name ? config.name : groupName;
+        }
+
+        if (config.extendedOptions) {
+            this.extendedOptions = config.extendedOptions;
+        }
+
+        this.showTerminal = config.showTerminal ? config.showTerminal : this.showTerminal;
+        this.disposeOldTerminal = config.disposeOldTerminal ? config.disposeOldTerminal : this.disposeOldTerminal;
+        this.alwaysNewTerminal = config.alwaysNewTerminal ? config.alwaysNewTerminal : this.alwaysNewTerminal;
+        this.delayCommand = config.delayCommand ? config.delayCommand : this.delayCommand;
+
+        this.command = config.command;
+    }
+}
+
+export class ProcessCommand {
+    call: Array<string>;
+    extendedOptions: child_process.SpawnOptionsWithoutStdio;
+    delayProcess: number = 0;
+    processEndMessage: string;
+    hideProcessEndMessage: boolean = false;
+
+    constructor(config: EIProcessCommand, defaultProcessEndMessage: string) {
+        this.call = config.call;
+
+        this.extendedOptions = config.extendedOptions;
+
+        this.delayProcess = config.delayProcess ? config.delayProcess : this.delayProcess;
+        this.hideProcessEndMessage = config.hideProcessEndMessage ? config.hideProcessEndMessage : this.hideProcessEndMessage;
+
+        if (config.processEndMessage) {
+            this.processEndMessage = config.processEndMessage;
+        } else {
+            this.processEndMessage = defaultProcessEndMessage;
+        }
+    }
+}
+
+export class ProcessAction {
+    commands: Array<ProcessCommand> = new Array<ProcessCommand>();
+
+    constructor(config: EIProcessAction, defaultProcessEndMessage: string) {
+        if (config.command) {
+            this.commands.push(new ProcessCommand(config.command, defaultProcessEndMessage));
+        } else {
+            config.commands?.forEach(command => {
+                const newCommand = new ProcessCommand(command, defaultProcessEndMessage);
+                this.commands.push(newCommand);
+            });
+        }
+    }
 }
 
 export interface DebugSession {
@@ -34,13 +115,29 @@ export interface DebugSession {
     delaySession?: number;
 }
 
-export interface ActionGroup {
+export class ActionGroup {
     name: string;
-    terminals?: Array<TerminalAction>;
+    terminals: Array<TerminalAction> = new Array<TerminalAction>();
     debugSession?: DebugSession;
-    selectedWorkspace?: vscode.WorkspaceFolder | null | undefined;
-    processes?: Array<ProcessAction>;
-    defaultProcessEndMessage?: string;
+    selectedWorkspace: vscode.WorkspaceFolder | null | undefined = null;
+    processes: Array<ProcessAction> = new Array<ProcessAction>();
+
+    constructor(config: EIActionGroup, defaultProcessEndMessage: string | undefined) {
+        this.name = config.name;
+
+        config.terminals?.forEach(terminalAction => {
+            const newTerminalAction = new TerminalAction(terminalAction, this.name);
+            this.terminals.push(newTerminalAction);
+        });
+        config.processes?.forEach(processAction => {
+            const newProcessAction = new ProcessAction(processAction, defaultProcessEndMessage ? defaultProcessEndMessage : '');
+            this.processes.push(newProcessAction);
+        });
+        if (config.debugSession) {
+            // Simple cast for the moment. Add class functionality later.
+            this.debugSession = <DebugSession>config.debugSession;
+        }
+    }
 }
 
 class StringReplacer {
@@ -133,7 +230,7 @@ class StringReplacer {
     }
 }
 
-function mergeConfig(config: vscode.WorkspaceConfiguration) {
+function createAndMergeGroups(config: vscode.WorkspaceConfiguration, defaultProcessEndMessage: string | undefined) {
     const inspect = config.inspect('actionGroups');
 
     console.log('---------');
@@ -149,8 +246,9 @@ function mergeConfig(config: vscode.WorkspaceConfiguration) {
     function createAndAddGroups(configValue: any) {
         if (Array.isArray(configValue)) {
             configValue.forEach(group => {
-                const castedGroup = <ActionGroup>group;
-                mergedCommands.push(castedGroup);
+                const castedGroup = <EIActionGroup>group;
+                const newGroup = new ActionGroup(castedGroup, defaultProcessEndMessage);
+                mergedCommands.push(newGroup);
             });
         }
     }
@@ -171,24 +269,7 @@ function mergeConfig(config: vscode.WorkspaceConfiguration) {
     return <Array<ActionGroup>>(mergedCommands);
 }
 
-function applyReplacementsInGroups(actionGroups: Array<ActionGroup>, defaultProcessEndMessage: string | undefined) {
-    if (defaultProcessEndMessage) {
-        actionGroups.forEach(group => {
-            group.processes?.forEach(process => {
-                if (process.command) {
-                    if (!process.command.processEndMessage) {
-                        process.command.processEndMessage = defaultProcessEndMessage;
-                    }
-                }
-                process.commands?.forEach(command => {
-                    if (!command.processEndMessage) {
-                        command.processEndMessage = defaultProcessEndMessage;
-                    }
-                });
-            });
-        });
-    }
-
+function applyReplacementsInGroups(actionGroups: Array<ActionGroup>) {
     const replacer = new StringReplacer();
 
     utils.replaceAllStrings(actionGroups, currentString => {
@@ -202,7 +283,7 @@ export function getActionGroups() {
     // Get the configuration based on the current file.
     const correspondingWorkspace = utils.getCurrentWorkspace();
     const config = vscode.workspace.getConfiguration('actionGroupExecuter', correspondingWorkspace);
-    const commands = mergeConfig(config);
+    const commands = createAndMergeGroups(config, config.get<string>('defaultProcessEndMessage'));
 
     if (!commands) {
         vscode.window.showWarningMessage('No configuration for ActionGroupExecuter found in settings. Set "actionGroupExecuter.actionGroups" in your settings.');
@@ -214,7 +295,7 @@ export function getActionGroups() {
 
     // Apply adjustments before adding the corresponding workspace, so the strings in the object
     // will not be touched be recursive object analysis.
-    const adjustedGroups = applyReplacementsInGroups(filteredGroups, config.get<string>('defaultProcessEndMessage'));
+    const adjustedGroups = applyReplacementsInGroups(filteredGroups);
 
     // Attach the workspace that is currently selected, so the context of the calling is known.
     adjustedGroups.forEach(group => {
