@@ -144,10 +144,20 @@ function mergeConfig(config: vscode.WorkspaceConfiguration) {
     console.log(`inspect.workspaceFolderValue: "${inspect?.workspaceFolderValue}"`);
     console.log('---------');
 
-    var mergedCommands = Array();
-    mergedCommands = inspect?.defaultValue ? mergedCommands.concat(inspect.defaultValue) : mergedCommands;
-    mergedCommands = inspect?.globalValue ? mergedCommands.concat(inspect.globalValue) : mergedCommands;
-    mergedCommands = inspect?.workspaceValue ? mergedCommands.concat(inspect.workspaceValue) : mergedCommands;
+    var mergedCommands = Array<ActionGroup>();
+
+    function createAndAddGroups(configValue: any) {
+        if (Array.isArray(configValue)) {
+            configValue.forEach(group => {
+                const castedGroup = <ActionGroup>group;
+                mergedCommands.push(castedGroup);
+            });
+        }
+    }
+
+    createAndAddGroups(inspect?.defaultValue);
+    createAndAddGroups(inspect?.globalValue);
+    createAndAddGroups(inspect?.workspaceValue);
 
     // If we have no workspace file, the content of the workspaceValue will equal the workspaceFolderValue.
     // In that case we get all declarations doubled, that is actually not cool :/
@@ -155,7 +165,7 @@ function mergeConfig(config: vscode.WorkspaceConfiguration) {
     // workspaceValue over it, because you can have any file open and still get the setting. The other
     // way around would mean that you won't get any group if a radom file outside the workspace is selected.
     if (vscode.workspace.workspaceFile) {
-        mergedCommands = inspect?.workspaceFolderValue ? mergedCommands.concat(inspect.workspaceFolderValue) : mergedCommands;
+        createAndAddGroups(inspect?.workspaceFolderValue);
     }
 
     return <Array<ActionGroup>>(mergedCommands);
