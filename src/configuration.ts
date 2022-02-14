@@ -5,36 +5,71 @@ import * as child_process from 'child_process';
 import * as utils from "./utils";
 
 export interface TerminalAction {
-    // The name in extendedOptions has the highest binding, if not present
-    // this setting will be used as the terminal name and afterwards the lowest
-    // priority for the name is the ActionGroup name, which is required.
+    /**
+     * The name in extendedOptions has the highest binding, if not present
+     * this setting will be used as the terminal name and afterwards the lowest
+     * priority for the name is the ActionGroup name, which is required.
+     */
     name?: string;
-    // Use the full set of VSCodes terminal options. Will only applied if
-    // a new terminal will be created.
+
+    /**
+     * Use the full set of VSCodes terminal options. Will only applied if
+     * a new terminal will be created.
+     */
     extendedOptions?: vscode.TerminalOptions;
-    // Show the terminal, which is pushing it in the front.
+
+    /**
+     * Show the terminal, which is pushing it in the front.
+     */
     showTerminal?: boolean;
-    // Dispose an old terminal having the name and then create a new one
-    // with the same name.
+
+    /**
+     * Dispose an old terminal having the name and then create a new one
+     * with the same name.
+     */
     disposeOldTerminal?: boolean;
-    // If a terminal with the selected name is already present, create
-    // a new terminal with an up counting number behind it.
+
+    /**
+     * If a terminal with the selected name is already present, create
+     * a new terminal with an up counting number behind it.
+     */
     alwaysNewTerminal?: boolean;
-    // Delay the execution of the command by the given number of milliseconds.
+
+    /**
+     * Delay the execution of the command by the given number of milliseconds.
+     */
     delayCommand?: number;
+
+    /**
+     * Command to be executed.
+     */
     command: string;
 }
 
 export interface ProcessCommand {
-    // Command in a splitted array.
+    /**
+     * Command in a splitted array.
+     */
     call: Array<string>;
-    // Delay the process start by the given number of milliseconds.
+
+    /**
+     * Delay the process start by the given number of milliseconds.
+     */
     delayProcess?: number;
-    // Use the full set of the node.js child_process API.
+
+    /**
+     * Use the full set of the node.js child_process API.
+     */
     extendedOptions: child_process.SpawnOptionsWithoutStdio;
-    // Message that is printed at the end of the command.
+
+    /**
+     * Message that is printed at the end of the command.
+     */
     processEndMessage?: string;
-    // Don't print message at process end.
+
+    /**
+     * Don't print message at process end.
+     */
     hideProcessEndMessage?: boolean;
 }
 
@@ -44,16 +79,27 @@ export interface ProcessAction {
 }
 
 export interface DebugSession {
-    // The name of a debug configuration added to a launch configuration.
-    // Mainly used but if not set, a "newConfiguration" is used instead.
+    /**
+     * The name of a debug configuration added to a launch configuration.
+     * Mainly used but if not set, a "newConfiguration" is used instead.
+     */
     namedConfiguration?: string;
-    // Configuration of a launch setting. Will only be used if no name is set.
+
+    /**
+     * Configuration of a launch setting. Will only be used if no name is set.
+     */
     newConfiguration?: vscode.DebugConfiguration;
-    // Name of the workspace the debug session should be executed in.
-    // If none is set, the workspace will be taken from the current opened
-    // file. Only useful in a multi root workspace.
+
+    /**
+     * Name of the workspace the debug session should be executed in.
+     * If none is set, the workspace will be taken from the current opened
+     * file. Only useful in a multi root workspace.
+     */
     workspaceName?: string;
-    // Delay the start of the debug session by the given number of milliseconds.
+
+    /**
+     * Delay the start of the debug session by the given number of milliseconds.
+     */
     delaySession?: number;
 }
 
