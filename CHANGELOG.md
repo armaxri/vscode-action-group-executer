@@ -5,6 +5,7 @@
 ### Added
 
 * Printing of process names into the document at start.
+* Printing of process calls.
 
 ## [0.0.8]
 
