@@ -34,10 +34,8 @@
             "name": "Example2",
             "terminals": [
                 {
-                    // There is no need for a name since there
-                    // is only one command. And the group
-                    // name is enough.
-                    "command": "echo Hello && sleep 5 && echo Hallo"
+                    "command": "echo Hello && sleep 5 && echo Hallo",
+                    "showTerminal": false
                 }
             ]
         },
