@@ -23,6 +23,8 @@ export interface EIProcessCommand {
 }
 
 export interface EIProcessAction {
+    name?: string;
+    printName?: boolean;
     command?: EIProcessCommand;
     commands?: Array<EIProcessCommand>;
 }
@@ -96,9 +98,14 @@ export class ProcessCommand {
 }
 
 export class ProcessAction {
+    name: string;
+    printName: boolean = false;
     commands: Array<ProcessCommand> = new Array<ProcessCommand>();
 
-    constructor(config: EIProcessAction, defaultProcessEndMessage: string) {
+    constructor(config: EIProcessAction, defaultProcessEndMessage: string, groupName: string) {
+        this.name = config.name ? config.name : groupName;
+        this.printName = typeof config.printName === 'boolean' ? config.printName : this.printName;
+
         if (config.command) {
             this.commands.push(new ProcessCommand(config.command, defaultProcessEndMessage));
         } else {
