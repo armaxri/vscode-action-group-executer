@@ -28,14 +28,12 @@ async function selectAndRunGroup() {
         if (command.debugSession) {
             runDebugSession(command);
         }
-        if (command.terminals) {
-            command.terminals.forEach(terminal =>
-                runTerminalAction(selection, terminal)
-            );
-        }
-        if (command.processes) {
-            runProcesses(command);
-        }
+
+        command.terminals.forEach(terminal =>
+            runTerminalAction(selection, terminal)
+        );
+
+        runProcesses(command);
     }
 }
 

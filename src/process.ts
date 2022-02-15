@@ -91,9 +91,7 @@ async function runCall(documentHandle: DocumentHandler, commands: ProcessCommand
         return;
     }
 
-    if (currentCommand.delayProcess) {
-        await utils.delay(currentCommand.delayProcess);
-    }
+    await utils.delay(currentCommand.delayProcess);
 
     const spawnCommand = currentCommand.call[0];
     const spawnArguments = currentCommand.call.slice(1);
@@ -172,11 +170,6 @@ async function runProcess(process: ProcessAction, spawnNumber: number) {
 }
 
 export async function runProcesses(actionGroup: ActionGroup) {
-    if (!actionGroup.processes) {
-        console.log('No valid processes in group. Exit function.');
-        return;
-    }
-
     var spawnNumber = 0;
     actionGroup.processes.forEach(process => {
         runProcess(process, spawnNumber);

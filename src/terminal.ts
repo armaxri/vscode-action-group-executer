@@ -90,13 +90,11 @@ export async function runTerminalAction(actionGroupName: string, terminalAction:
         return;
     }
 
-    if (typeof terminalAction.showTerminal === "undefined" || terminalAction.showTerminal) {
+    if (terminalAction.showTerminal) {
         terminal.show();
     }
 
-    if (terminalAction.delayCommand && (typeof terminalAction.delayCommand === 'number')) {
-        await utils.delay(terminalAction.delayCommand);
-    }
+    await utils.delay(terminalAction.delayCommand);
 
     console.log(`Executing command "${terminalAction.command}" in terminal "${terminalName}".`);
     terminal.sendText(terminalAction.command, true);
