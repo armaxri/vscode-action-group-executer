@@ -63,6 +63,14 @@
                                     "items": {
                                         "type": "object",
                                         "properties": {
+                                            "name": {
+                                                "type": "string",
+                                                "description": "Name which should be printed first in the document tab. If not set uses command name. When set and printName is not set, it will still be displayed."
+                                            },
+                                            "printName": {
+                                                "type": "boolean",
+                                                "description": "Start with document tab with the name."
+                                            },
                                             "command": {
                                                 "type": "object",
                                                 "description": "Command that should be executed and printed to a text file.",

@@ -119,9 +119,9 @@ The following settings can be set and enter `ActionGroupExec: Execute Action Gro
             }]
         },
         {
-            "name": "Example5 - ls -la ${env:HOME} and / in parallel",
+            "name": "Example5 - ls -la ${env:HOME} and / in sequence",
             "processes": [{
-                // Note that each command group will be spawned in a separate file tab.
+                // Note that each command group will be spawned in the same file tab.
                 "commands": [
                     {
                         "call": [
@@ -149,6 +149,58 @@ The following settings can be set and enter `ActionGroupExec: Execute Action Gro
                     }
                 ]
             }]
+        },
+        {
+            "name": "Example5 - ls -la ${env:HOME}",
+            // This will open a new file tab and past the stout content into the tab.
+            "processes": [{
+                "command": {
+                    // Note that the command and all arguments are separated strings.
+                    "call": [
+                        "ls",
+                        "-la",
+                        "${env:HOME}"
+                    ],
+                    // Print nothing after the end of the process.
+                    "hideProcessEndMessage": true
+                }
+            }]
+        },
+        {
+            "name": "Example6 - ls -la ${env:HOME} and / in parallel",
+            "processes": [{
+                // Note that each command group will be spawned in a separate file tab.
+                "command": {
+                    "call": [
+                        "ls",
+                        "-la",
+                        // Note that "$HOME" will not work but "${env:HOME}" is a valid alternative.
+                        "${env:HOME}"
+                    ],
+                    "processEndMessage": "\nEnded first process!"
+                },
+                // Print this given name at the start of the process.
+                "name": "ls in home ${env:HOME}"
+            },
+            {
+                // Print name of the whole command group at start of process.
+                "printName": true,
+                "command": {
+                    "call": [
+                        "ls",
+                        "-la"
+                    ],
+                    // Use the "extendedOptions" to directly access node.js spawn process
+                    // "SpawnOptionsWithoutStdio" setting for configuration of the execution.
+                    "extendedOptions": {
+                        "cwd": "${workspaceFolder}",
+                        "env": {
+                            "TEST_WORLD": "Hello World."
+                        }
+                    },
+                    "processEndMessage": "\nEnded second process! Return code was ${returnCode}."
+                }
+            }]
         }
     ]
 }
@@ -169,6 +221,10 @@ The debug sessions `newConfiguration` and the `extendedOptions` for the terminal
 Execution groups can be added under the `actionGroupExecuter.actionGroups` setting. `actionGroupExecuter.defaultProcessEndMessage` can be used to define a user specific message that is displayed after the execution of a process which output is placed the file tab.
 
 ## Release Notes
+
+### [Unreleased]
+
+* Printing of process names into the document at start.
 
 ### 0.0.8
 

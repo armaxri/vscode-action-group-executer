@@ -23,6 +23,8 @@ export interface EIProcessCommand {
 }
 
 export interface EIProcessAction {
+    name?: string;
+    printName?: boolean;
     command?: EIProcessCommand;
     commands?: Array<EIProcessCommand>;
 }
@@ -96,9 +98,19 @@ export class ProcessCommand {
 }
 
 export class ProcessAction {
+    name: string;
+    printName: boolean = false;
     commands: Array<ProcessCommand> = new Array<ProcessCommand>();
 
-    constructor(config: EIProcessAction, defaultProcessEndMessage: string) {
+    constructor(config: EIProcessAction, defaultProcessEndMessage: string, groupName: string) {
+        this.name = config.name ? config.name : groupName;
+        if (typeof config.printName === 'boolean') {
+            this.printName = config.printName;
+        } else {
+            // Allow a shortcut for display by simply writing the name.
+            this.printName = typeof config.name === 'string';
+        }
+
         if (config.command) {
             this.commands.push(new ProcessCommand(config.command, defaultProcessEndMessage));
         } else {
@@ -132,7 +144,7 @@ export class ActionGroup {
             this.terminals.push(newTerminalAction);
         });
         config.processes?.forEach(processAction => {
-            const newProcessAction = new ProcessAction(processAction, defaultProcessEndMessage ? defaultProcessEndMessage : '');
+            const newProcessAction = new ProcessAction(processAction, defaultProcessEndMessage ? defaultProcessEndMessage : '', this.name);
             this.processes.push(newProcessAction);
         });
         if (config.debugSession) {

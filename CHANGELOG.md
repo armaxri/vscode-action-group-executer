@@ -1,5 +1,11 @@
 # Change Log
 
+## [Unreleased]
+
+### Added
+
+* Printing of process names into the document at start.
+
 ## [0.0.8]
 
 ### Added
