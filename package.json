@@ -71,6 +71,10 @@
                                                 "type": "boolean",
                                                 "description": "Start with document tab with the name."
                                             },
+                                            "printCommand": {
+                                                "type": "boolean",
+                                                "description": "Print the commands executed as sub process."
+                                            },
                                             "command": {
                                                 "type": "object",
                                                 "description": "Command that should be executed and printed to a text file.",

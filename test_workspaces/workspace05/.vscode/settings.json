@@ -4,6 +4,7 @@
             "name": "Example1 - ls -la ${env:HOME}",
             "processes": [{
                 "printName": true,
+                "printCommand": true,
                 "command": {
                     "call": [
                         "ls",
@@ -32,6 +33,7 @@
             "name": "Example3 - two sequential counts to 20",
             "processes": [
                 {
+                    "printCommand": true,
                     "commands": [
                         {
                            "call": [
@@ -184,6 +186,7 @@
         {
             "name": "Example11 - python stdio check",
             "processes": [{
+                "printCommand": true,
                 "command": {
                     "call": [
                         "./lineEndingsCheck.py"

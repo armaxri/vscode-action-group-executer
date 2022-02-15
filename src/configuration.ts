@@ -25,6 +25,7 @@ export interface EIProcessCommand {
 export interface EIProcessAction {
     name?: string;
     printName?: boolean;
+    printCommand?: boolean;
     command?: EIProcessCommand;
     commands?: Array<EIProcessCommand>;
 }
@@ -100,6 +101,7 @@ export class ProcessCommand {
 export class ProcessAction {
     name: string;
     printName: boolean = false;
+    printCommand: boolean = false;
     commands: Array<ProcessCommand> = new Array<ProcessCommand>();
 
     constructor(config: EIProcessAction, defaultProcessEndMessage: string, groupName: string) {
@@ -110,6 +112,7 @@ export class ProcessAction {
             // Allow a shortcut for display by simply writing the name.
             this.printName = typeof config.name === 'string';
         }
+        this.printCommand = typeof config.printCommand === 'boolean' ? config.printCommand : this.printCommand;
 
         if (config.command) {
             this.commands.push(new ProcessCommand(config.command, defaultProcessEndMessage));
