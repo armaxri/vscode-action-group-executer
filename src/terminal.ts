@@ -3,25 +3,6 @@ import * as vscode from 'vscode';
 import * as utils from "./utils";
 import { TerminalAction } from "./configuration";
 
-export function getTerminalName(actionGroupName: string, terminalAction: TerminalAction) {
-    // Use the group name as fallback solution.
-    const terminalName = actionGroupName;
-
-    // The extended options are the most specific selection.
-    if (terminalAction.extendedOptions) {
-        if (terminalAction.extendedOptions.name && utils.isNotEmptyString(terminalAction.extendedOptions.name)) {
-            return terminalAction.extendedOptions.name;
-        }
-    }
-
-    // Terminal names are the second choice.
-    if (terminalAction.name && utils.isNotEmptyString(terminalAction.name)) {
-        return terminalAction.name;
-    }
-
-    return terminalName;
-}
-
 export function getTerminalWithName(terminalName: string) {
     const terminals = vscode.window.terminals;
     for (let i = 0; i < terminals.length; i++) {
@@ -81,12 +62,10 @@ export async function prepareTerminalInst(terminalName: string, terminalAction: 
     return getTerminalWithName(terminalName);
 }
 
-export async function runTerminalAction(actionGroupName: string, terminalAction: TerminalAction) {
-    const terminalName = getTerminalName(actionGroupName, terminalAction);
-
-    const terminal = await prepareTerminalInst(terminalName, terminalAction);
+export async function runTerminalAction(terminalAction: TerminalAction) {
+    const terminal = await prepareTerminalInst(terminalAction.name, terminalAction);
     if (!terminal) {
-        vscode.window.showErrorMessage(`Failed to get or create a terminal instance named "${terminalName}".`);
+        vscode.window.showErrorMessage(`Failed to get or create a terminal instance named "${terminalAction.name}".`);
         return;
     }
 
@@ -96,6 +75,6 @@ export async function runTerminalAction(actionGroupName: string, terminalAction:
 
     await utils.delay(terminalAction.delayCommand);
 
-    console.log(`Executing command "${terminalAction.command}" in terminal "${terminalName}".`);
+    console.log(`Executing command "${terminalAction.command}" in terminal "${terminalAction.name}".`);
     terminal.sendText(terminalAction.command, true);
 }

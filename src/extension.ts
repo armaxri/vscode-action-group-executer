@@ -30,7 +30,7 @@ async function selectAndRunGroup() {
         }
 
         command.terminals.forEach(terminal =>
-            runTerminalAction(selection, terminal)
+            runTerminalAction(terminal)
         );
 
         runProcesses(command);
