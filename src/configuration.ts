@@ -104,7 +104,12 @@ export class ProcessAction {
 
     constructor(config: EIProcessAction, defaultProcessEndMessage: string, groupName: string) {
         this.name = config.name ? config.name : groupName;
-        this.printName = typeof config.printName === 'boolean' ? config.printName : this.printName;
+        if (typeof config.printName === 'boolean') {
+            this.printName = config.printName;
+        } else {
+            // Allow a shortcut for display by simply writing the name.
+            this.printName = typeof config.name === 'string';
+        }
 
         if (config.command) {
             this.commands.push(new ProcessCommand(config.command, defaultProcessEndMessage));

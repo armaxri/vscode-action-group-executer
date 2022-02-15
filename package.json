@@ -65,7 +65,7 @@
                                         "properties": {
                                             "name": {
                                                 "type": "string",
-                                                "description": "Name which should be printed first in the document tab. If not set uses command name."
+                                                "description": "Name which should be printed first in the document tab. If not set uses command name. When set and printName is not set, it will still be displayed."
                                             },
                                             "printName": {
                                                 "type": "boolean",
