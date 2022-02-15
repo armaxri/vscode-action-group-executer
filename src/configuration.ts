@@ -4,66 +4,142 @@ import * as child_process from 'child_process';
 
 import * as utils from "./utils";
 
-export interface TerminalAction {
-    // The name in extendedOptions has the highest binding, if not present
-    // this setting will be used as the terminal name and afterwards the lowest
-    // priority for the name is the ActionGroup name, which is required.
+export interface EITerminalAction {
     name?: string;
-    // Use the full set of VSCodes terminal options. Will only applied if
-    // a new terminal will be created.
     extendedOptions?: vscode.TerminalOptions;
-    // Show the terminal, which is pushing it in the front.
     showTerminal?: boolean;
-    // Dispose an old terminal having the name and then create a new one
-    // with the same name.
     disposeOldTerminal?: boolean;
-    // If a terminal with the selected name is already present, create
-    // a new terminal with an up counting number behind it.
     alwaysNewTerminal?: boolean;
-    // Delay the execution of the command by the given number of milliseconds.
     delayCommand?: number;
     command: string;
 }
 
-export interface ProcessCommand {
-    // Command in a splitted array.
+export interface EIProcessCommand {
     call: Array<string>;
-    // Delay the process start by the given number of milliseconds.
     delayProcess?: number;
-    // Use the full set of the node.js child_process API.
     extendedOptions: child_process.SpawnOptionsWithoutStdio;
-    // Message that is printed at the end of the command.
     processEndMessage?: string;
-    // Don't print message at process end.
     hideProcessEndMessage?: boolean;
 }
 
-export interface ProcessAction {
-    command?: ProcessCommand;
-    commands?: Array<ProcessCommand>;
+export interface EIProcessAction {
+    command?: EIProcessCommand;
+    commands?: Array<EIProcessCommand>;
 }
 
-export interface DebugSession {
-    // The name of a debug configuration added to a launch configuration.
-    // Mainly used but if not set, a "newConfiguration" is used instead.
+export interface EIDebugSession {
     namedConfiguration?: string;
-    // Configuration of a launch setting. Will only be used if no name is set.
     newConfiguration?: vscode.DebugConfiguration;
-    // Name of the workspace the debug session should be executed in.
-    // If none is set, the workspace will be taken from the current opened
-    // file. Only useful in a multi root workspace.
     workspaceName?: string;
-    // Delay the start of the debug session by the given number of milliseconds.
     delaySession?: number;
 }
 
-export interface ActionGroup {
+export interface EIActionGroup {
     name: string;
-    terminals?: Array<TerminalAction>;
+    terminals?: Array<EITerminalAction>;
+    debugSession?: EIDebugSession;
+    processes?: Array<EIProcessAction>;
+}
+
+export class TerminalAction {
+    name: string;
+    extendedOptions?: vscode.TerminalOptions;
+    showTerminal: boolean = true;
+    disposeOldTerminal: boolean = false;
+    alwaysNewTerminal: boolean = false;
+    delayCommand: number = 0;
+    command: string;
+
+    constructor(config: EITerminalAction, groupName: string) {
+        if (config?.extendedOptions && config?.extendedOptions.name) {
+            this.name = config.extendedOptions.name;
+        } else {
+            this.name = config.name ? config.name : groupName;
+        }
+
+        if (config.extendedOptions) {
+            this.extendedOptions = config.extendedOptions;
+        }
+
+        this.showTerminal = typeof config.showTerminal === 'boolean' ? config.showTerminal : this.showTerminal;
+        this.disposeOldTerminal = typeof config.disposeOldTerminal === 'boolean' ? config.disposeOldTerminal : this.disposeOldTerminal;
+        this.alwaysNewTerminal = typeof config.alwaysNewTerminal === 'boolean' ? config.alwaysNewTerminal : this.alwaysNewTerminal;
+        this.delayCommand = config.delayCommand ? config.delayCommand : this.delayCommand;
+
+        this.command = config.command;
+    }
+}
+
+export class ProcessCommand {
+    program: string;
+    args: Array<string>;
+    extendedOptions: child_process.SpawnOptionsWithoutStdio;
+    delayProcess: number = 0;
+    processEndMessage: string;
+    hideProcessEndMessage: boolean = false;
+
+    constructor(config: EIProcessCommand, defaultProcessEndMessage: string) {
+        this.program = config.call[0];
+        this.args = config.call.slice(1);
+
+        this.extendedOptions = config.extendedOptions;
+
+        this.delayProcess = config.delayProcess ? config.delayProcess : this.delayProcess;
+        this.hideProcessEndMessage = typeof config.hideProcessEndMessage === 'boolean' ? config.hideProcessEndMessage : this.hideProcessEndMessage;
+
+        if (config.processEndMessage) {
+            this.processEndMessage = config.processEndMessage;
+        } else {
+            this.processEndMessage = defaultProcessEndMessage;
+        }
+    }
+}
+
+export class ProcessAction {
+    commands: Array<ProcessCommand> = new Array<ProcessCommand>();
+
+    constructor(config: EIProcessAction, defaultProcessEndMessage: string) {
+        if (config.command) {
+            this.commands.push(new ProcessCommand(config.command, defaultProcessEndMessage));
+        } else {
+            config.commands?.forEach(command => {
+                const newCommand = new ProcessCommand(command, defaultProcessEndMessage);
+                this.commands.push(newCommand);
+            });
+        }
+    }
+}
+
+export interface DebugSession {
+    namedConfiguration?: string;
+    newConfiguration?: vscode.DebugConfiguration;
+    workspaceName?: string;
+    delaySession?: number;
+}
+
+export class ActionGroup {
+    name: string;
+    terminals: Array<TerminalAction> = new Array<TerminalAction>();
     debugSession?: DebugSession;
-    selectedWorkspace?: vscode.WorkspaceFolder | null | undefined;
-    processes?: Array<ProcessAction>;
-    defaultProcessEndMessage?: string;
+    selectedWorkspace: vscode.WorkspaceFolder | null | undefined = null;
+    processes: Array<ProcessAction> = new Array<ProcessAction>();
+
+    constructor(config: EIActionGroup, defaultProcessEndMessage: string | undefined) {
+        this.name = config.name;
+
+        config.terminals?.forEach(terminalAction => {
+            const newTerminalAction = new TerminalAction(terminalAction, this.name);
+            this.terminals.push(newTerminalAction);
+        });
+        config.processes?.forEach(processAction => {
+            const newProcessAction = new ProcessAction(processAction, defaultProcessEndMessage ? defaultProcessEndMessage : '');
+            this.processes.push(newProcessAction);
+        });
+        if (config.debugSession) {
+            // Simple cast for the moment. Add class functionality later.
+            this.debugSession = <DebugSession>config.debugSession;
+        }
+    }
 }
 
 class StringReplacer {
@@ -156,7 +232,7 @@ class StringReplacer {
     }
 }
 
-function mergeConfig(config: vscode.WorkspaceConfiguration) {
+function createAndMergeGroups(config: vscode.WorkspaceConfiguration, defaultProcessEndMessage: string | undefined) {
     const inspect = config.inspect('actionGroups');
 
     console.log('---------');
@@ -167,10 +243,21 @@ function mergeConfig(config: vscode.WorkspaceConfiguration) {
     console.log(`inspect.workspaceFolderValue: "${inspect?.workspaceFolderValue}"`);
     console.log('---------');
 
-    var mergedCommands = Array();
-    mergedCommands = inspect?.defaultValue ? mergedCommands.concat(inspect.defaultValue) : mergedCommands;
-    mergedCommands = inspect?.globalValue ? mergedCommands.concat(inspect.globalValue) : mergedCommands;
-    mergedCommands = inspect?.workspaceValue ? mergedCommands.concat(inspect.workspaceValue) : mergedCommands;
+    var mergedCommands = Array<ActionGroup>();
+
+    function createAndAddGroups(configValue: any) {
+        if (Array.isArray(configValue)) {
+            configValue.forEach(group => {
+                const castedGroup = <EIActionGroup>group;
+                const newGroup = new ActionGroup(castedGroup, defaultProcessEndMessage);
+                mergedCommands.push(newGroup);
+            });
+        }
+    }
+
+    createAndAddGroups(inspect?.defaultValue);
+    createAndAddGroups(inspect?.globalValue);
+    createAndAddGroups(inspect?.workspaceValue);
 
     // If we have no workspace file, the content of the workspaceValue will equal the workspaceFolderValue.
     // In that case we get all declarations doubled, that is actually not cool :/
@@ -178,30 +265,13 @@ function mergeConfig(config: vscode.WorkspaceConfiguration) {
     // workspaceValue over it, because you can have any file open and still get the setting. The other
     // way around would mean that you won't get any group if a radom file outside the workspace is selected.
     if (vscode.workspace.workspaceFile) {
-        mergedCommands = inspect?.workspaceFolderValue ? mergedCommands.concat(inspect.workspaceFolderValue) : mergedCommands;
+        createAndAddGroups(inspect?.workspaceFolderValue);
     }
 
     return <Array<ActionGroup>>(mergedCommands);
 }
 
-function applyReplacementsInGroups(actionGroups: Array<ActionGroup>, defaultProcessEndMessage: string | undefined) {
-    if (defaultProcessEndMessage) {
-        actionGroups.forEach(group => {
-            group.processes?.forEach(process => {
-                if (process.command) {
-                    if (!process.command.processEndMessage) {
-                        process.command.processEndMessage = defaultProcessEndMessage;
-                    }
-                }
-                process.commands?.forEach(command => {
-                    if (!command.processEndMessage) {
-                        command.processEndMessage = defaultProcessEndMessage;
-                    }
-                });
-            });
-        });
-    }
-
+function applyReplacementsInGroups(actionGroups: Array<ActionGroup>) {
     const replacer = new StringReplacer();
 
     utils.replaceAllStrings(actionGroups, currentString => {
@@ -215,7 +285,7 @@ export function getActionGroups() {
     // Get the configuration based on the current file.
     const correspondingWorkspace = utils.getCurrentWorkspace();
     const config = vscode.workspace.getConfiguration('actionGroupExecuter', correspondingWorkspace);
-    const commands = mergeConfig(config);
+    const commands = createAndMergeGroups(config, config.get<string>('defaultProcessEndMessage'));
 
     if (!commands) {
         vscode.window.showWarningMessage('No configuration for ActionGroupExecuter found in settings. Set "actionGroupExecuter.actionGroups" in your settings.');
@@ -227,7 +297,7 @@ export function getActionGroups() {
 
     // Apply adjustments before adding the corresponding workspace, so the strings in the object
     // will not be touched be recursive object analysis.
-    const adjustedGroups = applyReplacementsInGroups(filteredGroups, config.get<string>('defaultProcessEndMessage'));
+    const adjustedGroups = applyReplacementsInGroups(filteredGroups);
 
     // Attach the workspace that is currently selected, so the context of the calling is known.
     adjustedGroups.forEach(group => {
