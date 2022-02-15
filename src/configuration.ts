@@ -71,14 +71,16 @@ export class TerminalAction {
 }
 
 export class ProcessCommand {
-    call: Array<string>;
+    program: string;
+    args: Array<string>;
     extendedOptions: child_process.SpawnOptionsWithoutStdio;
     delayProcess: number = 0;
     processEndMessage: string;
     hideProcessEndMessage: boolean = false;
 
     constructor(config: EIProcessCommand, defaultProcessEndMessage: string) {
-        this.call = config.call;
+        this.program = config.call[0];
+        this.args = config.call.slice(1);
 
         this.extendedOptions = config.extendedOptions;
 

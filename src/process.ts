@@ -86,18 +86,12 @@ class DocumentHandler {
 
 async function runCall(documentHandle: DocumentHandler, commands: ProcessCommand[], currentIndex: number) {
     const currentCommand = commands[currentIndex];
-    if (currentCommand.call.length === 0) {
-        console.log('No call was set in the command. Exiting.');
-        return;
-    }
 
     await utils.delay(currentCommand.delayProcess);
 
-    const spawnCommand = currentCommand.call[0];
-    const spawnArguments = currentCommand.call.slice(1);
-    const printableArguments = spawnArguments.join('", "');
-    console.log(`Spawning process with command "${spawnCommand}" using arguments "${printableArguments}".`);
-    const subprocess = child_process.spawn(spawnCommand, spawnArguments, currentCommand.extendedOptions);
+    const printableArguments = currentCommand.args.join('", "');
+    console.log(`Spawning process with command "${currentCommand.program}" using arguments "${printableArguments}".`);
+    const subprocess = child_process.spawn(currentCommand.program, currentCommand.args, currentCommand.extendedOptions);
 
     function handleData(data: any, source: string) {
         // When running on Windows "\r\n" is used by some programs and will cause two
@@ -108,7 +102,7 @@ async function runCall(documentHandle: DocumentHandler, commands: ProcessCommand
 
         // If the document is already closed, we should also stop the process execution.
         if (documentHandle.document.isClosed) {
-            console.log(`Document for process "${spawnCommand}" using arguments "${printableArguments}" was closed. Killing process.`);
+            console.log(`Document for process "${currentCommand.program}" using arguments "${printableArguments}" was closed. Killing process.`);
             subprocess.kill();
         } else {
             documentHandle.addNewData(dataAsString);
@@ -144,7 +138,7 @@ async function runCall(documentHandle: DocumentHandler, commands: ProcessCommand
                 documentHandle.processesStillRunning = false;
             }
         } else {
-            console.log(`Document for process "${spawnCommand}" using arguments "${printableArguments}" was closed. Starting no further processes process.`);
+            console.log(`Document for process "${currentCommand.program}" using arguments "${printableArguments}" was closed. Starting no further processes process.`);
             documentHandle.processesStillRunning = false;
         }
     });
