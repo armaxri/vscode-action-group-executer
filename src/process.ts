@@ -18,12 +18,14 @@ function getMatchingEditor(document: vscode.TextDocument) {
 
 class DocumentHandler {
     document: vscode.TextDocument;
+    processAction: ProcessAction;
     processesStillRunning: boolean = true;
     freshInitialized: boolean = true;
     data: Array<string> = new Array<string>();
 
-    constructor(document: vscode.TextDocument) {
+    constructor(document: vscode.TextDocument, processAction: ProcessAction) {
         this.document = document;
+        this.processAction = processAction;
     }
 
     private writeDataToDocument(editor: vscode.TextEditor) {
@@ -84,14 +86,14 @@ class DocumentHandler {
     }
 }
 
-async function runCall(documentHandle: DocumentHandler, commands: ProcessCommand[], currentIndex: number, processAction: ProcessAction) {
-    const currentCommand = commands[currentIndex];
+async function runCall(documentHandle: DocumentHandler) {
+    const currentCommand = documentHandle.processAction.getCurrentCommand();
 
     await utils.delay(currentCommand.delayProcess);
 
     const printableArguments = currentCommand.args.join('", "');
     console.log(`Spawning process with command "${currentCommand.program}" using arguments "${printableArguments}".`);
-    if (processAction.printCommand) {
+    if (documentHandle.processAction.printCommand) {
         documentHandle.addNewData(`program: "${currentCommand.program}", args: "${printableArguments}"\n`);
     }
 
@@ -134,9 +136,9 @@ async function runCall(documentHandle: DocumentHandler, commands: ProcessCommand
 
         // Only of the document is still open, we should continue ;)
         if (!documentHandle.document.isClosed) {
-            const nextIndex = currentIndex + 1;
-            if (nextIndex < commands.length) {
-                runCall(documentHandle, commands, nextIndex, processAction);
+            if (documentHandle.processAction.hasNextCommand()) {
+                documentHandle.processAction.selectNextCommand();
+                runCall(documentHandle);
             } else {
                 console.log('No further commands to handle for the document.');
                 documentHandle.processesStillRunning = false;
@@ -158,11 +160,11 @@ async function runProcess(process: ProcessAction, spawnNumber: number) {
     const initialContent = process.printName ? process.name + '\n' : FILE_INITIAL_STRING;
     const document = await vscode.workspace.openTextDocument({language: 'plaintext', content: initialContent});
     await vscode.window.showTextDocument(document);
-    var documentHandle = new DocumentHandler(document);
+    var documentHandle = new DocumentHandler(document, process);
     documentHandle.updateDocumentInBackground();
 
     if (process.commands) {
-        runCall(documentHandle, process.commands, 0, process);
+        runCall(documentHandle);
     } else {
         console.log('There was no commands set in the ProcessAction.');
     }
