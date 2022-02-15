@@ -121,6 +121,8 @@ The following settings can be set and enter `ActionGroupExec: Execute Action Gro
         {
             "name": "Example5 - ls -la ${env:HOME} and / in sequence",
             "processes": [{
+                // Print the command just starting with the arguments.
+                "printCommand": true,
                 // Note that each command group will be spawned in the same file tab.
                 "commands": [
                     {
@@ -225,6 +227,7 @@ Execution groups can be added under the `actionGroupExecuter.actionGroups` setti
 ### [Unreleased]
 
 * Printing of process names into the document at start.
+* Printing of process calls.
 
 ### 0.0.8
 

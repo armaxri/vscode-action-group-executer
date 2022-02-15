@@ -84,13 +84,17 @@ class DocumentHandler {
     }
 }
 
-async function runCall(documentHandle: DocumentHandler, commands: ProcessCommand[], currentIndex: number) {
+async function runCall(documentHandle: DocumentHandler, commands: ProcessCommand[], currentIndex: number, processAction: ProcessAction) {
     const currentCommand = commands[currentIndex];
 
     await utils.delay(currentCommand.delayProcess);
 
     const printableArguments = currentCommand.args.join('", "');
     console.log(`Spawning process with command "${currentCommand.program}" using arguments "${printableArguments}".`);
+    if (processAction.printCommand) {
+        documentHandle.addNewData(`program: "${currentCommand.program}", args: "${printableArguments}"\n`);
+    }
+
     const subprocess = child_process.spawn(currentCommand.program, currentCommand.args, currentCommand.extendedOptions);
 
     function handleData(data: any, source: string) {
@@ -132,7 +136,7 @@ async function runCall(documentHandle: DocumentHandler, commands: ProcessCommand
         if (!documentHandle.document.isClosed) {
             const nextIndex = currentIndex + 1;
             if (nextIndex < commands.length) {
-                runCall(documentHandle, commands, nextIndex);
+                runCall(documentHandle, commands, nextIndex, processAction);
             } else {
                 console.log('No further commands to handle for the document.');
                 documentHandle.processesStillRunning = false;
@@ -158,7 +162,7 @@ async function runProcess(process: ProcessAction, spawnNumber: number) {
     documentHandle.updateDocumentInBackground();
 
     if (process.commands) {
-        runCall(documentHandle, process.commands, 0);
+        runCall(documentHandle, process.commands, 0, process);
     } else {
         console.log('There was no commands set in the ProcessAction.');
     }
