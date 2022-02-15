@@ -3,6 +3,7 @@
         {
             "name": "Example1 - ls -la ${env:HOME}",
             "processes": [{
+                "printName": true,
                 "command": {
                     "call": [
                         "ls",
@@ -54,6 +55,8 @@
             "name": "Example4 - two parallel counts to 20",
             "processes": [
                 {
+                    "name": "Window 1",
+                    "printName": true,
                     "command": {
                         "call": [
                             "${workspaceFolder}/testCnt.sh",
@@ -63,6 +66,8 @@
                     }
                 },
                 {
+                    "name": "Window 2",
+                    "printName": true,
                     "command": {
                         "call": [
                             "${workspaceFolder}/testCnt.sh",

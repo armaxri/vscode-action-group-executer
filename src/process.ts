@@ -151,7 +151,8 @@ async function runProcess(process: ProcessAction, spawnNumber: number) {
     console.log('Preparing document for process.');
     // Use an initial string to force the creation of the document.
     // Remove it on the first write action.
-    const document = await vscode.workspace.openTextDocument({language: 'plaintext', content: FILE_INITIAL_STRING});
+    const initialContent = process.printName ? process.name + '\n' : FILE_INITIAL_STRING;
+    const document = await vscode.workspace.openTextDocument({language: 'plaintext', content: initialContent});
     await vscode.window.showTextDocument(document);
     var documentHandle = new DocumentHandler(document);
     documentHandle.updateDocumentInBackground();

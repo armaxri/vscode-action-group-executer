@@ -139,7 +139,7 @@ export class ActionGroup {
             this.terminals.push(newTerminalAction);
         });
         config.processes?.forEach(processAction => {
-            const newProcessAction = new ProcessAction(processAction, defaultProcessEndMessage ? defaultProcessEndMessage : '');
+            const newProcessAction = new ProcessAction(processAction, defaultProcessEndMessage ? defaultProcessEndMessage : '', this.name);
             this.processes.push(newProcessAction);
         });
         if (config.debugSession) {
