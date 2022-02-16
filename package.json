@@ -23,7 +23,8 @@
         "Other"
     ],
     "activationEvents": [
-        "onCommand:action-group-executer.executeActionGroup"
+        "onCommand:action-group-executer.executeActionGroup",
+        "onCommand:action-group-executer.killProcessAtBehindCurrentFile"
     ],
     "main": "./out/extension.js",
     "contributes": {
@@ -31,6 +32,11 @@
             {
                 "command": "action-group-executer.executeActionGroup",
                 "title": "Execute Action Group",
+                "category": "ActionGroupExec"
+            },
+            {
+                "command": "action-group-executer.killProcessAtBehindCurrentFile",
+                "title": "Kill current Background Process",
                 "category": "ActionGroupExec"
             }
         ],
