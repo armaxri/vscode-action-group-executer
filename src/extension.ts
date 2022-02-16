@@ -5,7 +5,7 @@ import * as vscode from 'vscode';
 import { getActionGroups } from "./configuration";
 import { runTerminalAction } from "./terminal";
 import { runDebugSession } from "./debugSession";
-import { runProcesses } from "./process";
+import { runProcesses, killCurrentProcess } from "./process";
 
 async function selectAndRunGroup() {
     console.log(`selectAndRunGroup was triggered.`);
@@ -48,9 +48,8 @@ export function activate(context: vscode.ExtensionContext) {
     // The command has been defined in the package.json file
     // Now provide the implementation of the command with registerCommand
     // The commandId parameter must match the command field in package.json
-    const disposable = vscode.commands.registerCommand('action-group-executer.executeActionGroup', selectAndRunGroup);
-
-    context.subscriptions.push(disposable);
+    context.subscriptions.push(vscode.commands.registerCommand('action-group-executer.executeActionGroup', selectAndRunGroup));
+    context.subscriptions.push(vscode.commands.registerCommand('action-group-executer.killProcessAtBehindCurrentFile', killCurrentProcess));
 }
 
 // this method is called when your extension is deactivated

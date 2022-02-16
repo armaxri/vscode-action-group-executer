@@ -6,6 +6,23 @@ import * as utils from "./utils";
 
 const FILE_INITIAL_STRING = ' ';
 
+abstract class DocumentHandleRegistry {
+    public static activeHandles: Array<DocumentHandler> = new Array<DocumentHandler>();
+
+    /**
+     * static getHandleBehindTextDocument
+     */
+    public static getHandleBehindTextDocument(document: vscode.TextDocument) : DocumentHandler | null {
+        for(let handle of this.activeHandles) {
+            if (document === handle.document) {
+                return handle;
+            }
+        }
+
+        return null;
+    }
+}
+
 function getMatchingEditor(document: vscode.TextDocument) {
     const editors = vscode.window.visibleTextEditors;
     for (let i = 0; i < editors.length; i++) {
@@ -18,12 +35,15 @@ function getMatchingEditor(document: vscode.TextDocument) {
 
 class DocumentHandler {
     document: vscode.TextDocument;
+    processAction: ProcessAction;
     processesStillRunning: boolean = true;
     freshInitialized: boolean = true;
     data: Array<string> = new Array<string>();
+    currentSubProcess: child_process.ChildProcessWithoutNullStreams | null = null;
 
-    constructor(document: vscode.TextDocument) {
+    constructor(document: vscode.TextDocument, processAction: ProcessAction) {
         this.document = document;
+        this.processAction = processAction;
     }
 
     private writeDataToDocument(editor: vscode.TextEditor) {
@@ -72,11 +92,13 @@ class DocumentHandler {
             } else if (!this.processesStillRunning) {
                 // If no process is running and there are no new data, simply quit.
                 console.log('Ending document handle caused by ended process.');
+                DocumentHandleRegistry.activeHandles.splice(DocumentHandleRegistry.activeHandles.indexOf(this));
                 return;
             }
             await utils.delay(100);
         }
         console.log('Ending document handle caused by closed document.');
+        DocumentHandleRegistry.activeHandles.splice(DocumentHandleRegistry.activeHandles.indexOf(this));
     }
 
     public addNewData(newData: string) {
@@ -84,18 +106,37 @@ class DocumentHandler {
     }
 }
 
-async function runCall(documentHandle: DocumentHandler, commands: ProcessCommand[], currentIndex: number, processAction: ProcessAction) {
-    const currentCommand = commands[currentIndex];
+export async function killCurrentProcess() {
+    console.log('Triggered killing current process behind current file tab.');
+    const selectedTextEditor = vscode.window.activeTextEditor;
+
+    if (selectedTextEditor) {
+        const handleToFile = DocumentHandleRegistry.getHandleBehindTextDocument(selectedTextEditor.document);
+        if (handleToFile) {
+            console.log('Found process behind current file tab.');
+            handleToFile.processesStillRunning = false;
+            handleToFile.currentSubProcess?.kill();
+        } else {
+            console.log('No process found behind current file tab.');
+        }
+    } else {
+        console.log('No file was selected.');
+    }
+}
+
+async function runCall(documentHandle: DocumentHandler) {
+    const currentCommand = documentHandle.processAction.getCurrentCommand();
 
     await utils.delay(currentCommand.delayProcess);
 
     const printableArguments = currentCommand.args.join('", "');
     console.log(`Spawning process with command "${currentCommand.program}" using arguments "${printableArguments}".`);
-    if (processAction.printCommand) {
+    if (documentHandle.processAction.printCommand) {
         documentHandle.addNewData(`program: "${currentCommand.program}", args: "${printableArguments}"\n`);
     }
 
     const subprocess = child_process.spawn(currentCommand.program, currentCommand.args, currentCommand.extendedOptions);
+    documentHandle.currentSubProcess = subprocess;
 
     function handleData(data: any, source: string) {
         // When running on Windows "\r\n" is used by some programs and will cause two
@@ -131,12 +172,17 @@ async function runCall(documentHandle: DocumentHandler, commands: ProcessCommand
 
     subprocess.on('close', (code) => {
         console.log(`Child process close all stdio with code ${code}.`);
+        documentHandle.currentSubProcess = null;
 
         // Only of the document is still open, we should continue ;)
         if (!documentHandle.document.isClosed) {
-            const nextIndex = currentIndex + 1;
-            if (nextIndex < commands.length) {
-                runCall(documentHandle, commands, nextIndex, processAction);
+            if (documentHandle.processAction.hasNextCommand()) {
+                documentHandle.processAction.selectNextCommand();
+                if (documentHandle.processesStillRunning) {
+                    runCall(documentHandle);
+                } else {
+                    console.log(`Wanted to execute process "${currentCommand.program}" using arguments "${printableArguments}" but the process was terminated before.`);
+                }
             } else {
                 console.log('No further commands to handle for the document.');
                 documentHandle.processesStillRunning = false;
@@ -158,11 +204,12 @@ async function runProcess(process: ProcessAction, spawnNumber: number) {
     const initialContent = process.printName ? process.name + '\n' : FILE_INITIAL_STRING;
     const document = await vscode.workspace.openTextDocument({language: 'plaintext', content: initialContent});
     await vscode.window.showTextDocument(document);
-    var documentHandle = new DocumentHandler(document);
+    var documentHandle = new DocumentHandler(document, process);
+    DocumentHandleRegistry.activeHandles.push(documentHandle);
     documentHandle.updateDocumentInBackground();
 
     if (process.commands) {
-        runCall(documentHandle, process.commands, 0, process);
+        runCall(documentHandle);
     } else {
         console.log('There was no commands set in the ProcessAction.');
     }
