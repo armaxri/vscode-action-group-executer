@@ -208,6 +208,8 @@ The following settings can be set and enter `ActionGroupExec: Execute Action Gro
 }
 ```
 
+`ActionGroupExec: Kill current Background Process` can be used to kill the process behind the currently selected document.
+
 Due to the interface the extension is limited to only execute one command on the command line. Combinations of different commands need additional scripts or functions like `echo Hello1 && sleep 10 && echo Hello2`. As terminal `extendedOptions` the [VS Code TerminalOptions](https://code.visualstudio.com/api/references/vscode-api#TerminalOptions) can be used to use the exposed VS Code terminal construction settings.
 
 All elements can be configured using a subset of [VS Code predefined variables](https://code.visualstudio.com/docs/editor/variables-reference). The supported predefined variables are:
@@ -228,6 +230,7 @@ Execution groups can be added under the `actionGroupExecuter.actionGroups` setti
 
 * Printing of process names into the document at start.
 * Printing of process calls.
+* Added kill command for the process behind the selected document.
 
 ### 0.0.8
 
