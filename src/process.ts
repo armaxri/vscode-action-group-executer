@@ -9,9 +9,6 @@ const FILE_INITIAL_STRING = ' ';
 abstract class DocumentHandleRegistry {
     public static activeHandles: Array<DocumentHandler> = new Array<DocumentHandler>();
 
-    /**
-     * static getHandleBehindTextDocument
-     */
     public static getHandleBehindTextDocument(document: vscode.TextDocument) : DocumentHandler | null {
         for(let handle of this.activeHandles) {
             if (document === handle.document) {
