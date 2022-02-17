@@ -7,6 +7,7 @@
 * Printing of process names into the document at start.
 * Printing of process calls.
 * Added kill command for the process behind the selected document.
+* Added commando to kill all processes running at the moment.
 
 ## [0.0.8]
 

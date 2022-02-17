@@ -124,6 +124,14 @@ export async function killCurrentProcess() {
     }
 }
 
+export async function killAllProcesses() {
+    console.log('Triggered kill all background processes.');
+    DocumentHandleRegistry.activeHandles.forEach(handle => {
+        handle.processesStillRunning = false;
+        handle.currentSubProcess?.kill();
+    });
+}
+
 async function runCall(documentHandle: DocumentHandler) {
     const currentCommand = documentHandle.processAction.getCurrentCommand();
 
