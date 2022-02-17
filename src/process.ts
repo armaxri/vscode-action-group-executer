@@ -103,6 +103,10 @@ class DocumentHandler {
     }
 }
 
+export async function controlRunningProcess() {
+
+}
+
 export async function killCurrentProcess() {
     console.log('Triggered killing current process behind current file tab.');
     const selectedTextEditor = vscode.window.activeTextEditor;
