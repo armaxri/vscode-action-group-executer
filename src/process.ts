@@ -134,6 +134,35 @@ class DocumentHandler implements vscode.QuickPickItem {
     }
 }
 
+abstract class ControlRunningProcessQuickPickItem implements vscode.QuickPickItem {
+    documentHandle: DocumentHandler;
+    label: string;
+    description?: string | undefined;
+    detail?: string | undefined;
+    picked?: boolean | undefined;
+    alwaysShow?: boolean | undefined;
+    buttons?: readonly vscode.QuickInputButton[] | undefined;
+
+    constructor(label: string, documentHandle: DocumentHandler) {
+        this.label = label;
+        this.documentHandle = documentHandle;
+    }
+
+    abstract runAction(): any;
+}
+
+class KillProcessQuickPick extends ControlRunningProcessQuickPickItem  {
+
+    constructor(documentHandle: DocumentHandler) {
+        super('Kill Process', documentHandle);
+    }
+
+    runAction() {
+        this.documentHandle.processesStillRunning = false;
+        this.documentHandle.currentSubProcess?.kill();
+    }
+}
+
 export async function controlRunningProcess() {
     const selection = await vscode.window.showQuickPick(DocumentHandleRegistry.activeHandles);
 
@@ -141,6 +170,17 @@ export async function controlRunningProcess() {
         console.log(`No valid selection was taken for process control.`);
         return;
     }
+
+    const controlActions = new Array<ControlRunningProcessQuickPickItem>();
+    controlActions.push(new KillProcessQuickPick(selection));
+
+    const actionSelection = await vscode.window.showQuickPick(controlActions);
+
+    if (!actionSelection) {
+        console.log(`No valid actionSelection was taken for process control.`);
+        return;
+    }
+    actionSelection.runAction();
 }
 
 export async function killCurrentProcess() {
