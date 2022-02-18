@@ -37,10 +37,23 @@ class DocumentHandler {
     freshInitialized: boolean = true;
     data: Array<string> = new Array<string>();
     currentSubProcess: child_process.ChildProcessWithoutNullStreams | null = null;
+    currentCommandNum: number = 0;
 
     constructor(document: vscode.TextDocument, processAction: ProcessAction) {
         this.document = document;
         this.processAction = processAction;
+    }
+
+    public getCurrentCommand() : ProcessCommand {
+        return this.processAction.commands[this.currentCommandNum];
+    }
+
+    public selectNextCommand() {
+        this.currentCommandNum = this.currentCommandNum + 1;
+    }
+
+    public hasNextCommand() : boolean {
+        return this.processAction.commands.length > this.currentCommandNum + 1;
     }
 
     private writeDataToDocument(editor: vscode.TextEditor) {
@@ -134,7 +147,7 @@ export async function killAllProcesses() {
 }
 
 async function runCall(documentHandle: DocumentHandler) {
-    const currentCommand = documentHandle.processAction.getCurrentCommand();
+    const currentCommand = documentHandle.getCurrentCommand();
 
     await utils.delay(currentCommand.delayProcess);
 
@@ -185,8 +198,8 @@ async function runCall(documentHandle: DocumentHandler) {
 
         // Only of the document is still open, we should continue ;)
         if (!documentHandle.document.isClosed) {
-            if (documentHandle.processAction.hasNextCommand()) {
-                documentHandle.processAction.selectNextCommand();
+            if (documentHandle.hasNextCommand()) {
+                documentHandle.selectNextCommand();
                 if (documentHandle.processesStillRunning) {
                     runCall(documentHandle);
                 } else {

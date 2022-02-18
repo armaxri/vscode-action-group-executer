@@ -103,7 +103,6 @@ export class ProcessAction {
     printName: boolean = false;
     printCommand: boolean = false;
     commands: Array<ProcessCommand> = new Array<ProcessCommand>();
-    currentCommandNum: number = 0;
 
     constructor(config: EIProcessAction, defaultProcessEndMessage: string, groupName: string) {
         this.name = config.name ? config.name : groupName;
@@ -123,18 +122,6 @@ export class ProcessAction {
                 this.commands.push(newCommand);
             });
         }
-    }
-
-    public getCurrentCommand() : ProcessCommand {
-        return this.commands[this.currentCommandNum];
-    }
-
-    public selectNextCommand() {
-        this.currentCommandNum = this.currentCommandNum + 1;
-    }
-
-    public hasNextCommand() : boolean {
-        return this.commands.length > this.currentCommandNum + 1;
     }
 }
 
