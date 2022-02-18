@@ -30,7 +30,7 @@ function getMatchingEditor(document: vscode.TextDocument) {
     return null;
 }
 
-class DocumentHandler {
+class DocumentHandler implements vscode.QuickPickItem {
     document: vscode.TextDocument;
     processAction: ProcessAction;
     processesStillRunning: boolean = true;
@@ -39,9 +39,20 @@ class DocumentHandler {
     currentSubProcess: child_process.ChildProcessWithoutNullStreams | null = null;
     currentCommandNum: number = 0;
 
+    // QuickPickItem implementation for selection in quick picks.
+    label: string;
+    description?: string | undefined;
+    detail?: string | undefined;
+    picked?: boolean | undefined;
+    alwaysShow?: boolean | undefined;
+    buttons?: readonly vscode.QuickInputButton[] | undefined;
+
     constructor(document: vscode.TextDocument, processAction: ProcessAction) {
         this.document = document;
         this.processAction = processAction;
+
+        this.label = this.processAction.name;
+        this.description = this.getCurrentCommandAsString();
     }
 
     public getCurrentCommand() : ProcessCommand {
@@ -50,6 +61,7 @@ class DocumentHandler {
 
     public selectNextCommand() {
         this.currentCommandNum = this.currentCommandNum + 1;
+        this.description = this.getCurrentCommandAsString();
     }
 
     public hasNextCommand() : boolean {
@@ -123,7 +135,12 @@ class DocumentHandler {
 }
 
 export async function controlRunningProcess() {
+    const selection = await vscode.window.showQuickPick(DocumentHandleRegistry.activeHandles);
 
+    if (!selection) {
+        console.log(`No valid selection was taken for process control.`);
+        return;
+    }
 }
 
 export async function killCurrentProcess() {
