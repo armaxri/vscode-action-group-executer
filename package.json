@@ -38,7 +38,7 @@
             },
             {
                 "command": "action-group-executer.controlRunningProcess",
-                "title": "Select a current Background Process and control it",
+                "title": "Select a current Background Process and Control It",
                 "category": "ActionGroupExec"
             },
             {
