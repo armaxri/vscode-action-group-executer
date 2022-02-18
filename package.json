@@ -24,6 +24,7 @@
     ],
     "activationEvents": [
         "onCommand:action-group-executer.executeActionGroup",
+        "onCommand:action-group-executer.controlRunningProcess",
         "onCommand:action-group-executer.killProcessAtBehindCurrentFile",
         "onCommand:action-group-executer.killAllProcesses"
     ],
@@ -33,6 +34,11 @@
             {
                 "command": "action-group-executer.executeActionGroup",
                 "title": "Execute Action Group",
+                "category": "ActionGroupExec"
+            },
+            {
+                "command": "action-group-executer.controlRunningProcess",
+                "title": "Select a current Background Process and Control It",
                 "category": "ActionGroupExec"
             },
             {

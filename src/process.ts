@@ -9,9 +9,6 @@ const FILE_INITIAL_STRING = ' ';
 abstract class DocumentHandleRegistry {
     public static activeHandles: Array<DocumentHandler> = new Array<DocumentHandler>();
 
-    /**
-     * static getHandleBehindTextDocument
-     */
     public static getHandleBehindTextDocument(document: vscode.TextDocument) : DocumentHandler | null {
         for(let handle of this.activeHandles) {
             if (document === handle.document) {
@@ -33,17 +30,48 @@ function getMatchingEditor(document: vscode.TextDocument) {
     return null;
 }
 
-class DocumentHandler {
+class DocumentHandler implements vscode.QuickPickItem {
     document: vscode.TextDocument;
     processAction: ProcessAction;
     processesStillRunning: boolean = true;
     freshInitialized: boolean = true;
     data: Array<string> = new Array<string>();
     currentSubProcess: child_process.ChildProcessWithoutNullStreams | null = null;
+    currentCommandNum: number = 0;
+
+    // QuickPickItem implementation for selection in quick picks.
+    label: string;
+    description?: string | undefined;
+    detail?: string | undefined;
+    picked?: boolean | undefined;
+    alwaysShow?: boolean | undefined;
+    buttons?: readonly vscode.QuickInputButton[] | undefined;
 
     constructor(document: vscode.TextDocument, processAction: ProcessAction) {
         this.document = document;
         this.processAction = processAction;
+
+        this.label = this.processAction.name;
+        this.description = this.getCurrentCommandAsString();
+    }
+
+    public getCurrentCommand() : ProcessCommand {
+        return this.processAction.commands[this.currentCommandNum];
+    }
+
+    public selectNextCommand() {
+        this.currentCommandNum = this.currentCommandNum + 1;
+        this.description = this.getCurrentCommandAsString();
+    }
+
+    public hasNextCommand() : boolean {
+        return this.processAction.commands.length > this.currentCommandNum + 1;
+    }
+
+    public getCurrentCommandAsString() : string {
+        const currentCommand = this.getCurrentCommand();
+        const printableArguments = currentCommand.args.join('", "');
+        return `program: "${currentCommand.program}", args: "${printableArguments}"`;
     }
 
     private writeDataToDocument(editor: vscode.TextEditor) {
@@ -106,6 +134,55 @@ class DocumentHandler {
     }
 }
 
+abstract class ControlRunningProcessQuickPickItem implements vscode.QuickPickItem {
+    documentHandle: DocumentHandler;
+    label: string;
+    description?: string | undefined;
+    detail?: string | undefined;
+    picked?: boolean | undefined;
+    alwaysShow?: boolean | undefined;
+    buttons?: readonly vscode.QuickInputButton[] | undefined;
+
+    constructor(label: string, documentHandle: DocumentHandler) {
+        this.label = label;
+        this.documentHandle = documentHandle;
+    }
+
+    abstract runAction(): any;
+}
+
+class KillProcessQuickPick extends ControlRunningProcessQuickPickItem  {
+
+    constructor(documentHandle: DocumentHandler) {
+        super('Kill Process', documentHandle);
+    }
+
+    runAction() {
+        this.documentHandle.processesStillRunning = false;
+        this.documentHandle.currentSubProcess?.kill();
+    }
+}
+
+export async function controlRunningProcess() {
+    const selection = await vscode.window.showQuickPick(DocumentHandleRegistry.activeHandles);
+
+    if (!selection) {
+        console.log(`No valid selection was taken for process control.`);
+        return;
+    }
+
+    const controlActions = new Array<ControlRunningProcessQuickPickItem>();
+    controlActions.push(new KillProcessQuickPick(selection));
+
+    const actionSelection = await vscode.window.showQuickPick(controlActions);
+
+    if (!actionSelection) {
+        console.log(`No valid actionSelection was taken for process control.`);
+        return;
+    }
+    actionSelection.runAction();
+}
+
 export async function killCurrentProcess() {
     console.log('Triggered killing current process behind current file tab.');
     const selectedTextEditor = vscode.window.activeTextEditor;
@@ -133,14 +210,14 @@ export async function killAllProcesses() {
 }
 
 async function runCall(documentHandle: DocumentHandler) {
-    const currentCommand = documentHandle.processAction.getCurrentCommand();
+    const currentCommand = documentHandle.getCurrentCommand();
 
     await utils.delay(currentCommand.delayProcess);
 
-    const printableArguments = currentCommand.args.join('", "');
-    console.log(`Spawning process with command "${currentCommand.program}" using arguments "${printableArguments}".`);
+    const currentCommandString = documentHandle.getCurrentCommandAsString();
+    console.log(`Spawning process with <${currentCommandString}>.`);
     if (documentHandle.processAction.printCommand) {
-        documentHandle.addNewData(`program: "${currentCommand.program}", args: "${printableArguments}"\n`);
+        documentHandle.addNewData(currentCommandString + '\n');
     }
 
     const subprocess = child_process.spawn(currentCommand.program, currentCommand.args, currentCommand.extendedOptions);
@@ -155,7 +232,7 @@ async function runCall(documentHandle: DocumentHandler) {
 
         // If the document is already closed, we should also stop the process execution.
         if (documentHandle.document.isClosed) {
-            console.log(`Document for process "${currentCommand.program}" using arguments "${printableArguments}" was closed. Killing process.`);
+            console.log(`Document for process <${currentCommandString}> was closed. Killing process.`);
             subprocess.kill();
         } else {
             documentHandle.addNewData(dataAsString);
@@ -184,19 +261,19 @@ async function runCall(documentHandle: DocumentHandler) {
 
         // Only of the document is still open, we should continue ;)
         if (!documentHandle.document.isClosed) {
-            if (documentHandle.processAction.hasNextCommand()) {
-                documentHandle.processAction.selectNextCommand();
+            if (documentHandle.hasNextCommand()) {
+                documentHandle.selectNextCommand();
                 if (documentHandle.processesStillRunning) {
                     runCall(documentHandle);
                 } else {
-                    console.log(`Wanted to execute process "${currentCommand.program}" using arguments "${printableArguments}" but the process was terminated before.`);
+                    console.log(`Wanted to execute process <${currentCommandString}> but the process was terminated before.`);
                 }
             } else {
                 console.log('No further commands to handle for the document.');
                 documentHandle.processesStillRunning = false;
             }
         } else {
-            console.log(`Document for process "${currentCommand.program}" using arguments "${printableArguments}" was closed. Starting no further processes process.`);
+            console.log(`Document for process <${currentCommandString}> was closed. Starting no further processes process.`);
             documentHandle.processesStillRunning = false;
         }
     });
