@@ -67,7 +67,7 @@ export class TerminalAction {
         this.showTerminal = typeof config.showTerminal === 'boolean' ? config.showTerminal : this.showTerminal;
         this.disposeOldTerminal = typeof config.disposeOldTerminal === 'boolean' ? config.disposeOldTerminal : this.disposeOldTerminal;
         this.alwaysNewTerminal = typeof config.alwaysNewTerminal === 'boolean' ? config.alwaysNewTerminal : this.alwaysNewTerminal;
-        this.delayCommand = config.delayCommand ? config.delayCommand : this.delayCommand;
+        this.delayCommand = typeof config.delayCommand === 'number' ? config.delayCommand : this.delayCommand;
 
         this.command = config.command;
     }
@@ -87,7 +87,7 @@ export class ProcessCommand {
 
         this.extendedOptions = config.extendedOptions;
 
-        this.delayProcess = config.delayProcess ? config.delayProcess : this.delayProcess;
+        this.delayProcess = typeof config.delayProcess === 'number' ? config.delayProcess : this.delayProcess;
         this.hideProcessEndMessage = typeof config.hideProcessEndMessage === 'boolean' ? config.hideProcessEndMessage : this.hideProcessEndMessage;
 
         if (config.processEndMessage) {
