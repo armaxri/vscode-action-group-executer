@@ -9,6 +9,7 @@
 * Added kill command for the process behind the selected document.
 * Added commando to kill all processes running at the moment.
 * Select processes via command and kill them.
+* Select processes via command and send some input.
 
 ## [0.0.8]
 

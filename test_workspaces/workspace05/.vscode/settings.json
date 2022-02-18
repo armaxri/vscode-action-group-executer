@@ -216,6 +216,20 @@
                     "cwd": "${workspaceFolder}"
                 }
             }]
+        },
+        {
+            "name": "Example12 - python stdin check",
+            "processes": [{
+                "printCommand": true,
+                "command": {
+                    "call": [
+                        "./testStdin.py"
+                    ],
+                    "extendedOptions": {
+                        "cwd": "${workspaceFolder}"
+                    }
+                }
+            }],
         }
     ]
 }

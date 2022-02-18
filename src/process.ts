@@ -163,6 +163,21 @@ class KillProcessQuickPick extends ControlRunningProcessQuickPickItem  {
     }
 }
 
+class SendInput2ProcessQuickPick extends ControlRunningProcessQuickPickItem  {
+
+    constructor(documentHandle: DocumentHandler) {
+        super('Send Input to Process', documentHandle);
+    }
+
+    async runAction() {
+        const input = await vscode.window.showInputBox();
+        if (input) {
+            console.log(`Writing "${input}" to process.`);
+            this.documentHandle.currentSubProcess?.stdin.write(input + '\n');
+        }
+    }
+}
+
 export async function controlRunningProcess() {
     const selection = await vscode.window.showQuickPick(DocumentHandleRegistry.activeHandles);
 
@@ -172,6 +187,7 @@ export async function controlRunningProcess() {
     }
 
     const controlActions = new Array<ControlRunningProcessQuickPickItem>();
+    controlActions.push(new SendInput2ProcessQuickPick(selection));
     controlActions.push(new KillProcessQuickPick(selection));
 
     const actionSelection = await vscode.window.showQuickPick(controlActions);
