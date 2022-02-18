@@ -56,6 +56,12 @@ class DocumentHandler {
         return this.processAction.commands.length > this.currentCommandNum + 1;
     }
 
+    public getCurrentCommandAsString() : string {
+        const currentCommand = this.getCurrentCommand();
+        const printableArguments = currentCommand.args.join('", "');
+        return `program: "${currentCommand.program}", args: "${printableArguments}"`;
+    }
+
     private writeDataToDocument(editor: vscode.TextEditor) {
         editor.edit((textEditorEdit) => {
             do {
@@ -151,10 +157,10 @@ async function runCall(documentHandle: DocumentHandler) {
 
     await utils.delay(currentCommand.delayProcess);
 
-    const printableArguments = currentCommand.args.join('", "');
-    console.log(`Spawning process with command "${currentCommand.program}" using arguments "${printableArguments}".`);
+    const currentCommandString = documentHandle.getCurrentCommandAsString();
+    console.log(`Spawning process with <${currentCommandString}>.`);
     if (documentHandle.processAction.printCommand) {
-        documentHandle.addNewData(`program: "${currentCommand.program}", args: "${printableArguments}"\n`);
+        documentHandle.addNewData(currentCommandString + '\n');
     }
 
     const subprocess = child_process.spawn(currentCommand.program, currentCommand.args, currentCommand.extendedOptions);
@@ -169,7 +175,7 @@ async function runCall(documentHandle: DocumentHandler) {
 
         // If the document is already closed, we should also stop the process execution.
         if (documentHandle.document.isClosed) {
-            console.log(`Document for process "${currentCommand.program}" using arguments "${printableArguments}" was closed. Killing process.`);
+            console.log(`Document for process <${currentCommandString}> was closed. Killing process.`);
             subprocess.kill();
         } else {
             documentHandle.addNewData(dataAsString);
@@ -203,14 +209,14 @@ async function runCall(documentHandle: DocumentHandler) {
                 if (documentHandle.processesStillRunning) {
                     runCall(documentHandle);
                 } else {
-                    console.log(`Wanted to execute process "${currentCommand.program}" using arguments "${printableArguments}" but the process was terminated before.`);
+                    console.log(`Wanted to execute process <${currentCommandString}> but the process was terminated before.`);
                 }
             } else {
                 console.log('No further commands to handle for the document.');
                 documentHandle.processesStillRunning = false;
             }
         } else {
-            console.log(`Document for process "${currentCommand.program}" using arguments "${printableArguments}" was closed. Starting no further processes process.`);
+            console.log(`Document for process <${currentCommandString}> was closed. Starting no further processes process.`);
             documentHandle.processesStillRunning = false;
         }
     });
