@@ -134,7 +134,7 @@ export class ProcessAction {
     }
 
     public hasNextCommand() : boolean {
-        return this.commands.length > this.currentCommandNum;
+        return this.commands.length > this.currentCommandNum + 1;
     }
 }
 
