@@ -236,6 +236,7 @@ Execution groups can be added under the `actionGroupExecuter.actionGroups` setti
 * Added commando to kill all processes running at the moment.
 * Select processes via command and kill them.
 * Select processes via command and send some input.
+* Added send some input to the process behind the selected document.
 
 ### 0.0.8
 

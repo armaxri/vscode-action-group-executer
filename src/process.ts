@@ -199,6 +199,27 @@ export async function controlRunningProcess() {
     actionSelection.runAction();
 }
 
+export async function sendMessage2RunningProcess() {
+    console.log('Triggered send message to current process behind current file tab.');
+    const selectedTextEditor = vscode.window.activeTextEditor;
+
+    if (selectedTextEditor) {
+        const handleToFile = DocumentHandleRegistry.getHandleBehindTextDocument(selectedTextEditor.document);
+        if (handleToFile) {
+            console.log('Found process behind current file tab.');
+            const input = await vscode.window.showInputBox();
+            if (input) {
+                console.log(`Writing "${input}" to process.`);
+                handleToFile.currentSubProcess?.stdin.write(input + '\n');
+            }
+        } else {
+            console.log('No process found behind current file tab.');
+        }
+    } else {
+        console.log('No file was selected.');
+    }
+}
+
 export async function killCurrentProcess() {
     console.log('Triggered killing current process behind current file tab.');
     const selectedTextEditor = vscode.window.activeTextEditor;
