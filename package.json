@@ -42,6 +42,11 @@
                 "category": "ActionGroupExec"
             },
             {
+                "command": "action-group-executer.sendMessage2RunningProcess",
+                "title": "Send a Text Message to the current Background Process ",
+                "category": "ActionGroupExec"
+            },
+            {
                 "command": "action-group-executer.killProcessAtBehindCurrentFile",
                 "title": "Kill current Background Process",
                 "category": "ActionGroupExec"
