@@ -168,6 +168,20 @@
                                                                 "default": true
                                                             }
                                                         }
+                                                    },
+                                                    "debugTemplate": {
+                                                        "type": "object",
+                                                        "description": "Template launch configuration based on VS Codes 'DebugConfiguration' type (limited autocompletion support).",
+                                                        "properties": {
+                                                            "type": {
+                                                                "type": "string",
+                                                                "description": "The type of the debug session."
+                                                            },
+                                                            "request": {
+                                                                "type": "string",
+                                                                "description": "The request type of the debug session."
+                                                            }
+                                                        }
                                                     }
                                                 },
                                                 "required": ["call"],
@@ -379,6 +393,20 @@
                                             "type": "number",
                                             "default": 0,
                                             "description": "Start delay in ms."
+                                        }
+                                    }
+                                },
+                                "defaultProcessDebugTemplate": {
+                                    "type": "object",
+                                    "description": "Template launch configuration based on VS Codes 'DebugConfiguration' type (limited autocompletion support).",
+                                    "properties": {
+                                        "type": {
+                                            "type": "string",
+                                            "description": "The type of the debug session."
+                                        },
+                                        "request": {
+                                            "type": "string",
+                                            "description": "The request type of the debug session."
                                         }
                                     }
                                 }

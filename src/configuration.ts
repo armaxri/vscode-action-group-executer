@@ -20,6 +20,7 @@ export interface EIProcessCommand {
     extendedOptions: child_process.SpawnOptionsWithoutStdio;
     processEndMessage?: string;
     hideProcessEndMessage?: boolean;
+    debugTemplate?: vscode.DebugConfiguration;
 }
 
 export interface EIProcessAction {
@@ -42,6 +43,7 @@ export interface EIActionGroup {
     terminals?: Array<EITerminalAction>;
     debugSession?: EIDebugSession;
     processes?: Array<EIProcessAction>;
+    defaultProcessDebugTemplate?: vscode.DebugConfiguration;
 }
 
 export class TerminalAction {
