@@ -21,6 +21,10 @@ abstract class DocumentHandleRegistry {
 }
 
 function getMatchingEditor(document: vscode.TextDocument) {
+    const activeEditor = vscode.window.activeTextEditor;
+    if (activeEditor?.document === document) {
+        return activeEditor;
+    }
     const editors = vscode.window.visibleTextEditors;
     for (let i = 0; i < editors.length; i++) {
         if (editors[i].document === document) {
@@ -96,12 +100,14 @@ class DocumentHandler implements vscode.QuickPickItem {
         });
     }
 
-    private updateDocumentViewRange(editor: vscode.TextEditor) {
-        const currentSelection = editor.selection;
-        const fileEndPosition = new vscode.Position(editor.document.lineCount - 1, 0);
-        if (currentSelection.active.isEqual(fileEndPosition)) {
-            editor.revealRange(new vscode.Range(fileEndPosition, fileEndPosition));
-        }
+    private updateDocumentViewRange() {
+        vscode.window.visibleTextEditors.forEach(currentEditor => {
+            const currentSelection = currentEditor.selection;
+            const fileEndPosition = new vscode.Position(currentEditor.document.lineCount - 1, 0);
+            if (currentSelection.active.isEqual(fileEndPosition)) {
+                currentEditor.revealRange(new vscode.Range(fileEndPosition, fileEndPosition));
+            }
+        });
     }
 
     public async updateDocumentInBackground() {
@@ -115,7 +121,7 @@ class DocumentHandler implements vscode.QuickPickItem {
 
                     // Continue with updating view range. This is only done when new data arrived before.
                     // Otherwise this might lead to strange behavior.
-                    this.updateDocumentViewRange(editor);
+                    this.updateDocumentViewRange();
                 }
             } else if (!this.processesStillRunning) {
                 // If no process is running and there are no new data, simply quit.
