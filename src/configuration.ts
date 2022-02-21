@@ -215,12 +215,13 @@ export class ActionGroup {
             return;
         }
         const processes2Debug = new Array<string>();
-        const noDebugName = 'No debugging';
+        const startString = 'Debug: ';
+        const noDebugName = startString + 'No debugging';
         processes2Debug.push(noDebugName);
 
         this.processes.forEach(process => {
             if (process.isConvertible2Debug()) {
-                processes2Debug.push(process.name);
+                processes2Debug.push(startString + process.name);
             }
         });
 
@@ -229,12 +230,15 @@ export class ActionGroup {
             return;
         }
 
-        const selection = await vscode.window.showQuickPick(processes2Debug);
+        var selection = await vscode.window.showQuickPick(processes2Debug);
 
         if (!selection || selection === noDebugName) {
             // No debugging selected.
             return;
         }
+
+        // Remove the start string.
+        selection = selection.replace(startString, '');
 
         const process2Debug = this.processes.find(process => process.name === selection);
         if (process2Debug) {
