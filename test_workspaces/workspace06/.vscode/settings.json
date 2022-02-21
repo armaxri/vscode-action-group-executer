@@ -1,0 +1,85 @@
+{
+    "actionGroupExecuter.actionGroups": [
+        {
+            "name": "Example0 - No Debug Option",
+            "processes": [{
+                "printName": true,
+                "command": {
+                    "call": [
+                        "./testCnt.py",
+                        "-c",
+                        "10",
+                        "-n",
+                        "A"
+                    ],
+                    "extendedOptions": {
+                        "cwd": "${workspaceFolder}"
+                    }
+                }
+            }]
+        },
+        {
+            "name": "Example1 - Debug Option",
+            "processes": [{
+                "printName": true,
+                "command": {
+                    "call": [
+                        "./testCnt.py",
+                        "-c",
+                        "10",
+                        "-n",
+                        "A"
+                    ],
+                    "extendedOptions": {
+                        "cwd": "${workspaceFolder}"
+                    },
+                    "debugTemplate": {
+                        "type": "python",
+                        "request": "launch",
+                        "console": "integratedTerminal"
+                    }
+                }
+            }]
+        },
+        {
+            "name": "Example2 - Choose Debug Process",
+            "processes": [
+                {
+                    "name": "Process A",
+                    "command": {
+                        "call": [
+                            "./testCnt.py",
+                            "-c",
+                            "10",
+                            "-n",
+                            "A"
+                        ],
+                        "extendedOptions": {
+                            "cwd": "${workspaceFolder}"
+                        }
+                    }
+                },
+                {
+                    "name": "Process B",
+                    "command": {
+                        "call": [
+                            "./testCnt.py",
+                            "-c",
+                            "10",
+                            "-n",
+                            "B"
+                        ],
+                        "extendedOptions": {
+                            "cwd": "${workspaceFolder}"
+                        }
+                    }
+                }
+            ],
+            "defaultProcessDebugTemplate": {
+                "type": "python",
+                "request": "launch",
+                "console": "integratedTerminal"
+            }
+        }
+    ]
+}

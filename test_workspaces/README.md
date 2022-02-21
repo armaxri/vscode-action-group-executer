@@ -25,3 +25,7 @@ A workspace using two directories holding settings in the workspace file and in 
 ## workspace05
 
 Simple one directory workspace to test processes intensively.
+
+## workspace06
+
+Simple one directory workspace to test process debugging functionality.
