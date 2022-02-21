@@ -25,6 +25,8 @@ async function selectAndRunGroup() {
     console.log(`Picked command named "${command?.name}".`);
 
     if (command) {
+        await command.check4ProcessDebugging();
+
         if (command.debugSession) {
             runDebugSession(command);
         }

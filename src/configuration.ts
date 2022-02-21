@@ -98,6 +98,19 @@ export class ProcessCommand {
             this.processEndMessage = defaultProcessEndMessage;
         }
     }
+
+    public convert2DebugSession(debugSession: DebugSession) {
+        if (debugSession.newConfiguration) {
+            debugSession.newConfiguration.program = this.program;
+            debugSession.newConfiguration.args = this.args;
+            if (this.extendedOptions.cwd) {
+                debugSession.newConfiguration.cwd = this.extendedOptions.cwd;
+            }
+        }
+        debugSession.delaySession = this.delayProcess;
+
+        return debugSession;
+    }
 }
 
 export class ProcessAction {
@@ -105,8 +118,9 @@ export class ProcessAction {
     printName: boolean = false;
     printCommand: boolean = false;
     commands: Array<ProcessCommand> = new Array<ProcessCommand>();
+    processDebugTemplate?: vscode.DebugConfiguration;
 
-    constructor(config: EIProcessAction, defaultProcessEndMessage: string, groupName: string) {
+    constructor(config: EIProcessAction, defaultProcessEndMessage: string, groupName: string, defaultProcessDebugTemplate: vscode.DebugConfiguration | undefined) {
         this.name = config.name ? config.name : groupName;
         if (typeof config.printName === 'boolean') {
             this.printName = config.printName;
@@ -124,14 +138,51 @@ export class ProcessAction {
                 this.commands.push(newCommand);
             });
         }
+
+        if (config.command?.debugTemplate) {
+            this.processDebugTemplate = config.command.debugTemplate;
+        } else {
+            if (typeof defaultProcessDebugTemplate !== 'undefined') {
+                this.processDebugTemplate = defaultProcessDebugTemplate;
+            }
+        }
+    }
+
+    public isConvertible2Debug() : boolean {
+        // A debug template is required and we only support it when one command is present.
+        // Otherwise the handling of multiple processes will get to complicated.
+        return typeof this.processDebugTemplate !== 'undefined' && this.commands.length === 1;
+    }
+
+    public convert2DebugSession() {
+        if (!this.processDebugTemplate) {
+            console.log(`Tried to convert a process to a debug session without template.`);
+            return;
+        }
+        this.processDebugTemplate.name = this.name;
+        const debugSession = new DebugSession(undefined, this.processDebugTemplate);
+        return this.commands[0].convert2DebugSession(debugSession);
     }
 }
 
-export interface DebugSession {
-    namedConfiguration?: string;
-    newConfiguration?: vscode.DebugConfiguration;
-    workspaceName?: string;
-    delaySession?: number;
+export class DebugSession {
+    namedConfiguration: string | undefined;
+    newConfiguration: vscode.DebugConfiguration | undefined;
+    workspaceName: string | undefined;
+    delaySession: number = 0;
+
+    constructor(config: EIDebugSession | undefined, debugTemplate: vscode.DebugConfiguration | undefined) {
+        if (typeof config !== 'undefined') {
+            this.namedConfiguration = config.namedConfiguration;
+            this.newConfiguration = config.newConfiguration;
+            this.workspaceName = config.workspaceName;
+            this.delaySession = typeof config.delaySession === 'number' ? config.delaySession : this.delaySession;
+        } else {
+            if (typeof debugTemplate !== 'undefined') {
+                this.newConfiguration = debugTemplate;
+            }
+        }
+    }
 }
 
 export class ActionGroup {
@@ -149,12 +200,46 @@ export class ActionGroup {
             this.terminals.push(newTerminalAction);
         });
         config.processes?.forEach(processAction => {
-            const newProcessAction = new ProcessAction(processAction, defaultProcessEndMessage ? defaultProcessEndMessage : '', this.name);
+            const newProcessAction = new ProcessAction(processAction, defaultProcessEndMessage ? defaultProcessEndMessage : '', this.name, config.defaultProcessDebugTemplate);
             this.processes.push(newProcessAction);
         });
         if (config.debugSession) {
             // Simple cast for the moment. Add class functionality later.
-            this.debugSession = <DebugSession>config.debugSession;
+            this.debugSession = new DebugSession(config.debugSession, undefined);
+        }
+    }
+
+    public async check4ProcessDebugging() {
+        if (this.debugSession) {
+            // If there is already a debug session set, a process can't be debugged.
+            return;
+        }
+        const processes2Debug = new Array<string>();
+        const noDebugName = 'No debugging';
+        processes2Debug.push(noDebugName);
+
+        this.processes.forEach(process => {
+            if (process.isConvertible2Debug()) {
+                processes2Debug.push(process.name);
+            }
+        });
+
+        if (processes2Debug.length <= 1) {
+            // No processes that allow debugging.
+            return;
+        }
+
+        const selection = await vscode.window.showQuickPick(processes2Debug);
+
+        if (!selection || selection === noDebugName) {
+            // No debugging selected.
+            return;
+        }
+
+        const process2Debug = this.processes.find(process => process.name === selection);
+        if (process2Debug) {
+            this.debugSession = process2Debug.convert2DebugSession();
+            this.processes = this.processes.filter(obj => obj !== process2Debug);
         }
     }
 }
