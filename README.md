@@ -300,6 +300,8 @@ Initial release of Action Group Executer.
 * In processes resolving of environment variables like `$HOME` will not work and will just be interpreted as strings. Use `${env:HOME}` instead.
 * File tabs for processes are created with a 500 ms delay. Otherwise VS Code will fail creating the next window.
 * When starting a debugger, VS Code will ask to safe the currently selected file.
+* When debugging a process, the output is no longer written to a file tab but instead to the debug console.
+* If commands are used spawning several processes after another, they will not check the return code of the previous process exit. How an end should be configured is still to decide.
 
 ## Requirements
 
