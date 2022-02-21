@@ -243,6 +243,7 @@ Execution groups can be added under the `actionGroupExecuter.actionGroups` setti
 * Added send some input to the process behind the selected document.
 * Added debugging of processes by converting processes to debug sessions using templates.
 * Error handling for processes was added.
+* Kill all processes when the window is closed.
 
 ### 0.0.8
 
