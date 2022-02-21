@@ -43,14 +43,12 @@ The following settings can be set and enter `ActionGroupExec: Execute Action Gro
         },
         {
             "name": "Example2",
-            "terminals": [
-                {
-                    // There is no need for a name since there
-                    // is only one command. And the group
-                    // name is enough.
-                    "command": "echo Hello && sleep 5 && echo Hallo"
-                }
-            ],
+            "terminals": [{
+                // There is no need for a name since there
+                // is only one command. And the group
+                // name is enough.
+                "command": "echo Hello && sleep 5 && echo Hallo"
+            }],
             // Debug the selected python file.
             "debugSession": {
                 // Use a standard launch configuration and place it
@@ -66,18 +64,16 @@ The following settings can be set and enter `ActionGroupExec: Execute Action Gro
         },
         {
             "name": "Example3",
-            "terminals": [
-                {
-                    "command": "echo Hallo && sleep 5 && cat ${file}",
-                    // "extendedOptions" is used to simply pass
-                    // arguments to the VS Code terminal creation
-                    // function.
-                    "extendedOptions": {
-                        "name": "Example3Override",
-                        "cwd": "C:\\"
-                    }
+            "terminals": [{
+                "command": "echo Hallo && sleep 5 && cat ${file}",
+                // "extendedOptions" is used to simply pass
+                // arguments to the VS Code terminal creation
+                // function.
+                "extendedOptions": {
+                    "name": "Example3Override",
+                    "cwd": "C:\\"
                 }
-            ],
+            }],
             // Debug with a given launch configuration by it's name.
             "debugSession": {
                 // Specify the launch configuration by it's name.
@@ -95,12 +91,8 @@ The following settings can be set and enter `ActionGroupExec: Execute Action Gro
             // ${env:HOME} will be replaced with the content of the
             // environment variable.
             "name": "Example4 - list files in ${env:HOME}",
-            "terminals": [
-                {
-                    // Get environment variables for your commands.
-                    "command": "ls -la ${env:HOME}"
-                }
-            ]
+            // Get environment variables for your commands.
+            "terminals": [{ "command": "ls -la ${env:HOME}" }]
         },
         {
             "name": "Example5 - ls -la ${env:HOME}",
@@ -108,11 +100,7 @@ The following settings can be set and enter `ActionGroupExec: Execute Action Gro
             "processes": [{
                 "command": {
                     // Note that the command and all arguments are separated strings.
-                    "call": [
-                        "ls",
-                        "-la",
-                        "${env:HOME}"
-                    ],
+                    "call": [ "ls", "-la", "${env:HOME}" ],
                     // Print nothing after the end of the process.
                     "hideProcessEndMessage": true
                 }
@@ -126,26 +114,17 @@ The following settings can be set and enter `ActionGroupExec: Execute Action Gro
                 // Note that each command group will be spawned in the same file tab.
                 "commands": [
                     {
-                        "call": [
-                            "ls",
-                            "-la",
-                            // Note that "$HOME" will not work but "${env:HOME}" is a valid alternative.
-                            "${env:HOME}"
-                        ],
+                        // Note that "$HOME" will not work but "${env:HOME}" is a valid alternative.
+                        "call": [ "ls", "-la", "${env:HOME}" ],
                         "processEndMessage": "\nEnded first process!"
                     },
                     {
-                        "call": [
-                            "ls",
-                            "-la"
-                        ],
+                        "call": [ "ls", "-la" ],
                         // Use the "extendedOptions" to directly access node.js spawn process
                         // "SpawnOptionsWithoutStdio" setting for configuration of the execution.
                         "extendedOptions": {
                             "cwd": "${workspaceFolder}",
-                            "env": {
-                                "TEST_WORLD": "Hello World."
-                            }
+                            "env": { "TEST_WORLD": "Hello World." }
                         },
                         "processEndMessage": "\nEnded second process! Return code was ${returnCode}."
                     }
@@ -158,11 +137,7 @@ The following settings can be set and enter `ActionGroupExec: Execute Action Gro
             "processes": [{
                 "command": {
                     // Note that the command and all arguments are separated strings.
-                    "call": [
-                        "ls",
-                        "-la",
-                        "${env:HOME}"
-                    ],
+                    "call": [ "ls", "-la", "${env:HOME}" ],
                     // Print nothing after the end of the process.
                     "hideProcessEndMessage": true
                 }
@@ -173,12 +148,7 @@ The following settings can be set and enter `ActionGroupExec: Execute Action Gro
             "processes": [{
                 // Note that each command group will be spawned in a separate file tab.
                 "command": {
-                    "call": [
-                        "ls",
-                        "-la",
-                        // Note that "$HOME" will not work but "${env:HOME}" is a valid alternative.
-                        "${env:HOME}"
-                    ],
+                    "call": [ "ls", "-la", "${env:HOME}" ],
                     "processEndMessage": "\nEnded first process!"
                 },
                 // Print this given name at the start of the process.
@@ -188,17 +158,12 @@ The following settings can be set and enter `ActionGroupExec: Execute Action Gro
                 // Print name of the whole command group at start of process.
                 "printName": true,
                 "command": {
-                    "call": [
-                        "ls",
-                        "-la"
-                    ],
+                    "call": [ "ls", "-la" ],
                     // Use the "extendedOptions" to directly access node.js spawn process
                     // "SpawnOptionsWithoutStdio" setting for configuration of the execution.
                     "extendedOptions": {
                         "cwd": "${workspaceFolder}",
-                        "env": {
-                            "TEST_WORLD": "Hello World."
-                        }
+                        "env": { "TEST_WORLD": "Hello World." }
                     },
                     "processEndMessage": "\nEnded second process! Return code was ${returnCode}."
                 }
