@@ -1,5 +1,11 @@
 # Change Log
 
+## [Unreleased]
+
+### Added
+
+* Default key binding to trigger group start.
+
 ## [0.0.9]
 
 ### Added

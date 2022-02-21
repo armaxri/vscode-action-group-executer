@@ -57,6 +57,13 @@
                 "category": "ActionGroupExec"
             }
         ],
+        "keybindings": [
+            {
+                "command": "action-group-executer.executeActionGroup",
+                "key": "ctrl+shift+a",
+                "mac": "cmd+shift+a"
+            }
+        ],
         "configuration": [
             {
                 "title": "ActionGroupExecuter",

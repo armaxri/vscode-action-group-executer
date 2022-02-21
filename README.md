@@ -232,6 +232,10 @@ Execution groups can be added under the `actionGroupExecuter.actionGroups` setti
 
 ## Release Notes
 
+### [Unreleased]
+
+* Default key binding to trigger group start.
+
 ### 0.0.9
 
 * Printing of process names into the document at start.
