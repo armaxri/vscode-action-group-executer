@@ -235,6 +235,7 @@ Execution groups can be added under the `actionGroupExecuter.actionGroups` setti
 ### [Unreleased]
 
 * Default key binding to trigger group start.
+* Use the current file editor for scrolling down on processes.
 
 ### 0.0.9
 

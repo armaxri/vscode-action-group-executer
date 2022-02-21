@@ -6,6 +6,10 @@
 
 * Default key binding to trigger group start.
 
+### Fixed
+
+* Use the current file editor for scrolling down on processes.
+
 ## [0.0.9]
 
 ### Added
