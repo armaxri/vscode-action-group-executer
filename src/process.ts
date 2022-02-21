@@ -284,6 +284,11 @@ async function runCall(documentHandle: DocumentHandler) {
         handleData(data, 'stderr');
     });
 
+    subprocess.on('error', (err) => {
+        handleData(`Child process created an error: ${err}`, 'process_error');
+        vscode.window.showErrorMessage(`Process triggered error: ${err}`);
+    });
+
     subprocess.on('exit', (code) => {
         console.log(`Child process exited with code ${code}.`);
         if (!currentCommand.hideProcessEndMessage) {
