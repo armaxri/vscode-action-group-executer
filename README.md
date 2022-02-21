@@ -232,7 +232,7 @@ Execution groups can be added under the `actionGroupExecuter.actionGroups` setti
 
 ## Release Notes
 
-### [Unreleased]
+### 0.0.9
 
 * Printing of process names into the document at start.
 * Printing of process calls.
