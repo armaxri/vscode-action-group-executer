@@ -120,13 +120,13 @@ class DocumentHandler implements vscode.QuickPickItem {
             } else if (!this.processesStillRunning) {
                 // If no process is running and there are no new data, simply quit.
                 console.log('Ending document handle caused by ended process.');
-                DocumentHandleRegistry.activeHandles.splice(DocumentHandleRegistry.activeHandles.indexOf(this));
+                DocumentHandleRegistry.activeHandles = DocumentHandleRegistry.activeHandles.filter(obj => obj !== this);
                 return;
             }
             await utils.delay(100);
         }
         console.log('Ending document handle caused by closed document.');
-        DocumentHandleRegistry.activeHandles.splice(DocumentHandleRegistry.activeHandles.indexOf(this));
+        DocumentHandleRegistry.activeHandles = DocumentHandleRegistry.activeHandles.filter(obj => obj !== this);
     }
 
     public addNewData(newData: string) {
