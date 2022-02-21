@@ -21,6 +21,10 @@ abstract class DocumentHandleRegistry {
 }
 
 function getMatchingEditor(document: vscode.TextDocument) {
+    const activeEditor = vscode.window.activeTextEditor;
+    if (activeEditor?.document === document) {
+        return activeEditor;
+    }
     const editors = vscode.window.visibleTextEditors;
     for (let i = 0; i < editors.length; i++) {
         if (editors[i].document === document) {
