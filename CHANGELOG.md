@@ -11,6 +11,7 @@
 * Select processes via command and kill them.
 * Select processes via command and send some input.
 * Added send some input to the process behind the selected document.
+* Added debugging of processes by converting processes to debug sessions using templates.
 
 ## [0.0.8]
 

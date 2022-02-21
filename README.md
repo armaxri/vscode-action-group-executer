@@ -203,6 +203,45 @@ The following settings can be set and enter `ActionGroupExec: Execute Action Gro
                     "processEndMessage": "\nEnded second process! Return code was ${returnCode}."
                 }
             }]
+        },
+        {
+            "name": "Example7 - Debug python processes",
+            "processes": [
+                {
+                    "command": {
+                        "name": "Process 1",
+                        "call": [ "./script1.py" ],
+                        "extendedOptions": { "cwd": "${workspaceFolder}" }
+                    }
+                },
+                {
+                    "command": {
+                        "name": "Process 2",
+                        "call": [ "./script2.py", "arg1", "arg2" ],
+                        "extendedOptions": { "cwd": "${workspaceFolder}" }
+                    }
+                },
+                {
+                    "command": {
+                        "name": "Process 3",
+                        "call": [ "./script3.py" ],
+                        "extendedOptions": { "cwd": "${workspaceFolder}" }
+                    },
+                    // This process has a debug template, which is used merged with the
+                    // process setting to create a debug session.
+                    "debugTemplate": {
+                        "type": "python",
+                        "request": "launch"
+                    }
+                }
+            ],
+            // These settings are used together with the settings of process 1 and 2
+            // to create a debug session if selected.
+            "defaultProcessDebugTemplate": {
+                "type": "python",
+                "request": "launch",
+                "console": "integratedTerminal"
+            }
         }
     ]
 }
@@ -237,6 +276,7 @@ Execution groups can be added under the `actionGroupExecuter.actionGroups` setti
 * Select processes via command and kill them.
 * Select processes via command and send some input.
 * Added send some input to the process behind the selected document.
+* Added debugging of processes by converting processes to debug sessions using templates.
 
 ### 0.0.8
 
