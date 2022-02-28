@@ -6,6 +6,10 @@
 
 * Default key binding to trigger group start.
 
+### Changed
+
+* No selection of a debug target (this means no target, including no debug, was selected) will cause a group execution abort.
+
 ### Fixed
 
 * Use the current file editor for scrolling down on processes.

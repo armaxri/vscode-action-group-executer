@@ -25,7 +25,13 @@ async function selectAndRunGroup() {
     console.log(`Picked command named "${command?.name}".`);
 
     if (command) {
-        await command.check4ProcessDebugging();
+        // Adjust the commands by creating debugging sessions from processes.
+        // This is also a point were the execution of the whole group can
+        // be stopped.
+        if (await command.check4ProcessDebugging()) {
+            console.log(`Execution was aborted during selection of debug session.`);
+            return;
+        }
 
         if (command.debugSession) {
             runDebugSession(command);

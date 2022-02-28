@@ -209,10 +209,10 @@ export class ActionGroup {
         }
     }
 
-    public async check4ProcessDebugging() {
+    public async check4ProcessDebugging() : Promise<boolean> {
         if (this.debugSession) {
             // If there is already a debug session set, a process can't be debugged.
-            return;
+            return false;
         }
         const processes2Debug = new Array<string>();
         const startString = 'Debug: ';
@@ -227,14 +227,19 @@ export class ActionGroup {
 
         if (processes2Debug.length <= 1) {
             // No processes that allow debugging.
-            return;
+            return false;
         }
 
         var selection = await vscode.window.showQuickPick(processes2Debug);
 
-        if (!selection || selection === noDebugName) {
+        if (!selection) {
+            // Nothing selected, so trigger abort of all actions.
+            return true;
+        }
+
+        if (selection === noDebugName) {
             // No debugging selected.
-            return;
+            return false;
         }
 
         // Remove the start string.
@@ -245,6 +250,8 @@ export class ActionGroup {
             this.debugSession = process2Debug.convert2DebugSession();
             this.processes = this.processes.filter(obj => obj !== process2Debug);
         }
+
+        return false;
     }
 }
 
