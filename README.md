@@ -11,6 +11,7 @@ The following settings can be set and enter `ActionGroupExec: Execute Action Gro
 ```jsonc
 {
     "actionGroupExecuter.defaultProcessEndMessage": "\n\nStop of work!",
+    "actionGroupExecuter.defaultFileAssociation": "log",
     "actionGroupExecuter.actionGroups": [
         {
             "name": "Example1",
@@ -111,6 +112,8 @@ The following settings can be set and enter `ActionGroupExec: Execute Action Gro
             "processes": [{
                 // Print the command just starting with the arguments.
                 "printCommand": true,
+                // Select the way display to display the output.
+                "fileAssociation": "plaintext",
                 // Note that each command group will be spawned in the same file tab.
                 "commands": [
                     {
@@ -228,7 +231,7 @@ The debug sessions `newConfiguration` and the `extendedOptions` for the terminal
 
 ## Extension Settings
 
-Execution groups can be added under the `actionGroupExecuter.actionGroups` setting. `actionGroupExecuter.defaultProcessEndMessage` can be used to define a user specific message that is displayed after the execution of a process which output is placed the file tab.
+Execution groups can be added under the `actionGroupExecuter.actionGroups` setting. `actionGroupExecuter.defaultProcessEndMessage` can be used to define a user specific message that is displayed after the execution of a process which output is placed the file tab. With the `actionGroupExecuter.defaultFileAssociation` setting the display of the file tabs for process output can be configured.
 
 ## Release Notes
 
@@ -238,6 +241,7 @@ Execution groups can be added under the `actionGroupExecuter.actionGroups` setti
 * Use the current file editor for scrolling down on processes.
 * All file editors viewing a process will follow down if the last row was selected.
 * No selection of a debug target (this means no target, including no debug, was selected) will cause a group execution abort.
+* File association can be configured for command to file tab execution.
 
 ### 0.0.9
 

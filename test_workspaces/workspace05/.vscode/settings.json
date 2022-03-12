@@ -221,6 +221,7 @@
             "name": "Example12 - python stdin check",
             "processes": [{
                 "printCommand": true,
+                "fileAssociation": "log",
                 "command": {
                     "call": [
                         "./testStdin.py"
