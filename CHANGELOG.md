@@ -5,6 +5,7 @@
 ### Added
 
 * Default key binding to trigger group start.
+* File association can be configured for command to file tab execution.
 
 ### Changed
 

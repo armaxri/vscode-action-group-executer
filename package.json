@@ -73,6 +73,11 @@
                         "description": "Message that is added to process file tabs when a command was executed.",
                         "default": "\n\n\nProcess has ended with return code ${returnCode}!\n\n\n"
                     },
+                    "actionGroupExecuter.defaultFileAssociation": {
+                        "type": "string",
+                        "description": "Default file association of the tabs tabs spawned to display the process output.",
+                        "default": "plaintext"
+                    },
                     "actionGroupExecuter.actionGroups": {
                         "type": "array",
                         "uniqueItems": true,
@@ -104,6 +109,11 @@
                                             "printCommand": {
                                                 "type": "boolean",
                                                 "description": "Print the commands executed as sub process."
+                                            },
+                                            "fileAssociation": {
+                                                "type": "string",
+                                                "description": "File association of the tabs tabs spawned to display the process output.",
+                                                "default": "plaintext"
                                             },
                                             "command": {
                                                 "type": "object",

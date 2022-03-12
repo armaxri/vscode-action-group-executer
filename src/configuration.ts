@@ -29,6 +29,7 @@ export interface EIProcessAction {
     printCommand?: boolean;
     command?: EIProcessCommand;
     commands?: Array<EIProcessCommand>;
+    fileAssociation?: string;
 }
 
 export interface EIDebugSession {
@@ -119,8 +120,9 @@ export class ProcessAction {
     printCommand: boolean = false;
     commands: Array<ProcessCommand> = new Array<ProcessCommand>();
     processDebugTemplate?: vscode.DebugConfiguration;
+    fileAssociationType: string;
 
-    constructor(config: EIProcessAction, defaultProcessEndMessage: string, groupName: string, defaultProcessDebugTemplate: vscode.DebugConfiguration | undefined) {
+    constructor(config: EIProcessAction, defaultProcessEndMessage: string, defaultFileAssociation: string, groupName: string, defaultProcessDebugTemplate: vscode.DebugConfiguration | undefined) {
         this.name = config.name ? config.name : groupName;
         if (typeof config.printName === 'boolean') {
             this.printName = config.printName;
@@ -146,6 +148,8 @@ export class ProcessAction {
                 this.processDebugTemplate = defaultProcessDebugTemplate;
             }
         }
+
+        this.fileAssociationType = config.fileAssociation ? config.fileAssociation : defaultFileAssociation;
     }
 
     public isConvertible2Debug() : boolean {
@@ -192,15 +196,17 @@ export class ActionGroup {
     selectedWorkspace: vscode.WorkspaceFolder | null | undefined = null;
     processes: Array<ProcessAction> = new Array<ProcessAction>();
 
-    constructor(config: EIActionGroup, defaultProcessEndMessage: string | undefined) {
+    constructor(config: EIActionGroup, defaultProcessEndMessage: string | undefined, defaultFileAssociation: string | undefined) {
         this.name = config.name;
+        const defaultProcessEndMessageAdj = defaultProcessEndMessage ? defaultProcessEndMessage : '';
+        const defaultFileAssociationAdj = defaultFileAssociation ? defaultFileAssociation : '';
 
         config.terminals?.forEach(terminalAction => {
             const newTerminalAction = new TerminalAction(terminalAction, this.name);
             this.terminals.push(newTerminalAction);
         });
         config.processes?.forEach(processAction => {
-            const newProcessAction = new ProcessAction(processAction, defaultProcessEndMessage ? defaultProcessEndMessage : '', this.name, config.defaultProcessDebugTemplate);
+            const newProcessAction = new ProcessAction(processAction, defaultProcessEndMessageAdj, defaultFileAssociationAdj, this.name, config.defaultProcessDebugTemplate);
             this.processes.push(newProcessAction);
         });
         if (config.debugSession) {
@@ -345,7 +351,7 @@ class StringReplacer {
     }
 }
 
-function createAndMergeGroups(config: vscode.WorkspaceConfiguration, defaultProcessEndMessage: string | undefined) {
+function createAndMergeGroups(config: vscode.WorkspaceConfiguration, defaultProcessEndMessage: string | undefined, defaultFileAssociation: string | undefined) {
     const inspect = config.inspect('actionGroups');
 
     console.log('---------');
@@ -362,7 +368,7 @@ function createAndMergeGroups(config: vscode.WorkspaceConfiguration, defaultProc
         if (Array.isArray(configValue)) {
             configValue.forEach(group => {
                 const castedGroup = <EIActionGroup>group;
-                const newGroup = new ActionGroup(castedGroup, defaultProcessEndMessage);
+                const newGroup = new ActionGroup(castedGroup, defaultProcessEndMessage, defaultFileAssociation);
                 mergedCommands.push(newGroup);
             });
         }
@@ -398,7 +404,7 @@ export function getActionGroups() {
     // Get the configuration based on the current file.
     const correspondingWorkspace = utils.getCurrentWorkspace();
     const config = vscode.workspace.getConfiguration('actionGroupExecuter', correspondingWorkspace);
-    const commands = createAndMergeGroups(config, config.get<string>('defaultProcessEndMessage'));
+    const commands = createAndMergeGroups(config, config.get<string>('defaultProcessEndMessage'), config.get<string>('defaultFileAssociation'));
 
     if (!commands) {
         vscode.window.showWarningMessage('No configuration for ActionGroupExecuter found in settings. Set "actionGroupExecuter.actionGroups" in your settings.');
