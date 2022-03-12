@@ -169,6 +169,14 @@ class KillProcessQuickPick extends ControlRunningProcessQuickPickItem  {
     }
 }
 
+async function sendMessage2Process(documentHandle: DocumentHandler) {
+    const input = await vscode.window.showInputBox();
+    if (input) {
+        console.log(`Writing "${input}" to process.`);
+        documentHandle.currentSubProcess?.stdin.write(input + '\n');
+    }
+}
+
 class SendInput2ProcessQuickPick extends ControlRunningProcessQuickPickItem  {
 
     constructor(documentHandle: DocumentHandler) {
@@ -176,11 +184,7 @@ class SendInput2ProcessQuickPick extends ControlRunningProcessQuickPickItem  {
     }
 
     async runAction() {
-        const input = await vscode.window.showInputBox();
-        if (input) {
-            console.log(`Writing "${input}" to process.`);
-            this.documentHandle.currentSubProcess?.stdin.write(input + '\n');
-        }
+        sendMessage2Process(this.documentHandle);
     }
 }
 
@@ -213,11 +217,7 @@ export async function sendMessage2RunningProcess() {
         const handleToFile = DocumentHandleRegistry.getHandleBehindTextDocument(selectedTextEditor.document);
         if (handleToFile) {
             console.log('Found process behind current file tab.');
-            const input = await vscode.window.showInputBox();
-            if (input) {
-                console.log(`Writing "${input}" to process.`);
-                handleToFile.currentSubProcess?.stdin.write(input + '\n');
-            }
+            sendMessage2Process(handleToFile);
         } else {
             console.log('No process found behind current file tab.');
         }
