@@ -172,8 +172,11 @@ class KillProcessQuickPick extends ControlRunningProcessQuickPickItem  {
 async function sendMessage2Process(documentHandle: DocumentHandler) {
     const input = await vscode.window.showInputBox();
     if (input) {
-        console.log(`Writing "${input}" to process.`);
-        documentHandle.currentSubProcess?.stdin.write(input + '\n');
+        console.log(`Received write input "${input}".`);
+        const message = utils.userInput2String(input);
+
+        console.log(`Writing translated "${message}" to process.`);
+        documentHandle.currentSubProcess?.stdin.write(message + '\n');
     }
 }
 

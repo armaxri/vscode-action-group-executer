@@ -54,3 +54,7 @@ export function replaceAllStrings(currentObject: any, replaceFunction: (currentS
         });
     }
 }
+
+export function userInput2String(inputString: string) {
+    return inputString;
+}
