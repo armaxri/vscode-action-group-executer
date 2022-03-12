@@ -56,5 +56,15 @@ export function replaceAllStrings(currentObject: any, replaceFunction: (currentS
 }
 
 export function userInput2String(inputString: string) {
-    return inputString;
+    var resultString = '';
+    var index = 0;
+
+    while (index < inputString.length) {
+        const currentChar = inputString.charAt(index);
+        resultString = resultString + currentChar;
+
+        index = index + 1;
+    }
+
+    return resultString;
 }
