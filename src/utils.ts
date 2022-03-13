@@ -30,7 +30,7 @@ export function getWorkspaceFromName(workspaceName: string) {
         vscode.window.showErrorMessage(`Running in a no workspace mode, so a workspace "${workspaceName}" cannot be found.`);
         return null;
     }
-    for(let workspace of workspaces) {
+    for (let workspace of workspaces) {
         if (workspace.name === workspaceName) {
             console.log(`Found a workspace with the name "${workspaceName}".`);
             return workspace;
@@ -61,7 +61,55 @@ export function userInput2String(inputString: string) {
 
     while (index < inputString.length) {
         const currentChar = inputString.charAt(index);
-        resultString = resultString + currentChar;
+
+        if (currentChar === '\\') {
+            if (index + 1 < inputString.length) {
+                const nextChar = inputString.charAt(index + 1);
+
+                switch (nextChar) {
+                    case '\\':
+                        resultString = resultString + nextChar;
+                        break;
+                    case '0':
+                        resultString = resultString + '\0';
+                        break;
+                    case 'a':
+                        resultString = resultString + '\a';
+                        break;
+                    case 'b':
+                        resultString = resultString + '\b';
+                        break;
+                    case 't':
+                        resultString = resultString + '\t';
+                        break;
+                    case 'n':
+                        resultString = resultString + '\n';
+                        break;
+                    case 'v':
+                        resultString = resultString + '\v';
+                        break;
+                    case 'f':
+                        resultString = resultString + '\f';
+                        break;
+                    case 'r':
+                        resultString = resultString + '\r';
+                        break;
+
+                    default:
+                        // This might be shady but if there is no correct replacement, we use both characters.
+                        resultString = resultString + currentChar;
+                        resultString = resultString + nextChar;
+                        break;
+                }
+
+                // Extra plus one because we consumed another character.
+                index = index + 1;
+            } else {
+                resultString = resultString + currentChar;
+            }
+        } else {
+            resultString = resultString + currentChar;
+        }
 
         index = index + 1;
     }
