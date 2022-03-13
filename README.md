@@ -242,6 +242,7 @@ Execution groups can be added under the `actionGroupExecuter.actionGroups` setti
 * All file editors viewing a process will follow down if the last row was selected.
 * No selection of a debug target (this means no target, including no debug, was selected) will cause a group execution abort.
 * File association can be configured for command to file tab execution.
+* Common backslash based control characters are now translated and correctly send to sub processes.
 
 ### 0.0.9
 

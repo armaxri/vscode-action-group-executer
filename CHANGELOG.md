@@ -10,6 +10,7 @@
 ### Changed
 
 * No selection of a debug target (this means no target, including no debug, was selected) will cause a group execution abort.
+* Common backslash based control characters are now translated and correctly send to sub processes.
 
 ### Fixed
 
