@@ -152,7 +152,7 @@ export class ProcessAction {
         this.fileAssociationType = config.fileAssociation ? config.fileAssociation : defaultFileAssociation;
     }
 
-    public isConvertible2Debug() : boolean {
+    public isConvertible2Debug(): boolean {
         // A debug template is required and we only support it when one command is present.
         // Otherwise the handling of multiple processes will get to complicated.
         return typeof this.processDebugTemplate !== 'undefined' && this.commands.length === 1;
@@ -215,7 +215,7 @@ export class ActionGroup {
         }
     }
 
-    public async check4ProcessDebugging() : Promise<boolean> {
+    public async check4ProcessDebugging(): Promise<boolean> {
         if (this.debugSession) {
             // If there is already a debug session set, a process can't be debugged.
             return false;
@@ -323,7 +323,7 @@ class StringReplacer {
         resultString = resultString.replace(/\${workspaceFolderBasename}/g, this.workspaceFolderBasename);
         resultString = resultString.replace(/\${workspaceFolder}/g, this.workspaceFolder);
 
-        resultString = resultString.replace(/\${env\:([^}]+)}/g, function(substring, envName) {
+        resultString = resultString.replace(/\${env\:([^}]+)}/g, function (substring, envName) {
             const envVariable = process.env[envName];
             return envVariable ? envVariable : '';
         });

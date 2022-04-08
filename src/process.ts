@@ -9,8 +9,8 @@ const FILE_INITIAL_STRING = ' ';
 abstract class DocumentHandleRegistry {
     public static activeHandles: Array<DocumentHandler> = new Array<DocumentHandler>();
 
-    public static getHandleBehindTextDocument(document: vscode.TextDocument) : DocumentHandler | null {
-        for(let handle of this.activeHandles) {
+    public static getHandleBehindTextDocument(document: vscode.TextDocument): DocumentHandler | null {
+        for (let handle of this.activeHandles) {
             if (document === handle.document) {
                 return handle;
             }
@@ -59,7 +59,7 @@ class DocumentHandler implements vscode.QuickPickItem {
         this.description = this.getCurrentCommandAsString();
     }
 
-    public getCurrentCommand() : ProcessCommand {
+    public getCurrentCommand(): ProcessCommand {
         return this.processAction.commands[this.currentCommandNum];
     }
 
@@ -68,11 +68,11 @@ class DocumentHandler implements vscode.QuickPickItem {
         this.description = this.getCurrentCommandAsString();
     }
 
-    public hasNextCommand() : boolean {
+    public hasNextCommand(): boolean {
         return this.processAction.commands.length > this.currentCommandNum + 1;
     }
 
-    public getCurrentCommandAsString() : string {
+    public getCurrentCommandAsString(): string {
         const currentCommand = this.getCurrentCommand();
         const printableArguments = currentCommand.args.join('", "');
         return `program: "${currentCommand.program}", args: "${printableArguments}"`;
@@ -157,7 +157,7 @@ abstract class ControlRunningProcessQuickPickItem implements vscode.QuickPickIte
     abstract runAction(): any;
 }
 
-class KillProcessQuickPick extends ControlRunningProcessQuickPickItem  {
+class KillProcessQuickPick extends ControlRunningProcessQuickPickItem {
 
     constructor(documentHandle: DocumentHandler) {
         super('Kill Process', documentHandle);
@@ -180,7 +180,7 @@ async function sendMessage2Process(documentHandle: DocumentHandler) {
     }
 }
 
-class SendInput2ProcessQuickPick extends ControlRunningProcessQuickPickItem  {
+class SendInput2ProcessQuickPick extends ControlRunningProcessQuickPickItem {
 
     constructor(documentHandle: DocumentHandler) {
         super('Send Input to Process', documentHandle);
@@ -338,7 +338,7 @@ async function runProcess(process: ProcessAction, spawnNumber: number) {
     // Use an initial string to force the creation of the document.
     // Remove it on the first write action.
     const initialContent = process.printName ? process.name + '\n' : FILE_INITIAL_STRING;
-    const document = await vscode.workspace.openTextDocument({language: process.fileAssociationType, content: initialContent});
+    const document = await vscode.workspace.openTextDocument({ language: process.fileAssociationType, content: initialContent });
     await vscode.window.showTextDocument(document);
     var documentHandle = new DocumentHandler(document, process);
     DocumentHandleRegistry.activeHandles.push(documentHandle);
