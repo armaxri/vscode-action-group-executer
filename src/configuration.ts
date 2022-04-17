@@ -237,8 +237,16 @@ export class DebugSession {
     }
 }
 
-export class ActionGroup {
+enum GroupSource {
+    default = "Default Settings",
+    user = "User Settings",
+    workspace = "Workspace Settings",
+    workspaceFolder = "Workspace Folder Settings",
+}
+
+export class ActionGroup implements vscode.QuickPickItem {
     name: string;
+    label: string;
     terminals: Array<TerminalAction> = new Array<TerminalAction>();
     debugSession?: DebugSession;
     selectedWorkspace: vscode.WorkspaceFolder | null | undefined = null;
@@ -247,9 +255,11 @@ export class ActionGroup {
     constructor(
         config: EIActionGroup,
         defaultProcessEndMessage: string | undefined,
-        defaultFileAssociation: string | undefined
+        defaultFileAssociation: string | undefined,
+        settingsSource: GroupSource
     ) {
         this.name = config.name;
+        this.label = this.name + " (" + settingsSource + ")";
         const defaultProcessEndMessageAdj = defaultProcessEndMessage
             ? defaultProcessEndMessage
             : "";
@@ -487,23 +497,24 @@ function createAndMergeGroups(
 
     var mergedCommands = Array<ActionGroup>();
 
-    function createAndAddGroups(configValue: any) {
+    function createAndAddGroups(configValue: any, source: GroupSource) {
         if (Array.isArray(configValue)) {
             configValue.forEach((group) => {
                 const castedGroup = <EIActionGroup>group;
                 const newGroup = new ActionGroup(
                     castedGroup,
                     defaultProcessEndMessage,
-                    defaultFileAssociation
+                    defaultFileAssociation,
+                    source
                 );
                 mergedCommands.push(newGroup);
             });
         }
     }
 
-    createAndAddGroups(inspect?.defaultValue);
-    createAndAddGroups(inspect?.globalValue);
-    createAndAddGroups(inspect?.workspaceValue);
+    createAndAddGroups(inspect?.defaultValue, GroupSource.default);
+    createAndAddGroups(inspect?.globalValue, GroupSource.user);
+    createAndAddGroups(inspect?.workspaceValue, GroupSource.workspace);
 
     // If we have no workspace file, the content of the workspaceValue will equal the workspaceFolderValue.
     // In that case we get all declarations doubled, that is actually not cool :/
@@ -511,7 +522,10 @@ function createAndMergeGroups(
     // workspaceValue over it, because you can have any file open and still get the setting. The other
     // way around would mean that you won't get any group if a radom file outside the workspace is selected.
     if (vscode.workspace.workspaceFile) {
-        createAndAddGroups(inspect?.workspaceFolderValue);
+        createAndAddGroups(
+            inspect?.workspaceFolderValue,
+            GroupSource.workspaceFolder
+        );
     }
 
     return <Array<ActionGroup>>mergedCommands;

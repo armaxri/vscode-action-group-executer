@@ -235,6 +235,10 @@ Execution groups can be added under the `actionGroupExecuter.actionGroups` setti
 
 ## Release Notes
 
+### [Unreleased]
+
+* Extended command name with location source of the command.
+
 ### 0.0.10
 
 * Default key binding to trigger group start.
