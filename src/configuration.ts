@@ -1,6 +1,6 @@
-import * as vscode from 'vscode';
-import * as path from 'path';
-import * as child_process from 'child_process';
+import * as vscode from "vscode";
+import * as path from "path";
+import * as child_process from "child_process";
 
 import * as utils from "./utils";
 
@@ -67,10 +67,22 @@ export class TerminalAction {
             this.extendedOptions = config.extendedOptions;
         }
 
-        this.showTerminal = typeof config.showTerminal === 'boolean' ? config.showTerminal : this.showTerminal;
-        this.disposeOldTerminal = typeof config.disposeOldTerminal === 'boolean' ? config.disposeOldTerminal : this.disposeOldTerminal;
-        this.alwaysNewTerminal = typeof config.alwaysNewTerminal === 'boolean' ? config.alwaysNewTerminal : this.alwaysNewTerminal;
-        this.delayCommand = typeof config.delayCommand === 'number' ? config.delayCommand : this.delayCommand;
+        this.showTerminal =
+            typeof config.showTerminal === "boolean"
+                ? config.showTerminal
+                : this.showTerminal;
+        this.disposeOldTerminal =
+            typeof config.disposeOldTerminal === "boolean"
+                ? config.disposeOldTerminal
+                : this.disposeOldTerminal;
+        this.alwaysNewTerminal =
+            typeof config.alwaysNewTerminal === "boolean"
+                ? config.alwaysNewTerminal
+                : this.alwaysNewTerminal;
+        this.delayCommand =
+            typeof config.delayCommand === "number"
+                ? config.delayCommand
+                : this.delayCommand;
 
         this.command = config.command;
     }
@@ -90,8 +102,14 @@ export class ProcessCommand {
 
         this.extendedOptions = config.extendedOptions;
 
-        this.delayProcess = typeof config.delayProcess === 'number' ? config.delayProcess : this.delayProcess;
-        this.hideProcessEndMessage = typeof config.hideProcessEndMessage === 'boolean' ? config.hideProcessEndMessage : this.hideProcessEndMessage;
+        this.delayProcess =
+            typeof config.delayProcess === "number"
+                ? config.delayProcess
+                : this.delayProcess;
+        this.hideProcessEndMessage =
+            typeof config.hideProcessEndMessage === "boolean"
+                ? config.hideProcessEndMessage
+                : this.hideProcessEndMessage;
 
         if (config.processEndMessage) {
             this.processEndMessage = config.processEndMessage;
@@ -122,21 +140,35 @@ export class ProcessAction {
     processDebugTemplate?: vscode.DebugConfiguration;
     fileAssociationType: string;
 
-    constructor(config: EIProcessAction, defaultProcessEndMessage: string, defaultFileAssociation: string, groupName: string, defaultProcessDebugTemplate: vscode.DebugConfiguration | undefined) {
+    constructor(
+        config: EIProcessAction,
+        defaultProcessEndMessage: string,
+        defaultFileAssociation: string,
+        groupName: string,
+        defaultProcessDebugTemplate: vscode.DebugConfiguration | undefined
+    ) {
         this.name = config.name ? config.name : groupName;
-        if (typeof config.printName === 'boolean') {
+        if (typeof config.printName === "boolean") {
             this.printName = config.printName;
         } else {
             // Allow a shortcut for display by simply writing the name.
-            this.printName = typeof config.name === 'string';
+            this.printName = typeof config.name === "string";
         }
-        this.printCommand = typeof config.printCommand === 'boolean' ? config.printCommand : this.printCommand;
+        this.printCommand =
+            typeof config.printCommand === "boolean"
+                ? config.printCommand
+                : this.printCommand;
 
         if (config.command) {
-            this.commands.push(new ProcessCommand(config.command, defaultProcessEndMessage));
+            this.commands.push(
+                new ProcessCommand(config.command, defaultProcessEndMessage)
+            );
         } else {
-            config.commands?.forEach(command => {
-                const newCommand = new ProcessCommand(command, defaultProcessEndMessage);
+            config.commands?.forEach((command) => {
+                const newCommand = new ProcessCommand(
+                    command,
+                    defaultProcessEndMessage
+                );
                 this.commands.push(newCommand);
             });
         }
@@ -144,27 +176,37 @@ export class ProcessAction {
         if (config.command?.debugTemplate) {
             this.processDebugTemplate = config.command.debugTemplate;
         } else {
-            if (typeof defaultProcessDebugTemplate !== 'undefined') {
+            if (typeof defaultProcessDebugTemplate !== "undefined") {
                 this.processDebugTemplate = defaultProcessDebugTemplate;
             }
         }
 
-        this.fileAssociationType = config.fileAssociation ? config.fileAssociation : defaultFileAssociation;
+        this.fileAssociationType = config.fileAssociation
+            ? config.fileAssociation
+            : defaultFileAssociation;
     }
 
     public isConvertible2Debug(): boolean {
         // A debug template is required and we only support it when one command is present.
         // Otherwise the handling of multiple processes will get to complicated.
-        return typeof this.processDebugTemplate !== 'undefined' && this.commands.length === 1;
+        return (
+            typeof this.processDebugTemplate !== "undefined" &&
+            this.commands.length === 1
+        );
     }
 
     public convert2DebugSession() {
         if (!this.processDebugTemplate) {
-            console.log(`Tried to convert a process to a debug session without template.`);
+            console.log(
+                `Tried to convert a process to a debug session without template.`
+            );
             return;
         }
         this.processDebugTemplate.name = this.name;
-        const debugSession = new DebugSession(undefined, this.processDebugTemplate);
+        const debugSession = new DebugSession(
+            undefined,
+            this.processDebugTemplate
+        );
         return this.commands[0].convert2DebugSession(debugSession);
     }
 }
@@ -175,14 +217,20 @@ export class DebugSession {
     workspaceName: string | undefined;
     delaySession: number = 0;
 
-    constructor(config: EIDebugSession | undefined, debugTemplate: vscode.DebugConfiguration | undefined) {
-        if (typeof config !== 'undefined') {
+    constructor(
+        config: EIDebugSession | undefined,
+        debugTemplate: vscode.DebugConfiguration | undefined
+    ) {
+        if (typeof config !== "undefined") {
             this.namedConfiguration = config.namedConfiguration;
             this.newConfiguration = config.newConfiguration;
             this.workspaceName = config.workspaceName;
-            this.delaySession = typeof config.delaySession === 'number' ? config.delaySession : this.delaySession;
+            this.delaySession =
+                typeof config.delaySession === "number"
+                    ? config.delaySession
+                    : this.delaySession;
         } else {
-            if (typeof debugTemplate !== 'undefined') {
+            if (typeof debugTemplate !== "undefined") {
                 this.newConfiguration = debugTemplate;
             }
         }
@@ -196,22 +244,42 @@ export class ActionGroup {
     selectedWorkspace: vscode.WorkspaceFolder | null | undefined = null;
     processes: Array<ProcessAction> = new Array<ProcessAction>();
 
-    constructor(config: EIActionGroup, defaultProcessEndMessage: string | undefined, defaultFileAssociation: string | undefined) {
+    constructor(
+        config: EIActionGroup,
+        defaultProcessEndMessage: string | undefined,
+        defaultFileAssociation: string | undefined
+    ) {
         this.name = config.name;
-        const defaultProcessEndMessageAdj = defaultProcessEndMessage ? defaultProcessEndMessage : '';
-        const defaultFileAssociationAdj = defaultFileAssociation ? defaultFileAssociation : '';
+        const defaultProcessEndMessageAdj = defaultProcessEndMessage
+            ? defaultProcessEndMessage
+            : "";
+        const defaultFileAssociationAdj = defaultFileAssociation
+            ? defaultFileAssociation
+            : "";
 
-        config.terminals?.forEach(terminalAction => {
-            const newTerminalAction = new TerminalAction(terminalAction, this.name);
+        config.terminals?.forEach((terminalAction) => {
+            const newTerminalAction = new TerminalAction(
+                terminalAction,
+                this.name
+            );
             this.terminals.push(newTerminalAction);
         });
-        config.processes?.forEach(processAction => {
-            const newProcessAction = new ProcessAction(processAction, defaultProcessEndMessageAdj, defaultFileAssociationAdj, this.name, config.defaultProcessDebugTemplate);
+        config.processes?.forEach((processAction) => {
+            const newProcessAction = new ProcessAction(
+                processAction,
+                defaultProcessEndMessageAdj,
+                defaultFileAssociationAdj,
+                this.name,
+                config.defaultProcessDebugTemplate
+            );
             this.processes.push(newProcessAction);
         });
         if (config.debugSession) {
             // Simple cast for the moment. Add class functionality later.
-            this.debugSession = new DebugSession(config.debugSession, undefined);
+            this.debugSession = new DebugSession(
+                config.debugSession,
+                undefined
+            );
         }
     }
 
@@ -221,11 +289,11 @@ export class ActionGroup {
             return false;
         }
         const processes2Debug = new Array<string>();
-        const startString = 'Debug: ';
-        const noDebugName = startString + 'No debugging';
+        const startString = "Debug: ";
+        const noDebugName = startString + "No debugging";
         processes2Debug.push(noDebugName);
 
-        this.processes.forEach(process => {
+        this.processes.forEach((process) => {
             if (process.isConvertible2Debug()) {
                 processes2Debug.push(startString + process.name);
             }
@@ -249,12 +317,16 @@ export class ActionGroup {
         }
 
         // Remove the start string.
-        selection = selection.replace(startString, '');
+        selection = selection.replace(startString, "");
 
-        const process2Debug = this.processes.find(process => process.name === selection);
+        const process2Debug = this.processes.find(
+            (process) => process.name === selection
+        );
         if (process2Debug) {
             this.debugSession = process2Debug.convert2DebugSession();
-            this.processes = this.processes.filter(obj => obj !== process2Debug);
+            this.processes = this.processes.filter(
+                (obj) => obj !== process2Debug
+            );
         }
 
         return false;
@@ -262,19 +334,19 @@ export class ActionGroup {
 }
 
 class StringReplacer {
-    cwd: string = '';
-    fileBasenameNoExtensions: string = '';
-    fileBasename: string = '';
-    fileDirname: string = '';
-    fileExtname: string = '';
-    file: string = '';
-    lineNumber: string = '';
-    pathSeparator: string = '';
-    relativeFileDirname: string = '';
-    relativeFile: string = '';
-    selectedText: string = '';
-    workspaceFolderBasename: string = '';
-    workspaceFolder: string = '';
+    cwd: string = "";
+    fileBasenameNoExtensions: string = "";
+    fileBasename: string = "";
+    fileDirname: string = "";
+    fileExtname: string = "";
+    file: string = "";
+    lineNumber: string = "";
+    pathSeparator: string = "";
+    relativeFileDirname: string = "";
+    relativeFile: string = "";
+    selectedText: string = "";
+    workspaceFolderBasename: string = "";
+    workspaceFolder: string = "";
 
     constructor() {
         const editor = vscode.window.activeTextEditor;
@@ -282,7 +354,10 @@ class StringReplacer {
 
         if (editor?.document) {
             this.fileExtname = path.extname(editor.document.fileName);
-            this.fileBasenameNoExtensions = path.basename(editor.document.fileName, this.fileExtname);
+            this.fileBasenameNoExtensions = path.basename(
+                editor.document.fileName,
+                this.fileExtname
+            );
             this.fileBasename = path.basename(editor.document.fileName);
             this.fileDirname = path.dirname(editor.document.fileName);
             this.file = editor.document.fileName;
@@ -291,7 +366,9 @@ class StringReplacer {
                 this.selectedText = editor.document.getText(editor.selection);
             }
         }
-        this.lineNumber = `${editor?.selection ? editor?.selection.active.line + 1 : 0}`;
+        this.lineNumber = `${
+            editor?.selection ? editor?.selection.active.line + 1 : 0
+        }`;
         this.pathSeparator = path.sep;
 
         const currentWorkspace = utils.getCurrentWorkspace();
@@ -301,7 +378,10 @@ class StringReplacer {
         }
 
         this.relativeFile = path.relative(this.workspaceFolder, this.file);
-        this.relativeFileDirname = path.relative(this.workspaceFolder, this.fileDirname);
+        this.relativeFileDirname = path.relative(
+            this.workspaceFolder,
+            this.fileDirname
+        );
 
         this.logReplacements();
     }
@@ -310,32 +390,67 @@ class StringReplacer {
         var resultString = inputString;
 
         resultString = resultString.replace(/\${cwd}/g, this.cwd);
-        resultString = resultString.replace(/\${fileBasenameNoExtensions}/g, this.fileBasenameNoExtensions);
-        resultString = resultString.replace(/\${fileBasename}/g, this.fileBasename);
-        resultString = resultString.replace(/\${fileDirname}/g, this.fileDirname);
-        resultString = resultString.replace(/\${fileExtname}/g, this.fileExtname);
+        resultString = resultString.replace(
+            /\${fileBasenameNoExtensions}/g,
+            this.fileBasenameNoExtensions
+        );
+        resultString = resultString.replace(
+            /\${fileBasename}/g,
+            this.fileBasename
+        );
+        resultString = resultString.replace(
+            /\${fileDirname}/g,
+            this.fileDirname
+        );
+        resultString = resultString.replace(
+            /\${fileExtname}/g,
+            this.fileExtname
+        );
         resultString = resultString.replace(/\${file}/g, this.file);
         resultString = resultString.replace(/\${lineNumber}/g, this.lineNumber);
-        resultString = resultString.replace(/\${pathSeparator}/g, this.pathSeparator);
-        resultString = resultString.replace(/\${relativeFileDirname}/g, this.relativeFileDirname);
-        resultString = resultString.replace(/\${relativeFile}/g, this.relativeFile);
-        resultString = resultString.replace(/\${selectedText}/g, this.selectedText);
-        resultString = resultString.replace(/\${workspaceFolderBasename}/g, this.workspaceFolderBasename);
-        resultString = resultString.replace(/\${workspaceFolder}/g, this.workspaceFolder);
+        resultString = resultString.replace(
+            /\${pathSeparator}/g,
+            this.pathSeparator
+        );
+        resultString = resultString.replace(
+            /\${relativeFileDirname}/g,
+            this.relativeFileDirname
+        );
+        resultString = resultString.replace(
+            /\${relativeFile}/g,
+            this.relativeFile
+        );
+        resultString = resultString.replace(
+            /\${selectedText}/g,
+            this.selectedText
+        );
+        resultString = resultString.replace(
+            /\${workspaceFolderBasename}/g,
+            this.workspaceFolderBasename
+        );
+        resultString = resultString.replace(
+            /\${workspaceFolder}/g,
+            this.workspaceFolder
+        );
 
-        resultString = resultString.replace(/\${env\:([^}]+)}/g, function (substring, envName) {
-            const envVariable = process.env[envName];
-            return envVariable ? envVariable : '';
-        });
+        resultString = resultString.replace(
+            /\${env\:([^}]+)}/g,
+            function (substring, envName) {
+                const envVariable = process.env[envName];
+                return envVariable ? envVariable : "";
+            }
+        );
 
         return resultString;
     }
 
     private logReplacements() {
-        console.log('---------');
-        console.log('Replacement strings:');
+        console.log("---------");
+        console.log("Replacement strings:");
         console.log(`cwd:                      ${this.cwd}`);
-        console.log(`fileBasenameNoExtensions: ${this.fileBasenameNoExtensions}`);
+        console.log(
+            `fileBasenameNoExtensions: ${this.fileBasenameNoExtensions}`
+        );
         console.log(`fileBasename:             ${this.fileBasename}`);
         console.log(`fileDirname:              ${this.fileDirname}`);
         console.log(`fileExtname:              ${this.fileExtname}`);
@@ -345,30 +460,42 @@ class StringReplacer {
         console.log(`relativeFileDirname:      ${this.relativeFileDirname}`);
         console.log(`relativeFile:             ${this.relativeFile}`);
         console.log(`selectedText:             ${this.selectedText}`);
-        console.log(`workspaceFolderBasename:  ${this.workspaceFolderBasename}`);
+        console.log(
+            `workspaceFolderBasename:  ${this.workspaceFolderBasename}`
+        );
         console.log(`workspaceFolder:          ${this.workspaceFolder}`);
-        console.log('---------');
+        console.log("---------");
     }
 }
 
-function createAndMergeGroups(config: vscode.WorkspaceConfiguration, defaultProcessEndMessage: string | undefined, defaultFileAssociation: string | undefined) {
-    const inspect = config.inspect('actionGroups');
+function createAndMergeGroups(
+    config: vscode.WorkspaceConfiguration,
+    defaultProcessEndMessage: string | undefined,
+    defaultFileAssociation: string | undefined
+) {
+    const inspect = config.inspect("actionGroups");
 
-    console.log('---------');
+    console.log("---------");
     console.log(`inspect.key: "${inspect?.key}"`);
     console.log(`inspect.defaultValue: "${inspect?.defaultValue}"`);
     console.log(`inspect.globalValue: "${inspect?.globalValue}"`);
     console.log(`inspect.workspaceValue: "${inspect?.workspaceValue}"`);
-    console.log(`inspect.workspaceFolderValue: "${inspect?.workspaceFolderValue}"`);
-    console.log('---------');
+    console.log(
+        `inspect.workspaceFolderValue: "${inspect?.workspaceFolderValue}"`
+    );
+    console.log("---------");
 
     var mergedCommands = Array<ActionGroup>();
 
     function createAndAddGroups(configValue: any) {
         if (Array.isArray(configValue)) {
-            configValue.forEach(group => {
+            configValue.forEach((group) => {
                 const castedGroup = <EIActionGroup>group;
-                const newGroup = new ActionGroup(castedGroup, defaultProcessEndMessage, defaultFileAssociation);
+                const newGroup = new ActionGroup(
+                    castedGroup,
+                    defaultProcessEndMessage,
+                    defaultFileAssociation
+                );
                 mergedCommands.push(newGroup);
             });
         }
@@ -387,13 +514,13 @@ function createAndMergeGroups(config: vscode.WorkspaceConfiguration, defaultProc
         createAndAddGroups(inspect?.workspaceFolderValue);
     }
 
-    return <Array<ActionGroup>>(mergedCommands);
+    return <Array<ActionGroup>>mergedCommands;
 }
 
 function applyReplacementsInGroups(actionGroups: Array<ActionGroup>) {
     const replacer = new StringReplacer();
 
-    utils.replaceAllStrings(actionGroups, currentString => {
+    utils.replaceAllStrings(actionGroups, (currentString) => {
         return replacer.replaceMatches(currentString);
     });
 
@@ -403,23 +530,34 @@ function applyReplacementsInGroups(actionGroups: Array<ActionGroup>) {
 export function getActionGroups() {
     // Get the configuration based on the current file.
     const correspondingWorkspace = utils.getCurrentWorkspace();
-    const config = vscode.workspace.getConfiguration('actionGroupExecuter', correspondingWorkspace);
-    const commands = createAndMergeGroups(config, config.get<string>('defaultProcessEndMessage'), config.get<string>('defaultFileAssociation'));
+    const config = vscode.workspace.getConfiguration(
+        "actionGroupExecuter",
+        correspondingWorkspace
+    );
+    const commands = createAndMergeGroups(
+        config,
+        config.get<string>("defaultProcessEndMessage"),
+        config.get<string>("defaultFileAssociation")
+    );
 
     if (!commands) {
-        vscode.window.showWarningMessage('No configuration for ActionGroupExecuter found in settings. Set "actionGroupExecuter.actionGroups" in your settings.');
+        vscode.window.showWarningMessage(
+            'No configuration for ActionGroupExecuter found in settings. Set "actionGroupExecuter.actionGroups" in your settings.'
+        );
         return new Array<ActionGroup>();
     }
 
     // Consider more filtering.
-    const filteredGroups = commands.filter(command => utils.isNotEmptyString(command.name));
+    const filteredGroups = commands.filter((command) =>
+        utils.isNotEmptyString(command.name)
+    );
 
     // Apply adjustments before adding the corresponding workspace, so the strings in the object
     // will not be touched be recursive object analysis.
     const adjustedGroups = applyReplacementsInGroups(filteredGroups);
 
     // Attach the workspace that is currently selected, so the context of the calling is known.
-    adjustedGroups.forEach(group => {
+    adjustedGroups.forEach((group) => {
         group.selectedWorkspace = correspondingWorkspace;
     });
 

@@ -1,34 +1,46 @@
-import * as vscode from 'vscode';
+import * as vscode from "vscode";
 
 export function isNotEmptyString(value: any) {
-    return typeof value === 'string' && value.trim().length > 0;
+    return typeof value === "string" && value.trim().length > 0;
 }
 
 export function delay(ms: number) {
-    return new Promise(resolve => setTimeout(resolve, ms));
+    return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 export function getCurrentWorkspace() {
     if (vscode.workspace.workspaceFolders?.length === 1) {
-        console.log(`Only one workspace (${vscode.workspace.workspaceFolders[0].uri.fsPath}) present. Using it directly.`);
+        console.log(
+            `Only one workspace (${vscode.workspace.workspaceFolders[0].uri.fsPath}) present. Using it directly.`
+        );
         return vscode.workspace.workspaceFolders[0];
     }
-    console.log('Multi root workspace or non in selection. Using the current file to determine the workspace.');
+    console.log(
+        "Multi root workspace or non in selection. Using the current file to determine the workspace."
+    );
     const currentFileUri = vscode.window.activeTextEditor?.document.uri;
     console.log(`Using file URI "${currentFileUri}" to determine workspace.`);
-    const correspondingWorkspace = currentFileUri ? vscode.workspace.getWorkspaceFolder(currentFileUri) : null;
+    const correspondingWorkspace = currentFileUri
+        ? vscode.workspace.getWorkspaceFolder(currentFileUri)
+        : null;
     console.log(`Using workspace "${correspondingWorkspace?.name}".`);
 
     return correspondingWorkspace;
 }
 
 export function getWorkspaceFromName(workspaceName: string) {
-    console.log(`Request to search workspace with the name "${workspaceName}".`);
+    console.log(
+        `Request to search workspace with the name "${workspaceName}".`
+    );
     const workspaces = vscode.workspace.workspaceFolders;
 
     if (!workspaces) {
-        console.log(`Running in a no workspace mode, so a workspace "${workspaceName}" cannot be found.`);
-        vscode.window.showErrorMessage(`Running in a no workspace mode, so a workspace "${workspaceName}" cannot be found.`);
+        console.log(
+            `Running in a no workspace mode, so a workspace "${workspaceName}" cannot be found.`
+        );
+        vscode.window.showErrorMessage(
+            `Running in a no workspace mode, so a workspace "${workspaceName}" cannot be found.`
+        );
         return null;
     }
 
@@ -40,16 +52,21 @@ export function getWorkspaceFromName(workspaceName: string) {
     }
 
     console.log(`No workspace with the name "${workspaceName}" was found.`);
-    vscode.window.showErrorMessage(`No workspace with the name "${workspaceName}" was found.`);
+    vscode.window.showErrorMessage(
+        `No workspace with the name "${workspaceName}" was found.`
+    );
     return null;
 }
 
-export function replaceAllStrings(currentObject: any, replaceFunction: (currentString: string) => string) {
+export function replaceAllStrings(
+    currentObject: any,
+    replaceFunction: (currentString: string) => string
+) {
     if (currentObject instanceof Object) {
         const objectKeys = Object.keys(currentObject);
-        objectKeys.forEach(elementKey => {
+        objectKeys.forEach((elementKey) => {
             const element = currentObject[elementKey];
-            if (typeof element === 'string') {
+            if (typeof element === "string") {
                 currentObject[elementKey] = replaceFunction(element);
             } else {
                 replaceAllStrings(element, replaceFunction);
@@ -59,43 +76,43 @@ export function replaceAllStrings(currentObject: any, replaceFunction: (currentS
 }
 
 export function userInput2String(inputString: string) {
-    var resultString = '';
+    var resultString = "";
     var index = 0;
 
     while (index < inputString.length) {
         const currentChar = inputString.charAt(index);
 
-        if (currentChar === '\\') {
+        if (currentChar === "\\") {
             if (index + 1 < inputString.length) {
                 const nextChar = inputString.charAt(index + 1);
 
                 switch (nextChar) {
-                    case '\\':
+                    case "\\":
                         resultString = resultString + nextChar;
                         break;
-                    case '0':
-                        resultString = resultString + '\0';
+                    case "0":
+                        resultString = resultString + "\0";
                         break;
-                    case 'a':
-                        resultString = resultString + '\a';
+                    case "a":
+                        resultString = resultString + "a";
                         break;
-                    case 'b':
-                        resultString = resultString + '\b';
+                    case "b":
+                        resultString = resultString + "\b";
                         break;
-                    case 't':
-                        resultString = resultString + '\t';
+                    case "t":
+                        resultString = resultString + "\t";
                         break;
-                    case 'n':
-                        resultString = resultString + '\n';
+                    case "n":
+                        resultString = resultString + "\n";
                         break;
-                    case 'v':
-                        resultString = resultString + '\v';
+                    case "v":
+                        resultString = resultString + "\v";
                         break;
-                    case 'f':
-                        resultString = resultString + '\f';
+                    case "f":
+                        resultString = resultString + "\f";
                         break;
-                    case 'r':
-                        resultString = resultString + '\r';
+                    case "r":
+                        resultString = resultString + "\r";
                         break;
 
                     default:
