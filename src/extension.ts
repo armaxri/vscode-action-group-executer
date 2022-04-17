@@ -16,41 +16,32 @@ import {
 async function selectAndRunGroup() {
     console.log(`selectAndRunGroup was triggered.`);
     const commands = getActionGroups();
-    const commandNames = commands.map((command) => command.name);
+    const command = await vscode.window.showQuickPick(commands);
 
-    const selection = await vscode.window.showQuickPick(commandNames);
-
-    if (!selection) {
+    if (!command) {
         console.log(`No valid selection was taken.`);
         return;
     }
-    console.log(`Executing command selection "${selection}".`);
+    console.log(`Executing command selection "${command.label}".`);
     vscode.window.showInformationMessage(
-        `Executing command selection "${selection}".`
+        `Executing command selection "${command.label}".`
     );
 
-    const command = commands.find((command) => command.name === selection);
-    console.log(`Picked command named "${command?.name}".`);
-
-    if (command) {
-        // Adjust the commands by creating debugging sessions from processes.
-        // This is also a point were the execution of the whole group can
-        // be stopped.
-        if (await command.check4ProcessDebugging()) {
-            console.log(
-                `Execution was aborted during selection of debug session.`
-            );
-            return;
-        }
-
-        if (command.debugSession) {
-            runDebugSession(command);
-        }
-
-        command.terminals.forEach((terminal) => runTerminalAction(terminal));
-
-        runProcesses(command);
+    // Adjust the commands by creating debugging sessions from processes.
+    // This is also a point were the execution of the whole group can
+    // be stopped.
+    if (await command.check4ProcessDebugging()) {
+        console.log(`Execution was aborted during selection of debug session.`);
+        return;
     }
+
+    if (command.debugSession) {
+        runDebugSession(command);
+    }
+
+    command.terminals.forEach((terminal) => runTerminalAction(terminal));
+
+    runProcesses(command);
 }
 
 // this method is called when your extension is activated

@@ -237,8 +237,9 @@ export class DebugSession {
     }
 }
 
-export class ActionGroup {
+export class ActionGroup implements vscode.QuickPickItem {
     name: string;
+    label: string;
     terminals: Array<TerminalAction> = new Array<TerminalAction>();
     debugSession?: DebugSession;
     selectedWorkspace: vscode.WorkspaceFolder | null | undefined = null;
@@ -250,6 +251,7 @@ export class ActionGroup {
         defaultFileAssociation: string | undefined
     ) {
         this.name = config.name;
+        this.label = this.name;
         const defaultProcessEndMessageAdj = defaultProcessEndMessage
             ? defaultProcessEndMessage
             : "";
