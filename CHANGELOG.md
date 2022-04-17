@@ -1,5 +1,11 @@
 # Change Log
 
+## [Unreleased]
+
+### Added
+
+* Extended command name with location source of the command.
+
 ## [0.0.10]
 
 ### Added
