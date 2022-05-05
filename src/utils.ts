@@ -75,7 +75,7 @@ export function replaceAllStrings(
     }
 }
 
-export function userInput2String(inputString: string) {
+export function userInput2String(inputString: string): string {
     var resultString = "";
     var index = 0;
 
@@ -135,4 +135,10 @@ export function userInput2String(inputString: string) {
     }
 
     return resultString;
+}
+
+export function splitArguments(inputString: string): Array<string> {
+    const args = new Array<string>();
+
+    return inputString.split(" ");
 }

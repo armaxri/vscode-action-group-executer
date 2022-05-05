@@ -8,4 +8,12 @@ suite("ActionGroup Extension utils string adjustment Test Suite", () => {
     test("test simple \\n", () => {
         assert.strictEqual(utils.userInput2String("bla\\nblub"), "bla\nblub");
     });
+
+    test("simple args split", () => {
+        const splitString = utils.splitArguments("hallo welt!");
+        assert.deepStrictEqual(utils.splitArguments("hallo welt!"), [
+            "hallo",
+            "welt!",
+        ]);
+    });
 });
