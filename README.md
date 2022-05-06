@@ -306,6 +306,7 @@ Initial release of Action Group Executer.
 
 ## Known Issues
 
+* User input is currently not using the vscode `validateInput` argument to validate the user input and give feedback.
 * Process execution is not saved when a window is close.
 * In processes resolving of environment variables like `$HOME` will not work and will just be interpreted as strings. Use `${env:HOME}` instead.
 * File tabs for processes are created with a 500 ms delay. Otherwise VS Code will fail creating the next window.

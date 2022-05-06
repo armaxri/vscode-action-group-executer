@@ -10,10 +10,46 @@ suite("ActionGroup Extension utils string adjustment Test Suite", () => {
     });
 
     test("simple args split", () => {
-        const splitString = utils.splitArguments("hallo welt!");
-        assert.deepStrictEqual(utils.splitArguments("hallo welt!"), [
-            "hallo",
-            "welt!",
-        ]);
+        const result = utils.splitArguments("hallo welt!");
+        const expected = ["hallo", "welt!"];
+        assert.deepStrictEqual(result, expected);
+    });
+
+    test("args split with string 1", () => {
+        const result = utils.splitArguments(
+            '-p "hello b\\"ar baz" -f /^ [^ ]+ $/ -c -d -e'
+        );
+        const expected = [
+            "-p",
+            'hello b"ar baz',
+            "-f",
+            "/^",
+            "[^",
+            "]+",
+            "$/",
+            "-c",
+            "-d",
+            "-e",
+        ];
+        assert.deepStrictEqual(result, expected);
+    });
+
+    test("args split with string 2", () => {
+        const result = utils.splitArguments(
+            "-p 'hello b\\\"ar baz' -f /^ [^ ]+ $/ -c -d -e"
+        );
+        const expected = [
+            "-p",
+            'hello b\\"ar baz',
+            "-f",
+            "/^",
+            "[^",
+            "]+",
+            "$/",
+            "-c",
+            "-d",
+            "-e",
+        ];
+        assert.deepStrictEqual(result, expected);
     });
 });
