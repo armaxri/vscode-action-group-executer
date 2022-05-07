@@ -52,4 +52,10 @@ suite("ActionGroup Extension utils string adjustment Test Suite", () => {
         ];
         assert.deepStrictEqual(result, expected);
     });
+
+    test("args split with string connected to argument", () => {
+        const result = utils.splitArguments('-p="hello b\\"ar baz" -f');
+        const expected = ['-p=hello b"ar baz', "-f"];
+        assert.deepStrictEqual(result, expected);
+    });
 });
