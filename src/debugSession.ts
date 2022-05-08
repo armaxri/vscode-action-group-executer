@@ -29,12 +29,7 @@ export async function runDebugSession(actionGroup: ActionGroup) {
         return;
     }
 
-    if (
-        actionGroup.debugSession.delaySession &&
-        typeof actionGroup.debugSession.delaySession === "number"
-    ) {
-        await delay(actionGroup.debugSession.delaySession);
-    }
+    await delay(actionGroup.debugSession.delaySession);
 
     if (actionGroup.debugSession.namedConfiguration) {
         if (!selectedWorkspace) {
