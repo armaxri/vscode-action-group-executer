@@ -231,6 +231,23 @@
                     }
                 }
             }],
+        },
+        {
+            "name": "Example13 - echo arguments",
+            "processes": [{
+                "printCommand": true,
+                "command": {
+                    "call": [
+                        "${workspaceFolder}/testArguments.py",
+                        "Hello",
+                        "bla bla"
+                    ],
+                    "requestUserInputArguments": true,
+                    "extendedOptions": {
+                        "cwd": "${workspaceFolder}"
+                    }
+                }
+            }],
         }
     ]
 }

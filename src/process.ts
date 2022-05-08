@@ -290,20 +290,44 @@ export async function killAllProcesses() {
     });
 }
 
+class ArgumentsInputBoxOptions implements vscode.InputBoxOptions {
+    title: string = "Add additional arguments here.";
+    value: string = "";
+
+    // Add valid input check here.
+}
+
 async function runCall(documentHandle: DocumentHandler) {
     const currentCommand = documentHandle.getCurrentCommand();
 
     await utils.delay(currentCommand.delayProcess);
 
+    var additionalArgs = new Array<string>();
+    var additionalArgsPrintable = "";
+    if (currentCommand.requestUserInputArguments) {
+        const additionalArgsString = await vscode.window.showInputBox(
+            new ArgumentsInputBoxOptions()
+        );
+        if (additionalArgsString) {
+            additionalArgs = utils.splitArguments(additionalArgsString);
+
+            const printableArguments = additionalArgs.join('", "');
+            additionalArgsPrintable = `, additional user args: "${printableArguments}"`;
+        }
+    }
+
     const currentCommandString = documentHandle.getCurrentCommandAsString();
-    console.log(`Spawning process with <${currentCommandString}>.`);
+    console.log(
+        `Spawning process with <${currentCommandString}${additionalArgsPrintable}>.`
+    );
     if (documentHandle.processAction.printCommand) {
         documentHandle.addNewData(currentCommandString + "\n");
     }
 
+    const usedArgs = currentCommand.args.concat(additionalArgs);
     const subprocess = child_process.spawn(
         currentCommand.program,
-        currentCommand.args,
+        usedArgs,
         currentCommand.extendedOptions
     );
     documentHandle.currentSubProcess = subprocess;

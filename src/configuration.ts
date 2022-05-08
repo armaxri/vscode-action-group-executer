@@ -16,6 +16,7 @@ export interface EITerminalAction {
 
 export interface EIProcessCommand {
     call: Array<string>;
+    requestUserInputArguments?: boolean;
     delayProcess?: number;
     extendedOptions: child_process.SpawnOptionsWithoutStdio;
     processEndMessage?: string;
@@ -91,6 +92,7 @@ export class TerminalAction {
 export class ProcessCommand {
     program: string;
     args: Array<string>;
+    requestUserInputArguments: boolean = false;
     extendedOptions: child_process.SpawnOptionsWithoutStdio;
     delayProcess: number = 0;
     processEndMessage: string;
@@ -99,6 +101,10 @@ export class ProcessCommand {
     constructor(config: EIProcessCommand, defaultProcessEndMessage: string) {
         this.program = config.call[0];
         this.args = config.call.slice(1);
+        this.requestUserInputArguments =
+            typeof config.requestUserInputArguments === "boolean"
+                ? config.requestUserInputArguments
+                : this.requestUserInputArguments;
 
         this.extendedOptions = config.extendedOptions;
 

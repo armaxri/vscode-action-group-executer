@@ -235,6 +235,12 @@ Execution groups can be added under the `actionGroupExecuter.actionGroups` setti
 
 ## Release Notes
 
+### [Unreleased]
+
+#### Added
+
+* The option to request additional user arguments when starting a process. Can be used for example to set test filters when starting a GTest executable.
+
 ### 0.0.11
 
 * Extended command name with location source of the command.
