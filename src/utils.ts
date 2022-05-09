@@ -194,3 +194,10 @@ export function splitArguments(inputString: string): Array<string> {
 
     return args;
 }
+
+export class ArgumentsInputBoxOptions implements vscode.InputBoxOptions {
+    title: string = "Add additional arguments here.";
+    value: string = "";
+
+    // Add valid input check here.
+}

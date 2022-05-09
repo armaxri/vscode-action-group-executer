@@ -36,6 +36,7 @@ export interface EIProcessAction {
 export interface EIDebugSession {
     namedConfiguration?: string;
     newConfiguration?: vscode.DebugConfiguration;
+    requestUserInputArguments?: boolean;
     workspaceName?: string;
     delaySession?: number;
 }
@@ -132,6 +133,7 @@ export class ProcessCommand {
                 debugSession.newConfiguration.cwd = this.extendedOptions.cwd;
             }
         }
+        debugSession.requestUserInputArguments = this.requestUserInputArguments;
         debugSession.delaySession = this.delayProcess;
 
         return debugSession;
@@ -220,6 +222,7 @@ export class ProcessAction {
 export class DebugSession {
     namedConfiguration: string | undefined;
     newConfiguration: vscode.DebugConfiguration | undefined;
+    requestUserInputArguments: boolean = false;
     workspaceName: string | undefined;
     delaySession: number = 0;
 
@@ -230,6 +233,10 @@ export class DebugSession {
         if (typeof config !== "undefined") {
             this.namedConfiguration = config.namedConfiguration;
             this.newConfiguration = config.newConfiguration;
+            this.requestUserInputArguments =
+                typeof config.requestUserInputArguments === "boolean"
+                    ? config.requestUserInputArguments
+                    : this.requestUserInputArguments;
             this.workspaceName = config.workspaceName;
             this.delaySession =
                 typeof config.delaySession === "number"

@@ -412,6 +412,11 @@
                                                 }
                                             }
                                         },
+                                        "requestUserInputArguments": {
+                                            "type": "boolean",
+                                            "description": "Request additional arguments from the user when staring the process. Example: Can be used for GTest filters.",
+                                            "default": false
+                                        },
                                         "workspaceName": {
                                             "type": "string",
                                             "description": "Name of the workspace the launch configuration is executed in (default is based on the current file)."

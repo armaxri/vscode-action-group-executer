@@ -248,6 +248,11 @@
                     }
                 }
             }],
+            "defaultProcessDebugTemplate": {
+                "type": "python",
+                "request": "launch",
+                "console": "integratedTerminal"
+            }
         }
     ]
 }

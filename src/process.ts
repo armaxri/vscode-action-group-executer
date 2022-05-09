@@ -290,13 +290,6 @@ export async function killAllProcesses() {
     });
 }
 
-class ArgumentsInputBoxOptions implements vscode.InputBoxOptions {
-    title: string = "Add additional arguments here.";
-    value: string = "";
-
-    // Add valid input check here.
-}
-
 async function runCall(documentHandle: DocumentHandler) {
     const currentCommand = documentHandle.getCurrentCommand();
 
@@ -306,7 +299,7 @@ async function runCall(documentHandle: DocumentHandler) {
     var additionalArgsPrintable = "";
     if (currentCommand.requestUserInputArguments) {
         const additionalArgsString = await vscode.window.showInputBox(
-            new ArgumentsInputBoxOptions()
+            new utils.ArgumentsInputBoxOptions()
         );
         if (additionalArgsString) {
             additionalArgs = utils.splitArguments(additionalArgsString);
