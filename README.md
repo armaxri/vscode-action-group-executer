@@ -235,6 +235,12 @@ Execution groups can be added under the `actionGroupExecuter.actionGroups` setti
 
 ## Release Notes
 
+### [Unreleased]
+
+#### Added
+
+* The option to request additional user arguments when starting a process. Can be used for example to set test filters when starting a GTest executable.
+
 ### 0.0.11
 
 * Extended command name with location source of the command.
@@ -306,6 +312,7 @@ Initial release of Action Group Executer.
 
 ## Known Issues
 
+* User input is currently not using the vscode `validateInput` argument to validate the user input and give feedback.
 * Process execution is not saved when a window is close.
 * In processes resolving of environment variables like `$HOME` will not work and will just be interpreted as strings. Use `${env:HOME}` instead.
 * File tabs for processes are created with a 500 ms delay. Otherwise VS Code will fail creating the next window.

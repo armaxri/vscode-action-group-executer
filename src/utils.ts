@@ -75,7 +75,44 @@ export function replaceAllStrings(
     }
 }
 
-export function userInput2String(inputString: string) {
+function getEscapedChar(
+    currentChar: string,
+    currentStrType: string = ""
+): string {
+    switch (currentChar) {
+        case "\\":
+            return currentChar;
+        case "0":
+            return "\0";
+        case "a":
+            return "a";
+        case "b":
+            return "\b";
+        case "t":
+            return "\t";
+        case "n":
+            return "\n";
+        case "v":
+            return "\v";
+        case "f":
+            return "\f";
+        case "r":
+            return "\r";
+        case "'":
+        case '"':
+            if (currentChar === currentStrType) {
+                return currentStrType;
+            } else {
+                return "\\" + currentChar;
+            }
+
+        default:
+            // This might be shady but if there is no correct replacement, we use both characters.
+            return "\\" + currentChar;
+    }
+}
+
+export function userInput2String(inputString: string): string {
     var resultString = "";
     var index = 0;
 
@@ -86,41 +123,7 @@ export function userInput2String(inputString: string) {
             if (index + 1 < inputString.length) {
                 const nextChar = inputString.charAt(index + 1);
 
-                switch (nextChar) {
-                    case "\\":
-                        resultString = resultString + nextChar;
-                        break;
-                    case "0":
-                        resultString = resultString + "\0";
-                        break;
-                    case "a":
-                        resultString = resultString + "a";
-                        break;
-                    case "b":
-                        resultString = resultString + "\b";
-                        break;
-                    case "t":
-                        resultString = resultString + "\t";
-                        break;
-                    case "n":
-                        resultString = resultString + "\n";
-                        break;
-                    case "v":
-                        resultString = resultString + "\v";
-                        break;
-                    case "f":
-                        resultString = resultString + "\f";
-                        break;
-                    case "r":
-                        resultString = resultString + "\r";
-                        break;
-
-                    default:
-                        // This might be shady but if there is no correct replacement, we use both characters.
-                        resultString = resultString + currentChar;
-                        resultString = resultString + nextChar;
-                        break;
-                }
+                resultString = resultString + getEscapedChar(nextChar);
 
                 // Extra plus one because we consumed another character.
                 index = index + 1;
@@ -135,4 +138,125 @@ export function userInput2String(inputString: string) {
     }
 
     return resultString;
+}
+
+export function splitArguments(inputString: string): Array<string> {
+    const args = new Array<string>();
+    var currentArg = "";
+    // Store if a string was started and if yes with the kind of character.
+    var stringStart = "";
+    var index = 0;
+
+    while (index < inputString.length) {
+        const currentChar = inputString.charAt(index);
+
+        if (currentChar === "\\") {
+            if (index + 1 < inputString.length) {
+                const nextChar = inputString.charAt(index + 1);
+                const escapedChar = getEscapedChar(nextChar, stringStart);
+                currentArg = currentArg + escapedChar;
+
+                // Extra plus one because we consumed another character.
+                index = index + 1;
+            } else {
+                // Workaround since we don't have error highlighting.
+                currentArg = currentArg + currentChar;
+            }
+        } else if (currentChar === "'" || currentChar === '"') {
+            if (stringStart === currentChar) {
+                // If we are in a string and the type is matching, we end here.
+                // Keep in mind that escaped characters are already dealt with.
+                stringStart = "";
+            } else if (stringStart !== "") {
+                // If we are in a string and there was no match, it's a different string character. So we simply use it.
+                currentArg = currentArg + currentChar;
+            } else {
+                // This case deals with string starts. The character is not added but we memories the start of the string.
+                stringStart = currentChar;
+            }
+        } else if (currentChar === " ") {
+            if (stringStart !== "") {
+                currentArg = currentArg + currentChar;
+            } else {
+                args.push(currentArg);
+                currentArg = "";
+            }
+        } else {
+            currentArg = currentArg + currentChar;
+        }
+
+        index = index + 1;
+    }
+
+    if (currentArg !== "") {
+        args.push(currentArg);
+    }
+
+    return args;
+}
+
+export class ArgumentsInputBoxOptions implements vscode.InputBoxOptions {
+    title: string = "Add additional arguments here.";
+    value: string = "";
+
+    // Add valid input check here.
+}
+
+abstract class UserArgsInputHistory {
+    public static userInputs: Array<string> = new Array<string>();
+
+    public static pushNewInput(input: string) {
+        this.userInputs.push(input);
+
+        // We want a reduced list (may add configuration later).
+        if (this.userInputs.length > 5) {
+            this.userInputs.shift();
+        }
+    }
+}
+
+async function getUserArgumentsString(): Promise<string> {
+    var inputStrSelections = new Array<string>();
+    const newInputStr = "New Input";
+    inputStrSelections.push(newInputStr);
+    inputStrSelections = inputStrSelections.concat(
+        UserArgsInputHistory.userInputs
+    );
+
+    if (inputStrSelections.length <= 1) {
+        // No history, so show the request box.
+        const inputStr = await vscode.window.showInputBox(
+            new ArgumentsInputBoxOptions()
+        );
+        if (inputStr) {
+            UserArgsInputHistory.pushNewInput(inputStr);
+            return inputStr;
+        }
+        return "";
+    }
+
+    var selection = await vscode.window.showQuickPick(inputStrSelections);
+
+    if (!selection) {
+        // Nothing selected, so expect no input.
+        return "";
+    }
+
+    if (selection === newInputStr) {
+        // New input requested.
+        const inputStr = await vscode.window.showInputBox(
+            new ArgumentsInputBoxOptions()
+        );
+        if (inputStr) {
+            UserArgsInputHistory.pushNewInput(inputStr);
+            return inputStr;
+        }
+        return "";
+    }
+
+    return selection;
+}
+
+export async function getUserArguments(): Promise<Array<string>> {
+    return splitArguments(await getUserArgumentsString());
 }

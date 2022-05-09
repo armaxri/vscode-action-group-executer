@@ -1,7 +1,7 @@
 import * as vscode from "vscode";
 
 import { ActionGroup } from "./configuration";
-import { delay, getWorkspaceFromName } from "./utils";
+import { delay, getWorkspaceFromName, getUserArguments } from "./utils";
 
 export async function runDebugSession(actionGroup: ActionGroup) {
     if (!actionGroup.debugSession) {
@@ -29,12 +29,7 @@ export async function runDebugSession(actionGroup: ActionGroup) {
         return;
     }
 
-    if (
-        actionGroup.debugSession.delaySession &&
-        typeof actionGroup.debugSession.delaySession === "number"
-    ) {
-        await delay(actionGroup.debugSession.delaySession);
-    }
+    await delay(actionGroup.debugSession.delaySession);
 
     if (actionGroup.debugSession.namedConfiguration) {
         if (!selectedWorkspace) {
@@ -55,6 +50,15 @@ export async function runDebugSession(actionGroup: ActionGroup) {
             actionGroup.debugSession.namedConfiguration
         );
     } else if (actionGroup.debugSession.newConfiguration) {
+        if (actionGroup.debugSession.requestUserInputArguments) {
+            const additionalArgs = await getUserArguments();
+            const args = actionGroup.debugSession.newConfiguration
+                .args as string[];
+            additionalArgs.forEach((argument) => {
+                args.push(argument);
+            });
+        }
+
         if (selectedWorkspace) {
             console.log(
                 `Executing custom debug configuration in workspace "${selectedWorkspace.name}".`

@@ -126,6 +126,11 @@
                                                             "type": "string"
                                                         }
                                                     },
+                                                    "requestUserInputArguments": {
+                                                        "type": "boolean",
+                                                        "description": "Request additional arguments from the user when staring the process. Example: Can be used for GTest filters.",
+                                                        "default": false
+                                                    },
                                                     "delayProcess": {
                                                         "type": "integer",
                                                         "default": 0,
@@ -217,6 +222,11 @@
                                                             "items": {
                                                                 "type": "string"
                                                             }
+                                                        },
+                                                        "requestUserInputArguments": {
+                                                            "type": "boolean",
+                                                            "description": "Request additional arguments from the user when staring the process. Example: Can be used for GTest filters.",
+                                                            "default": false
                                                         },
                                                         "delayProcess": {
                                                             "type": "integer",
@@ -401,6 +411,11 @@
                                                     "description": "The request type of the debug session."
                                                 }
                                             }
+                                        },
+                                        "requestUserInputArguments": {
+                                            "type": "boolean",
+                                            "description": "Request additional arguments from the user when staring the process. Example: Can be used for GTest filters.",
+                                            "default": false
                                         },
                                         "workspaceName": {
                                             "type": "string",

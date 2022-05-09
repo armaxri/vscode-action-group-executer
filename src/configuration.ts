@@ -16,6 +16,7 @@ export interface EITerminalAction {
 
 export interface EIProcessCommand {
     call: Array<string>;
+    requestUserInputArguments?: boolean;
     delayProcess?: number;
     extendedOptions: child_process.SpawnOptionsWithoutStdio;
     processEndMessage?: string;
@@ -35,6 +36,7 @@ export interface EIProcessAction {
 export interface EIDebugSession {
     namedConfiguration?: string;
     newConfiguration?: vscode.DebugConfiguration;
+    requestUserInputArguments?: boolean;
     workspaceName?: string;
     delaySession?: number;
 }
@@ -91,6 +93,7 @@ export class TerminalAction {
 export class ProcessCommand {
     program: string;
     args: Array<string>;
+    requestUserInputArguments: boolean = false;
     extendedOptions: child_process.SpawnOptionsWithoutStdio;
     delayProcess: number = 0;
     processEndMessage: string;
@@ -99,6 +102,10 @@ export class ProcessCommand {
     constructor(config: EIProcessCommand, defaultProcessEndMessage: string) {
         this.program = config.call[0];
         this.args = config.call.slice(1);
+        this.requestUserInputArguments =
+            typeof config.requestUserInputArguments === "boolean"
+                ? config.requestUserInputArguments
+                : this.requestUserInputArguments;
 
         this.extendedOptions = config.extendedOptions;
 
@@ -126,6 +133,7 @@ export class ProcessCommand {
                 debugSession.newConfiguration.cwd = this.extendedOptions.cwd;
             }
         }
+        debugSession.requestUserInputArguments = this.requestUserInputArguments;
         debugSession.delaySession = this.delayProcess;
 
         return debugSession;
@@ -214,6 +222,7 @@ export class ProcessAction {
 export class DebugSession {
     namedConfiguration: string | undefined;
     newConfiguration: vscode.DebugConfiguration | undefined;
+    requestUserInputArguments: boolean = false;
     workspaceName: string | undefined;
     delaySession: number = 0;
 
@@ -224,6 +233,10 @@ export class DebugSession {
         if (typeof config !== "undefined") {
             this.namedConfiguration = config.namedConfiguration;
             this.newConfiguration = config.newConfiguration;
+            this.requestUserInputArguments =
+                typeof config.requestUserInputArguments === "boolean"
+                    ? config.requestUserInputArguments
+                    : this.requestUserInputArguments;
             this.workspaceName = config.workspaceName;
             this.delaySession =
                 typeof config.delaySession === "number"

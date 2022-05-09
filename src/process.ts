@@ -295,15 +295,28 @@ async function runCall(documentHandle: DocumentHandler) {
 
     await utils.delay(currentCommand.delayProcess);
 
+    var additionalArgs = new Array<string>();
+    var additionalArgsPrintable = "";
+    if (currentCommand.requestUserInputArguments) {
+        additionalArgs = await utils.getUserArguments();
+        if (additionalArgs.length > 0) {
+            const printableArguments = additionalArgs.join('", "');
+            additionalArgsPrintable = `, additional user args: "${printableArguments}"`;
+        }
+    }
+
     const currentCommandString = documentHandle.getCurrentCommandAsString();
-    console.log(`Spawning process with <${currentCommandString}>.`);
+    console.log(
+        `Spawning process with <${currentCommandString}${additionalArgsPrintable}>.`
+    );
     if (documentHandle.processAction.printCommand) {
         documentHandle.addNewData(currentCommandString + "\n");
     }
 
+    const usedArgs = currentCommand.args.concat(additionalArgs);
     const subprocess = child_process.spawn(
         currentCommand.program,
-        currentCommand.args,
+        usedArgs,
         currentCommand.extendedOptions
     );
     documentHandle.currentSubProcess = subprocess;

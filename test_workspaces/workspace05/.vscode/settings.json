@@ -231,6 +231,28 @@
                     }
                 }
             }],
+        },
+        {
+            "name": "Example13 - echo arguments",
+            "processes": [{
+                "printCommand": true,
+                "command": {
+                    "call": [
+                        "${workspaceFolder}/testArguments.py",
+                        "Hello",
+                        "bla bla"
+                    ],
+                    "requestUserInputArguments": true,
+                    "extendedOptions": {
+                        "cwd": "${workspaceFolder}"
+                    }
+                }
+            }],
+            "defaultProcessDebugTemplate": {
+                "type": "python",
+                "request": "launch",
+                "console": "integratedTerminal"
+            }
         }
     ]
 }
