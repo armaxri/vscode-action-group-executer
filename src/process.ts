@@ -298,12 +298,8 @@ async function runCall(documentHandle: DocumentHandler) {
     var additionalArgs = new Array<string>();
     var additionalArgsPrintable = "";
     if (currentCommand.requestUserInputArguments) {
-        const additionalArgsString = await vscode.window.showInputBox(
-            new utils.ArgumentsInputBoxOptions()
-        );
-        if (additionalArgsString) {
-            additionalArgs = utils.splitArguments(additionalArgsString);
-
+        additionalArgs = await utils.getUserArguments();
+        if (additionalArgs.length > 0) {
             const printableArguments = additionalArgs.join('", "');
             additionalArgsPrintable = `, additional user args: "${printableArguments}"`;
         }

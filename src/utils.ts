@@ -201,3 +201,13 @@ export class ArgumentsInputBoxOptions implements vscode.InputBoxOptions {
 
     // Add valid input check here.
 }
+
+export async function getUserArguments(): Promise<Array<string>> {
+    const additionalArgsString = await vscode.window.showInputBox(
+        new ArgumentsInputBoxOptions()
+    );
+    if (additionalArgsString) {
+        return splitArguments(additionalArgsString);
+    }
+    return new Array<string>();
+}

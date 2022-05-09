@@ -1,12 +1,7 @@
 import * as vscode from "vscode";
 
 import { ActionGroup } from "./configuration";
-import {
-    delay,
-    getWorkspaceFromName,
-    splitArguments,
-    ArgumentsInputBoxOptions,
-} from "./utils";
+import { delay, getWorkspaceFromName, getUserArguments } from "./utils";
 
 export async function runDebugSession(actionGroup: ActionGroup) {
     if (!actionGroup.debugSession) {
@@ -56,18 +51,12 @@ export async function runDebugSession(actionGroup: ActionGroup) {
         );
     } else if (actionGroup.debugSession.newConfiguration) {
         if (actionGroup.debugSession.requestUserInputArguments) {
-            const additionalArgsString = await vscode.window.showInputBox(
-                new ArgumentsInputBoxOptions()
-            );
-            if (additionalArgsString) {
-                const additionalArgs = splitArguments(additionalArgsString);
-
-                const args = actionGroup.debugSession.newConfiguration
-                    .args as string[];
-                additionalArgs.forEach((argument) => {
-                    args.push(argument);
-                });
-            }
+            const additionalArgs = await getUserArguments();
+            const args = actionGroup.debugSession.newConfiguration
+                .args as string[];
+            additionalArgs.forEach((argument) => {
+                args.push(argument);
+            });
         }
 
         if (selectedWorkspace) {
