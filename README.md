@@ -235,7 +235,7 @@ Execution groups can be added under the `actionGroupExecuter.actionGroups` setti
 
 ## Release Notes
 
-### [Unreleased]
+### [0.0.12]
 
 #### Added
 
