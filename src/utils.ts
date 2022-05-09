@@ -202,12 +202,61 @@ export class ArgumentsInputBoxOptions implements vscode.InputBoxOptions {
     // Add valid input check here.
 }
 
-export async function getUserArguments(): Promise<Array<string>> {
-    const additionalArgsString = await vscode.window.showInputBox(
-        new ArgumentsInputBoxOptions()
-    );
-    if (additionalArgsString) {
-        return splitArguments(additionalArgsString);
+abstract class UserArgsInputHistory {
+    public static userInputs: Array<string> = new Array<string>();
+
+    public static pushNewInput(input: string) {
+        this.userInputs.push(input);
+
+        // We want a reduced list (may add configuration later).
+        if (this.userInputs.length > 5) {
+            this.userInputs.shift();
+        }
     }
-    return new Array<string>();
+}
+
+async function getUserArgumentsString(): Promise<string> {
+    var inputStrSelections = new Array<string>();
+    const newInputStr = "New Input";
+    inputStrSelections.push(newInputStr);
+    inputStrSelections = inputStrSelections.concat(
+        UserArgsInputHistory.userInputs
+    );
+
+    if (inputStrSelections.length <= 1) {
+        // No history, so show the request box.
+        const inputStr = await vscode.window.showInputBox(
+            new ArgumentsInputBoxOptions()
+        );
+        if (inputStr) {
+            UserArgsInputHistory.pushNewInput(inputStr);
+            return inputStr;
+        }
+        return "";
+    }
+
+    var selection = await vscode.window.showQuickPick(inputStrSelections);
+
+    if (!selection) {
+        // Nothing selected, so expect no input.
+        return "";
+    }
+
+    if (selection === newInputStr) {
+        // New input requested.
+        const inputStr = await vscode.window.showInputBox(
+            new ArgumentsInputBoxOptions()
+        );
+        if (inputStr) {
+            UserArgsInputHistory.pushNewInput(inputStr);
+            return inputStr;
+        }
+        return "";
+    }
+
+    return selection;
+}
+
+export async function getUserArguments(): Promise<Array<string>> {
+    return splitArguments(await getUserArgumentsString());
 }
