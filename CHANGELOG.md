@@ -1,5 +1,11 @@
 # Change Log
 
+## [0.0.13]
+
+### Fixed
+
+* Adjusted documentation.
+
 ## [0.0.12]
 
 ### Added
