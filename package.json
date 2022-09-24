@@ -339,6 +339,11 @@
                                                 "default": false,
                                                 "description": "Destroys old terminal instances with the same name before getting started."
                                             },
+                                            "useProcessDefaultDebugConfig": {
+                                                "type": "boolean",
+                                                "default": false,
+                                                "description": "Allow debugging with the defaultProcessDebugTemplate as base configuration."
+                                            },
                                             "extendedOptions": {
                                                 "type": "object",
                                                 "description": "Add options based on VS Codes 'TerminalOptions' type.",
@@ -372,6 +377,20 @@
                                                     "message": {
                                                         "type": "string",
                                                         "description": "Welcome message that will be displayed on terminal start."
+                                                    }
+                                                }
+                                            },
+                                            "debugTemplate": {
+                                                "type": "object",
+                                                "description": "Template launch configuration based on VS Codes 'DebugConfiguration' type (limited autocompletion support).",
+                                                "properties": {
+                                                    "type": {
+                                                        "type": "string",
+                                                        "description": "The type of the debug session."
+                                                    },
+                                                    "request": {
+                                                        "type": "string",
+                                                        "description": "The request type of the debug session."
                                                     }
                                                 }
                                             }

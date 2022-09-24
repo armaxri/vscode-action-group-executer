@@ -12,6 +12,8 @@ export interface EITerminalAction {
     alwaysNewTerminal?: boolean;
     delayCommand?: number;
     command: string;
+    useProcessDefaultDebugConfig?: boolean;
+    debugTemplate?: vscode.DebugConfiguration;
 }
 
 export interface EIProcessCommand {
@@ -57,8 +59,13 @@ export class TerminalAction {
     alwaysNewTerminal: boolean = false;
     delayCommand: number = 0;
     command: string;
+    debugTemplate?: vscode.DebugConfiguration;
 
-    constructor(config: EITerminalAction, groupName: string) {
+    constructor(
+        config: EITerminalAction,
+        groupName: string,
+        defaultProcessDebugTemplate: vscode.DebugConfiguration | undefined
+    ) {
         if (config?.extendedOptions && config?.extendedOptions.name) {
             this.name = config.extendedOptions.name;
         } else {
@@ -87,6 +94,47 @@ export class TerminalAction {
                 : this.delayCommand;
 
         this.command = config.command;
+
+        if (config?.debugTemplate) {
+            this.debugTemplate = config.debugTemplate;
+        } else {
+            if (
+                config?.useProcessDefaultDebugConfig &&
+                config.useProcessDefaultDebugConfig &&
+                typeof defaultProcessDebugTemplate !== "undefined"
+            ) {
+                this.debugTemplate = defaultProcessDebugTemplate;
+            }
+        }
+    }
+
+    public isConvertible2Debug(): boolean {
+        // A debug template is required and we only support it when one command is present.
+        // Otherwise the handling of multiple processes will get to complicated.
+        return typeof this.debugTemplate !== "undefined";
+    }
+
+    public convert2DebugSession() {
+        if (!this.debugTemplate) {
+            console.log(
+                `Tried to convert a process to a debug session without template.`
+            );
+            return;
+        }
+        this.debugTemplate.name = this.name;
+        const debugSession = new DebugSession(undefined, this.debugTemplate);
+
+        if (debugSession.newConfiguration) {
+            var splittedCommand = utils.splitArguments(this.command);
+            debugSession.newConfiguration.program = splittedCommand[0];
+            debugSession.newConfiguration.args = splittedCommand.slice(1);
+            if (this?.extendedOptions && this.extendedOptions?.cwd) {
+                debugSession.newConfiguration.cwd = this.extendedOptions.cwd;
+            }
+        }
+        debugSession.delaySession = this.delayCommand;
+
+        return debugSession;
     }
 }
 
@@ -283,7 +331,8 @@ export class ActionGroup implements vscode.QuickPickItem {
         config.terminals?.forEach((terminalAction) => {
             const newTerminalAction = new TerminalAction(
                 terminalAction,
-                this.name
+                this.name,
+                config.defaultProcessDebugTemplate
             );
             this.terminals.push(newTerminalAction);
         });
@@ -321,6 +370,11 @@ export class ActionGroup implements vscode.QuickPickItem {
                 processes2Debug.push(startString + process.name);
             }
         });
+        this.terminals.forEach((terminal) => {
+            if (terminal.isConvertible2Debug()) {
+                processes2Debug.push(startString + terminal.name);
+            }
+        });
 
         if (processes2Debug.length <= 1) {
             // No processes that allow debugging.
@@ -349,6 +403,15 @@ export class ActionGroup implements vscode.QuickPickItem {
             this.debugSession = process2Debug.convert2DebugSession();
             this.processes = this.processes.filter(
                 (obj) => obj !== process2Debug
+            );
+        }
+        const terminal2Debug = this.terminals.find(
+            (process) => process.name === selection
+        );
+        if (terminal2Debug) {
+            this.debugSession = terminal2Debug.convert2DebugSession();
+            this.terminals = this.terminals.filter(
+                (obj) => obj !== terminal2Debug
             );
         }
 
