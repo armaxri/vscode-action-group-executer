@@ -80,6 +80,57 @@
                 "request": "launch",
                 "console": "integratedTerminal"
             }
+        },
+        {
+            "name": "Example3 - Choose Debug Process with Terminal",
+            "processes": [
+                {
+                    "name": "Process A",
+                    "command": {
+                        "call": [
+                            "./testCnt.py",
+                            "-c",
+                            "10",
+                            "-n",
+                            "A"
+                        ],
+                        "extendedOptions": {
+                            "cwd": "${workspaceFolder}"
+                        }
+                    }
+                },
+                {
+                    "name": "Process B",
+                    "command": {
+                        "call": [
+                            "./testCnt.py",
+                            "-c",
+                            "10",
+                            "-n",
+                            "B"
+                        ],
+                        "extendedOptions": {
+                            "cwd": "${workspaceFolder}"
+                        }
+                    }
+                }
+            ],
+            "terminals": [
+                {
+                    "name": "Process C",
+                    "useProcessDefaultDebugConfig": true,
+                    "command": "./testCnt.py -c 10 -n C",
+                    "alwaysNewTerminal": true,
+                    "extendedOptions": {
+                        "cwd": "${workspaceFolder}"
+                    }
+                }
+            ],
+            "defaultProcessDebugTemplate": {
+                "type": "python",
+                "request": "launch",
+                "console": "integratedTerminal"
+            }
         }
     ]
 }

@@ -27,7 +27,7 @@ async function selectAndRunGroup() {
         `Executing command selection "${command.label}".`
     );
 
-    // Adjust the commands by creating debugging sessions from processes.
+    // Adjust the commands by creating debugging sessions from processes and terminals.
     // This is also a point were the execution of the whole group can
     // be stopped.
     if (await command.check4ProcessDebugging()) {

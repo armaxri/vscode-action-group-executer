@@ -1,5 +1,11 @@
 # Change Log
 
+## [Unreleased]
+
+### Added
+
+* Enabled debugging of terminal sessions.
+
 ## [0.0.13]
 
 ### Fixed
