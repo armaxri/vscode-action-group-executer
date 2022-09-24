@@ -2,6 +2,7 @@
     "actionGroupExecuter.actionGroups": [
         {
             "name": "Example0 - No Debug Option",
+            "sortingIndex": 1,
             "processes": [{
                 "printName": true,
                 "command": {
@@ -20,6 +21,7 @@
         },
         {
             "name": "Example1 - Debug Option",
+            "sortingIndex": 1,
             "processes": [{
                 "printName": true,
                 "command": {
@@ -40,46 +42,6 @@
                     }
                 }
             }]
-        },
-        {
-            "name": "Example2 - Choose Debug Process",
-            "processes": [
-                {
-                    "name": "Process A",
-                    "command": {
-                        "call": [
-                            "./testCnt.py",
-                            "-c",
-                            "10",
-                            "-n",
-                            "A"
-                        ],
-                        "extendedOptions": {
-                            "cwd": "${workspaceFolder}"
-                        }
-                    }
-                },
-                {
-                    "name": "Process B",
-                    "command": {
-                        "call": [
-                            "./testCnt.py",
-                            "-c",
-                            "10",
-                            "-n",
-                            "B"
-                        ],
-                        "extendedOptions": {
-                            "cwd": "${workspaceFolder}"
-                        }
-                    }
-                }
-            ],
-            "defaultProcessDebugTemplate": {
-                "type": "python",
-                "request": "launch",
-                "console": "integratedTerminal"
-            }
         },
         {
             "name": "Example3 - Choose Debug Process with Terminal",
@@ -123,6 +85,47 @@
                     "alwaysNewTerminal": true,
                     "extendedOptions": {
                         "cwd": "${workspaceFolder}"
+                    }
+                }
+            ],
+            "defaultProcessDebugTemplate": {
+                "type": "python",
+                "request": "launch",
+                "console": "integratedTerminal"
+            }
+        },
+        {
+            "name": "Example2 - Choose Debug Process",
+            "sortingIndex": 3,
+            "processes": [
+                {
+                    "name": "Process A",
+                    "command": {
+                        "call": [
+                            "./testCnt.py",
+                            "-c",
+                            "10",
+                            "-n",
+                            "A"
+                        ],
+                        "extendedOptions": {
+                            "cwd": "${workspaceFolder}"
+                        }
+                    }
+                },
+                {
+                    "name": "Process B",
+                    "command": {
+                        "call": [
+                            "./testCnt.py",
+                            "-c",
+                            "10",
+                            "-n",
+                            "B"
+                        ],
+                        "extendedOptions": {
+                            "cwd": "${workspaceFolder}"
+                        }
                     }
                 }
             ],

@@ -45,6 +45,7 @@ export interface EIDebugSession {
 
 export interface EIActionGroup {
     name: string;
+    sortingIndex?: number;
     terminals?: Array<EITerminalAction>;
     debugSession?: EIDebugSession;
     processes?: Array<EIProcessAction>;
@@ -308,6 +309,7 @@ enum GroupSource {
 export class ActionGroup implements vscode.QuickPickItem {
     name: string;
     label: string;
+    sortingIndex: number = 9999999;
     terminals: Array<TerminalAction> = new Array<TerminalAction>();
     debugSession?: DebugSession;
     selectedWorkspace: vscode.WorkspaceFolder | null | undefined = null;
@@ -327,6 +329,10 @@ export class ActionGroup implements vscode.QuickPickItem {
         const defaultFileAssociationAdj = defaultFileAssociation
             ? defaultFileAssociation
             : "";
+
+        if (config.sortingIndex) {
+            this.sortingIndex = config.sortingIndex;
+        }
 
         config.terminals?.forEach((terminalAction) => {
             const newTerminalAction = new TerminalAction(
@@ -644,12 +650,21 @@ export function getActionGroups() {
 
     // Apply adjustments before adding the corresponding workspace, so the strings in the object
     // will not be touched be recursive object analysis.
-    const adjustedGroups = applyReplacementsInGroups(filteredGroups);
+    var adjustedGroups = applyReplacementsInGroups(filteredGroups);
 
     // Attach the workspace that is currently selected, so the context of the calling is known.
     adjustedGroups.forEach((group) => {
         group.selectedWorkspace = correspondingWorkspace;
     });
+
+    // Order the action groups based on the sorting index.
+    adjustedGroups = adjustedGroups.sort((a, b) =>
+        a.sortingIndex > b.sortingIndex
+            ? 1
+            : b.sortingIndex > a.sortingIndex
+            ? -1
+            : 0
+    );
 
     return adjustedGroups;
 }
