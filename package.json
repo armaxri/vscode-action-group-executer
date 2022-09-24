@@ -91,6 +91,11 @@
                                     "type": "string",
                                     "description": "Name of the callable action group."
                                 },
+                                "sortingIndex": {
+                                    "type": "integer",
+                                    "default": 9999999,
+                                    "description": "The number is used to order the action groups"
+                                },
                                 "processes": {
                                     "type": "array",
                                     "default": [],

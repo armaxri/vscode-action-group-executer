@@ -238,6 +238,7 @@ Execution groups can be added under the `actionGroupExecuter.actionGroups` setti
 ### [Unreleased]
 
 * Enabled debugging of terminal sessions.
+* Ordering of groups via indexes.
 
 ### 0.0.13
 

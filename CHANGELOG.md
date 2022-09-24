@@ -5,6 +5,7 @@
 ### Added
 
 * Enabled debugging of terminal sessions.
+* Ordering of groups via indexes.
 
 ## [0.0.13]
 
