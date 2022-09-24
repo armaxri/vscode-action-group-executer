@@ -2,7 +2,7 @@
     "name": "action-group-executer",
     "displayName": "Action Group Executer",
     "description": "",
-    "version": "0.0.13",
+    "version": "0.0.14",
     "keywords": [
         "terminal",
         "shell",
