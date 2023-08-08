@@ -12,6 +12,7 @@ The following settings can be set and enter `ActionGroupExec: Execute Action Gro
 {
     "actionGroupExecuter.defaultProcessEndMessage": "\n\nStop of work!",
     "actionGroupExecuter.defaultFileAssociation": "log",
+    "actionGroupExecuter.defaultShowActionSource": false,
     "actionGroupExecuter.actionGroups": [
         {
             "name": "Example1",
@@ -231,9 +232,13 @@ The debug sessions `newConfiguration` and the `extendedOptions` for the terminal
 
 ## Extension Settings
 
-Execution groups can be added under the `actionGroupExecuter.actionGroups` setting. `actionGroupExecuter.defaultProcessEndMessage` can be used to define a user specific message that is displayed after the execution of a process which output is placed the file tab. With the `actionGroupExecuter.defaultFileAssociation` setting the display of the file tabs for process output can be configured.
+Execution groups can be added under the `actionGroupExecuter.actionGroups` setting. `actionGroupExecuter.defaultProcessEndMessage` can be used to define a user specific message that is displayed after the execution of a process which output is placed the file tab. With the `actionGroupExecuter.defaultFileAssociation` setting the display of the file tabs for process output can be configured. `actionGroupExecuter.defaultShowActionSource` can be used to toggle the visibility of the settings source.
 
 ## Release Notes
+
+### 0.0.15
+
+* Add setting `actionGroupExecuter.defaultShowActionSource` to toggle the visibility of the settings source.
 
 ### 0.0.14
 
