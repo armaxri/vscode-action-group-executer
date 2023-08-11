@@ -319,20 +319,22 @@ export class ActionGroup implements vscode.QuickPickItem {
         config: EIActionGroup,
         defaultProcessEndMessage: string | undefined,
         defaultFileAssociation: string | undefined,
+        defaultShowActionSource: boolean | undefined,
         settingsSource: GroupSource
     ) {
         this.name = config.name;
-        this.label = this.name + " (" + settingsSource + ")";
-        const defaultProcessEndMessageAdj = defaultProcessEndMessage
-            ? defaultProcessEndMessage
-            : "";
-        const defaultFileAssociationAdj = defaultFileAssociation
-            ? defaultFileAssociation
-            : "";
+
+        const defaultProcessEndMessageAdj = defaultProcessEndMessage ?? "";
+        const defaultFileAssociationAdj = defaultFileAssociation ?? "";
+        const defaultShowActionSourceAdj = defaultShowActionSource ?? true;
 
         if (config.sortingIndex) {
             this.sortingIndex = config.sortingIndex;
         }
+        
+        this.label = (defaultShowActionSourceAdj)
+            ? this.name + " (" + settingsSource + ")"
+            : this.name;
 
         config.terminals?.forEach((terminalAction) => {
             const newTerminalAction = new TerminalAction(
@@ -563,7 +565,8 @@ class StringReplacer {
 function createAndMergeGroups(
     config: vscode.WorkspaceConfiguration,
     defaultProcessEndMessage: string | undefined,
-    defaultFileAssociation: string | undefined
+    defaultFileAssociation: string | undefined,
+    defaultShowActionSource: boolean | undefined
 ) {
     const inspect = config.inspect("actionGroups");
 
@@ -587,6 +590,7 @@ function createAndMergeGroups(
                     castedGroup,
                     defaultProcessEndMessage,
                     defaultFileAssociation,
+                    defaultShowActionSource,
                     source
                 );
                 mergedCommands.push(newGroup);
@@ -602,7 +606,7 @@ function createAndMergeGroups(
     // In that case we get all declarations doubled, that is actually not cool :/
     // The settings of the workspaceFolderValue are determined by the currently selected file. So we pick
     // workspaceValue over it, because you can have any file open and still get the setting. The other
-    // way around would mean that you won't get any group if a radom file outside the workspace is selected.
+    // way around would mean that you won't get any group if a random file outside the workspace is selected.
     if (vscode.workspace.workspaceFile) {
         createAndAddGroups(
             inspect?.workspaceFolderValue,
@@ -633,7 +637,8 @@ export function getActionGroups() {
     const commands = createAndMergeGroups(
         config,
         config.get<string>("defaultProcessEndMessage"),
-        config.get<string>("defaultFileAssociation")
+        config.get<string>("defaultFileAssociation"),
+        config.get<boolean>("defaultShowActionSource")
     );
 
     if (!commands) {

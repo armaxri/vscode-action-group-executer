@@ -2,7 +2,7 @@
     "name": "action-group-executer",
     "displayName": "Action Group Executer",
     "description": "",
-    "version": "0.0.14",
+    "version": "0.0.15",
     "keywords": [
         "terminal",
         "shell",
@@ -77,6 +77,11 @@
                         "type": "string",
                         "description": "Default file association of the tabs tabs spawned to display the process output.",
                         "default": "plaintext"
+                    },
+                    "actionGroupExecuter.defaultShowActionSource": {
+                        "type": "boolean",
+                        "description": "Toggle visibility of settings source.",
+                        "default": true
                     },
                     "actionGroupExecuter.actionGroups": {
                         "type": "array",
