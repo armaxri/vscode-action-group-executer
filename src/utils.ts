@@ -178,7 +178,9 @@ export function splitArguments(inputString: string): Array<string> {
             if (stringStart !== "") {
                 currentArg = currentArg + currentChar;
             } else {
-                args.push(currentArg);
+                if (currentArg !== "") {
+                    args.push(currentArg);
+                }
                 currentArg = "";
             }
         } else {
