@@ -1,5 +1,16 @@
 # Change Log
 
+## [0.0.15]
+
+### Added
+
+* Add setting `actionGroupExecuter.defaultShowActionSource` to toggle the visibility of the settings source.
+
+### Fixed
+
+* Improved stability of argument parsing.
+* Removed unnecessary package content.
+
 ## [0.0.14]
 
 ### Added
