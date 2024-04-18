@@ -1,5 +1,11 @@
 # Change Log
 
+## [Unreleased]
+
+### Changed
+
+* Increased vscode engine version.
+
 ## [0.0.15]
 
 ### Added

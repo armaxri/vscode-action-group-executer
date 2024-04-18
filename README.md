@@ -236,6 +236,10 @@ Execution groups can be added under the `actionGroupExecuter.actionGroups` setti
 
 ## Release Notes
 
+### [Unreleased]
+
+* Increased vscode engine version.
+
 ### 0.0.15
 
 * Add setting `actionGroupExecuter.defaultShowActionSource` to toggle the visibility of the settings source.
