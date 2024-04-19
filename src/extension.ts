@@ -2,7 +2,11 @@
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from "vscode";
 
-import { getActionGroups } from "./configuration";
+import {
+    ActionGroup,
+    ActionGroupPickGroup,
+    getActionGroups,
+} from "./configuration";
 import { runTerminalAction } from "./terminal";
 import { runDebugSession } from "./debugSession";
 import {
@@ -16,9 +20,14 @@ import {
 async function selectAndRunGroup() {
     console.log(`selectAndRunGroup was triggered.`);
     const commands = getActionGroups();
-    const command = await vscode.window.showQuickPick(commands);
+    var command = await vscode.window.showQuickPick(commands);
 
-    if (!command) {
+    while (command instanceof ActionGroupPickGroup) {
+        console.log(`Selected group "${command.label}".`);
+        command = await vscode.window.showQuickPick(command.getSortedMembers());
+    }
+
+    if (!(command instanceof ActionGroup)) {
         console.log(`No valid selection was taken.`);
         return;
     }

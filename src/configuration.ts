@@ -43,8 +43,14 @@ export interface EIDebugSession {
     delaySession?: number;
 }
 
+export interface EIGroupNames {
+    name: string;
+    sortingIndex?: number;
+}
+
 export interface EIActionGroup {
     name: string;
+    groupNames?: Array<EIGroupNames>;
     sortingIndex?: number;
     terminals?: Array<EITerminalAction>;
     debugSession?: EIDebugSession;
@@ -306,10 +312,32 @@ enum GroupSource {
     workspaceFolder = "Workspace Folder Settings",
 }
 
-export class ActionGroup implements vscode.QuickPickItem {
+export class GroupName {
     name: string;
+    sortingIndex: number;
+
+    constructor(name: string, sortingIndex: number | undefined) {
+        this.name = name;
+        this.sortingIndex = sortingIndex ? sortingIndex : 9999999;
+    }
+}
+
+class SortableQuickPickItem implements vscode.QuickPickItem {
     label: string;
     sortingIndex: number = 9999999;
+
+    constructor(label: string, sortingIndex: number | undefined) {
+        this.label = label;
+
+        if (sortingIndex) {
+            this.sortingIndex = sortingIndex;
+        }
+    }
+}
+
+export class ActionGroup extends SortableQuickPickItem {
+    name: string;
+    groupNames: Array<GroupName> = new Array<GroupName>();
     terminals: Array<TerminalAction> = new Array<TerminalAction>();
     debugSession?: DebugSession;
     selectedWorkspace: vscode.WorkspaceFolder | null | undefined = null;
@@ -322,20 +350,25 @@ export class ActionGroup implements vscode.QuickPickItem {
         defaultShowActionSource: boolean | undefined,
         settingsSource: GroupSource
     ) {
+        super(
+            defaultShowActionSource
+                ? config.name + " (" + settingsSource + ")"
+                : config.name,
+            config.sortingIndex
+        );
         this.name = config.name;
 
         const defaultProcessEndMessageAdj = defaultProcessEndMessage ?? "";
         const defaultFileAssociationAdj = defaultFileAssociation ?? "";
-        const defaultShowActionSourceAdj = defaultShowActionSource ?? true;
 
-        if (config.sortingIndex) {
-            this.sortingIndex = config.sortingIndex;
-        }
-        
-        this.label = (defaultShowActionSourceAdj)
-            ? this.name + " (" + settingsSource + ")"
-            : this.name;
-
+        config.groupNames?.forEach((groupName) => {
+            this.groupNames.push(
+                new GroupName(
+                    groupName.name,
+                    groupName.sortingIndex ? groupName.sortingIndex : 9999999
+                )
+            );
+        });
         config.terminals?.forEach((terminalAction) => {
             const newTerminalAction = new TerminalAction(
                 terminalAction,
@@ -424,6 +457,63 @@ export class ActionGroup implements vscode.QuickPickItem {
         }
 
         return false;
+    }
+}
+
+export class ActionGroupPickGroup extends SortableQuickPickItem {
+    groups: Array<ActionGroupPickGroup> = new Array<ActionGroupPickGroup>();
+    elements: Array<ActionGroup> = new Array<ActionGroup>();
+
+    constructor(config: GroupName) {
+        super(config.name, config.sortingIndex);
+    }
+
+    public recursivelyAddAction(action: ActionGroup) {
+        if (action.groupNames.length > 0) {
+            const groupName = action.groupNames.shift();
+            if (!groupName) {
+                this.elements.push(action);
+                return;
+            }
+
+            // Smallest index wins.
+            this.sortingIndex =
+                groupName.sortingIndex < this.sortingIndex
+                    ? groupName.sortingIndex
+                    : this.sortingIndex;
+
+            if (action.groupNames.length > 0) {
+                const group = this.groups.find(
+                    (group) => group.label === groupName.name
+                );
+
+                if (group) {
+                    group.recursivelyAddAction(action);
+                } else {
+                    const newGroup = new ActionGroupPickGroup(
+                        action.groupNames[0]
+                    );
+                    newGroup.recursivelyAddAction(action);
+                    this.groups.push(newGroup);
+                }
+            } else {
+                this.elements.push(action);
+            }
+        } else {
+            this.elements.push(action);
+        }
+    }
+
+    getSortedMembers(): Array<SortableQuickPickItem> {
+        const allMembers = new Array<SortableQuickPickItem>();
+        this.groups.forEach((group) => {
+            allMembers.push(group);
+        });
+        this.elements.forEach((element) => {
+            allMembers.push(element);
+        });
+
+        return sortGroupsRecursivelyByIndex(allMembers);
     }
 }
 
@@ -627,6 +717,62 @@ function applyReplacementsInGroups(actionGroups: Array<ActionGroup>) {
     return actionGroups;
 }
 
+function createGroupStructure(
+    actionGroups: Array<ActionGroup>
+): Array<SortableQuickPickItem> {
+    const singleElements = new Array<ActionGroup>();
+    const groups = new Array<ActionGroupPickGroup>();
+
+    actionGroups.forEach((actionGroup) => {
+        if (actionGroup.groupNames.length > 0) {
+            const groupName = actionGroup.groupNames[0];
+            const group = groups.find(
+                (group) => group.label === groupName.name
+            );
+
+            if (group) {
+                group.recursivelyAddAction(actionGroup);
+            } else {
+                const newGroup = new ActionGroupPickGroup(groupName);
+                newGroup.recursivelyAddAction(actionGroup);
+                groups.push(newGroup);
+            }
+        } else {
+            singleElements.push(actionGroup);
+        }
+    });
+
+    const allElements = new Array<SortableQuickPickItem>();
+    groups.forEach((group) => {
+        allElements.push(group);
+    });
+    singleElements.forEach((element) => {
+        allElements.push(element);
+    });
+
+    return allElements;
+}
+
+function sortGroupsRecursivelyByIndex(
+    sortableQuickPickItem: Array<SortableQuickPickItem>
+): Array<SortableQuickPickItem> {
+    sortableQuickPickItem.forEach((item) => {
+        if (item instanceof ActionGroupPickGroup) {
+            sortGroupsRecursivelyByIndex(item.groups);
+        }
+    });
+
+    sortableQuickPickItem.sort((a, b) =>
+        a.sortingIndex > b.sortingIndex
+            ? 1
+            : b.sortingIndex > a.sortingIndex
+            ? -1
+            : 0
+    );
+
+    return sortableQuickPickItem;
+}
+
 export function getActionGroups() {
     // Get the configuration based on the current file.
     const correspondingWorkspace = utils.getCurrentWorkspace();
@@ -662,14 +808,11 @@ export function getActionGroups() {
         group.selectedWorkspace = correspondingWorkspace;
     });
 
-    // Order the action groups based on the sorting index.
-    adjustedGroups = adjustedGroups.sort((a, b) =>
-        a.sortingIndex > b.sortingIndex
-            ? 1
-            : b.sortingIndex > a.sortingIndex
-            ? -1
-            : 0
-    );
+    // Group the commands based on the configuration in directories.
+    var groupedCommands = createGroupStructure(adjustedGroups);
 
-    return adjustedGroups;
+    // Order the action groups recursively based on the sorting index.
+    sortGroupsRecursivelyByIndex(groupedCommands);
+
+    return groupedCommands;
 }

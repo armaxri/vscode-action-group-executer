@@ -238,6 +238,7 @@ Execution groups can be added under the `actionGroupExecuter.actionGroups` setti
 
 ### [Unreleased]
 
+* Added a directory like grouping mechanism for better structure of actions.
 * Increased vscode engine version.
 
 ### 0.0.15
