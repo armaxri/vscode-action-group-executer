@@ -90,6 +90,26 @@
                                     "type": "string",
                                     "description": "Name of the callable action group."
                                 },
+                                "groupNames": {
+                                    "type": "array",
+                                    "default": [],
+                                    "description": "List of group and subgroup names, which are used to sort the actions in a directory like manner.",
+                                    "items": {
+                                        "type": "object",
+                                        "properties": {
+                                            "name": {
+                                                "type": "string",
+                                                "description": "Name of the group or subgroup."
+                                            },
+                                            "sortingIndex": {
+                                                "type": "integer",
+                                                "default": 9999999,
+                                                "description": "The number is used to order the action groups"
+                                            }
+                                        },
+                                        "required": ["name"]
+                                    }
+                                },
                                 "sortingIndex": {
                                     "type": "integer",
                                     "default": 9999999,

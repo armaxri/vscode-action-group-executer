@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### Added
+
+* Added a directory like grouping mechanism for better structure of actions.
+
 ### Changed
 
 * Increased vscode engine version.

@@ -1,0 +1,50 @@
+{
+    "actionGroupExecuter.actionGroups": [
+        {
+            "name": "Example A",
+            "groupNames": [
+                {"name": "Example A", "sortingIndex": 3},
+                {"name": "Example C"}
+            ],
+            "sortingIndex": 1,
+            "terminals": [{
+                "command": "${workspaceFolder}/echoTEST_WORLD.sh",
+                "extendedOptions": {
+                    "cwd": "${workspaceFolder}",
+                    "env": {
+                        "TEST_WORLD": "Example A"
+                    }
+                }
+            }]
+        },
+        {
+            "name": "Example B",
+            "sortingIndex": 2,
+            "terminals": [{
+                "command": "${workspaceFolder}/echoTEST_WORLD.sh",
+                "extendedOptions": {
+                    "cwd": "${workspaceFolder}",
+                    "env": {
+                        "TEST_WORLD": "Example B"
+                    }
+                }
+            }]
+        },
+        {
+            "name": "Example C",
+            "groupNames": [
+                {"name": "Example A", "sortingIndex": 3}
+            ],
+            "sortingIndex": 1,
+            "terminals": [{
+                "command": "${workspaceFolder}/echoTEST_WORLD.sh",
+                "extendedOptions": {
+                    "cwd": "${workspaceFolder}",
+                    "env": {
+                        "TEST_WORLD": "Example B"
+                    }
+                }
+            }]
+        }
+    ]
+}
