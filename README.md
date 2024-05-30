@@ -236,6 +236,10 @@ Execution groups can be added under the `actionGroupExecuter.actionGroups` setti
 
 ## Release Notes
 
+### 1.0.1
+
+* Fixed sub group generation.
+
 ### 1.0.0
 
 * Added a directory like grouping mechanism for better structure of actions.

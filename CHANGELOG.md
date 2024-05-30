@@ -1,5 +1,11 @@
 # Change Log
 
+## [1.0.1]
+
+### Fixed
+
+* Fixed sub group generation.
+
 ## [1.0.0]
 
 ### Added

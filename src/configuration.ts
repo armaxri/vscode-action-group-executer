@@ -482,22 +482,16 @@ export class ActionGroupPickGroup extends SortableQuickPickItem {
                     ? groupName.sortingIndex
                     : this.sortingIndex;
 
-            if (action.groupNames.length > 0) {
-                const group = this.groups.find(
-                    (group) => group.label === groupName.name
-                );
+            const group = this.groups.find(
+                (group) => group.label === groupName.name
+            );
 
-                if (group) {
-                    group.recursivelyAddAction(action);
-                } else {
-                    const newGroup = new ActionGroupPickGroup(
-                        action.groupNames[0]
-                    );
-                    newGroup.recursivelyAddAction(action);
-                    this.groups.push(newGroup);
-                }
+            if (group) {
+                group.recursivelyAddAction(action);
             } else {
-                this.elements.push(action);
+                const newGroup = new ActionGroupPickGroup(groupName);
+                newGroup.recursivelyAddAction(action);
+                this.groups.push(newGroup);
             }
         } else {
             this.elements.push(action);
@@ -725,15 +719,15 @@ function createGroupStructure(
 
     actionGroups.forEach((actionGroup) => {
         if (actionGroup.groupNames.length > 0) {
-            const groupName = actionGroup.groupNames[0];
+            const groupName = actionGroup.groupNames.shift();
             const group = groups.find(
-                (group) => group.label === groupName.name
+                (group) => group.label === groupName!.name
             );
 
             if (group) {
                 group.recursivelyAddAction(actionGroup);
             } else {
-                const newGroup = new ActionGroupPickGroup(groupName);
+                const newGroup = new ActionGroupPickGroup(groupName!);
                 newGroup.recursivelyAddAction(actionGroup);
                 groups.push(newGroup);
             }
