@@ -107,7 +107,9 @@
                                                 "description": "The number is used to order the action groups"
                                             }
                                         },
-                                        "required": ["name"]
+                                        "required": [
+                                            "name"
+                                        ]
                                     }
                                 },
                                 "sortingIndex": {
@@ -230,8 +232,12 @@
                                                         }
                                                     }
                                                 },
-                                                "required": ["call"],
-                                                "default": { "call": [] }
+                                                "required": [
+                                                    "call"
+                                                ],
+                                                "default": {
+                                                    "call": []
+                                                }
                                             },
                                             "commands": {
                                                 "type": "array",
@@ -313,17 +319,35 @@
                                                             }
                                                         }
                                                     },
-                                                    "required": ["call"],
-                                                    "default": { "call": [] }
+                                                    "required": [
+                                                        "call"
+                                                    ],
+                                                    "default": {
+                                                        "call": []
+                                                    }
                                                 }
                                             }
                                         },
                                         "oneOf": [
-                                            { "required": ["command"] },
-                                            { "required": ["commands"] }
+                                            {
+                                                "required": [
+                                                    "command"
+                                                ]
+                                            },
+                                            {
+                                                "required": [
+                                                    "commands"
+                                                ]
+                                            }
                                         ],
                                         "default": {
-                                            "command": { "call": ["ls", "-la", "usr"] }
+                                            "command": {
+                                                "call": [
+                                                    "ls",
+                                                    "-la",
+                                                    "usr"
+                                                ]
+                                            }
                                         }
                                     }
                                 },
@@ -514,18 +538,19 @@
     },
     "devDependencies": {
         "@types/glob": "^7.1.4",
-        "@types/mocha": "^9.0.0",
-        "@types/node": "14.x",
+        "@types/mocha": "^10.0.10",
+        "@types/node": "^20.19.39",
         "@types/vscode": "^1.75.0",
-        "@typescript-eslint/eslint-plugin": "^5.1.0",
-        "@typescript-eslint/parser": "^5.1.0",
-        "@vscode/test-electron": "^1.6.2",
-        "eslint": "^8.1.0",
+        "@typescript-eslint/eslint-plugin": "^8.58.2",
+        "@typescript-eslint/parser": "^8.58.2",
+        "@vscode/test-electron": "^2.5.2",
+        "eslint": "^8.57.1",
         "glob": "^7.1.7",
-        "mocha": "^9.1.3",
-        "typescript": "^4.4.4"
+        "mocha": "^11.7.5",
+        "typescript": "^5.9.3"
     },
     "dependencies": {
-        "package-lock.json": "^1.0.0"
+        "package-lock.json": "^1.0.0",
+        "tsc": "^2.0.4"
     }
 }
