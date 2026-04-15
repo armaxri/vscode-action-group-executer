@@ -1,5 +1,30 @@
 # Change Log
 
+## [Unreleased]
+
+### Added
+
+* `${file}` and related file variables now resolve correctly when the active tab is a webview or custom editor (e.g. SVG preview rendered by VS Code). Previously these variables were empty when no text editor was active.
+* Activation log and info banner when running a development build (version `99.99.99`).
+
+### Fixed
+
+* Eliminated the "Errors exist after running preLaunchTask" dialog on debug launch caused by inconsistent TypeScript type resolution in the VS Code language server.
+* Resolved 3 audit vulnerabilities in transitive test dependencies (`diff`, `serialize-javascript`) via npm overrides.
+* Fixed "tabs tabs" typo in schema descriptions for `defaultFileAssociation` and per-process `fileAssociation`.
+* Removed trailing space from the "Send a Text Message to the current Background Process" command title.
+
+### Changed
+
+* Minimum VS Code engine version bumped to `1.113.0`.
+* Updated all devDependencies to latest major versions: mocha 11, TypeScript 5, `@vscode/test-electron` 2, `glob` 13, `@types/node` 22.
+* Migrated ESLint from `.eslintrc.json` to flat config format (`eslint.config.js`), upgraded ESLint to v10.
+* README overhauled: rewritten introduction, keyboard shortcut added to Features header, duplicate Example5 removed, new Example8 for `groupNames`/`sortingIndex`, `${file}` webview behaviour documented, settings table added, release notes replaced by link to CHANGELOG.
+* Replaced `vsc-extension-quickstart.md` with `CONTRIBUTING.md` containing project-specific build, test, publish, and architecture documentation.
+* Documented `useProcessDefaultDebugConfig` terminal option in README with a dedicated example (Example7b).
+* Clarified `defaultProcessDebugTemplate` fallback and override behaviour in Example7 comments.
+* Expanded all `test_workspaces/README.md` descriptions to include how to open each workspace and which features it exercises.
+
 ## [1.0.1]
 
 ### Fixed

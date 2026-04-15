@@ -6,11 +6,34 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Run Extension",
+            // Launches with ALL installed extensions disabled.
+            // Pros: Simple, guaranteed to run only the dev build.
+            // Cons: No other extensions (themes, language support, etc.) in the debug window.
+            "name": "Run Extension (no other extensions)",
             "type": "extensionHost",
             "request": "launch",
             "args": [
-                "--extensionDevelopmentPath=${workspaceFolder}"
+                "--extensionDevelopmentPath=${workspaceFolder}",
+                "--disable-extensions"
+            ],
+            "outFiles": [
+                "${workspaceFolder}/out/**/*.js"
+            ],
+            "preLaunchTask": "${defaultBuildTask}"
+        },
+        {
+            // Launches under a dedicated VS Code profile called "age-dev" that has no
+            // extensions installed, so the installed release copy never interferes.
+            // Pros: Profile persists across sessions and can accumulate dev-only settings;
+            //       you can install helper extensions there without touching your main profile.
+            // Cons: First launch creates a blank profile (no themes/settings until you add them).
+            "name": "Run Extension (dev profile)",
+            "type": "extensionHost",
+            "request": "launch",
+            "args": [
+                "--extensionDevelopmentPath=${workspaceFolder}",
+                "--profile",
+                "age-dev"
             ],
             "outFiles": [
                 "${workspaceFolder}/out/**/*.js"

@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
+  <!-- Background rounded square -->
+  <rect width="128" height="128" rx="18" ry="18" fill="#1E1E1E"/>
+
+  <!-- Terminal bar (teal) -->
+  <rect x="14" y="30" width="62" height="16" rx="4" fill="#4EC9B0"/>
+  <text x="20" y="43" font-family="monospace" font-size="11" fill="#1E1E1E" font-weight="bold">$_</text>
+
+  <!-- Process bar (orange) -->
+  <rect x="14" y="56" width="62" height="16" rx="4" fill="#CE9178"/>
+  <!-- 8-tooth gear centered at (26, 64), outer r=6, inner r=4.5, hole r=2.5 -->
+  <polygon points="
+    32,64
+    30.16,65.72
+    30.24,68.24
+    27.72,68.16
+    26,70
+    24.28,68.16
+    21.76,68.24
+    21.84,65.72
+    20,64
+    21.84,62.28
+    21.76,59.76
+    24.28,59.84
+    26,58
+    27.72,59.84
+    30.24,59.76
+    30.16,62.28
+  " fill="#1E1E1E"/>
+  <circle cx="26" cy="64" r="2.5" fill="#CE9178"/>
+
+  <!-- Debug bar (blue) -->
+  <rect x="14" y="82" width="62" height="16" rx="4" fill="#569CD6"/>
+  <!-- Bug icon: body + 2 antennae + 6 legs -->
+  <ellipse cx="26" cy="91" rx="4" ry="5" fill="#1E1E1E"/>
+  <line x1="23" y1="88" x2="21" y2="85" stroke="#1E1E1E" stroke-width="1.5" stroke-linecap="round"/>
+  <line x1="29" y1="88" x2="31" y2="85" stroke="#1E1E1E" stroke-width="1.5" stroke-linecap="round"/>
+  <line x1="22" y1="89" x2="19" y2="88" stroke="#1E1E1E" stroke-width="1.5" stroke-linecap="round"/>
+  <line x1="22" y1="92" x2="19" y2="92" stroke="#1E1E1E" stroke-width="1.5" stroke-linecap="round"/>
+  <line x1="22" y1="95" x2="19" y2="96" stroke="#1E1E1E" stroke-width="1.5" stroke-linecap="round"/>
+  <line x1="30" y1="89" x2="33" y2="88" stroke="#1E1E1E" stroke-width="1.5" stroke-linecap="round"/>
+  <line x1="30" y1="92" x2="33" y2="92" stroke="#1E1E1E" stroke-width="1.5" stroke-linecap="round"/>
+  <line x1="30" y1="95" x2="33" y2="96" stroke="#1E1E1E" stroke-width="1.5" stroke-linecap="round"/>
+
+  <!-- Divider line -->
+  <line x1="86" y1="24" x2="86" y2="104" stroke="#3C3C3C" stroke-width="2"/>
+
+  <!-- Play / execute arrow (right side) -->
+  <polygon points="97,48 97,80 121,64" fill="#DCDCAA"/>
+</svg>
