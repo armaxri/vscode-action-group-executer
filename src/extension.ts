@@ -58,9 +58,13 @@ async function selectAndRunGroup() {
 export function activate(context: vscode.ExtensionContext) {
     // Use the console to output diagnostic information (console.log) and errors (console.error)
     // This line of code will only be executed once when your extension is activated
-    console.log(
-        'Congratulations, your extension "action-group-executer" is now active!'
-    );
+    const version = context.extension.packageJSON.version as string;
+    console.log(`action-group-executer version ${version} is now active.`);
+    if (version === "99.99.99") {
+        vscode.window.showInformationMessage(
+            "Action Group Executer: DEV BUILD loaded"
+        );
+    }
 
     // The command has been defined in the package.json file
     // Now provide the implementation of the command with registerCommand
