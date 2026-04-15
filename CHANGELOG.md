@@ -1,5 +1,18 @@
 # Change Log
 
+## [Unreleased]
+
+### Fixed
+
+* Fixed "tabs tabs" typo in schema descriptions for `defaultFileAssociation` and per-process `fileAssociation`.
+* Removed trailing space from the "Send a Text Message to the current Background Process" command title.
+
+### Changed
+
+* Documented `useProcessDefaultDebugConfig` terminal option in README with a dedicated example (Example7b).
+* Clarified `defaultProcessDebugTemplate` fallback and override behaviour in Example7 comments.
+* Expanded all `test_workspaces/README.md` descriptions to include how to open each workspace and which features it exercises.
+
 ## [1.0.1]
 
 ### Fixed
