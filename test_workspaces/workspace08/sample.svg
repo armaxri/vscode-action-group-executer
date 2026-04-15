@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="100">
+  <rect width="200" height="100" fill="#4a90d9" rx="10"/>
+  <text x="100" y="55" font-family="sans-serif" font-size="18"
+        text-anchor="middle" fill="white">workspace08</text>
+</svg>

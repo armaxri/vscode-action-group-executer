@@ -33,3 +33,7 @@ Simple one directory workspace to test process debugging functionality.
 ## workspace07
 
 Single directory workspace to test hierarchical group nesting via `groupNames` and custom ordering via `sortingIndex`. Groups are configured to belong to other groups, forming a nested pick hierarchy with controlled sort positions.
+
+## workspace08
+
+Single directory workspace to test `${file}` variable resolution when the active tab is a webview (non-text editor). Open `sample.svg` — VS Code renders it as a webview — then run "Echo active file path". The terminal should print the full path to `sample.svg`, confirming the `TabInputCustom` fallback in the variable substitution logic works correctly.

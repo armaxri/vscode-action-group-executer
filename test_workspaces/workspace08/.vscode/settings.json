@@ -1,0 +1,10 @@
+{
+    "actionGroupExecuter.actionGroups": [
+        {
+            "name": "Echo active file path",
+            "terminals": [{
+                "command": "${workspaceFolder}/echoFILE.sh \"${file}\""
+            }]
+        }
+    ]
+}
