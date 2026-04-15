@@ -530,20 +530,37 @@ class StringReplacer {
         const editor = vscode.window.activeTextEditor;
         this.cwd = `${process.cwd()}`;
 
-        if (editor?.document) {
-            this.fileExtname = path.extname(editor.document.fileName);
-            this.fileBasenameNoExtensions = path.basename(
-                editor.document.fileName,
-                this.fileExtname
-            );
-            this.fileBasename = path.basename(editor.document.fileName);
-            this.fileDirname = path.dirname(editor.document.fileName);
-            this.file = editor.document.fileName;
+        let activeFilePath: string | undefined;
 
+        if (editor?.document) {
+            activeFilePath = editor.document.fileName;
             if (editor?.selection) {
                 this.selectedText = editor.document.getText(editor.selection);
             }
+        } else {
+            // Fall back to the active tab input for non-text views (custom editors,
+            // HTML renderers, image viewers, etc.) that don't surface an activeTextEditor.
+            const activeTab = vscode.window.tabGroups.activeTabGroup.activeTab;
+            const input = activeTab?.input;
+            if (
+                input instanceof vscode.TabInputText ||
+                input instanceof vscode.TabInputCustom
+            ) {
+                activeFilePath = input.uri.fsPath;
+            }
         }
+
+        if (activeFilePath) {
+            this.fileExtname = path.extname(activeFilePath);
+            this.fileBasenameNoExtensions = path.basename(
+                activeFilePath,
+                this.fileExtname
+            );
+            this.fileBasename = path.basename(activeFilePath);
+            this.fileDirname = path.dirname(activeFilePath);
+            this.file = activeFilePath;
+        }
+
         this.lineNumber = `${
             editor?.selection ? editor?.selection.active.line + 1 : 0
         }`;
