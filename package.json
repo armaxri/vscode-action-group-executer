@@ -41,7 +41,7 @@
             },
             {
                 "command": "action-group-executer.sendMessage2RunningProcess",
-                "title": "Send a Text Message to the current Background Process ",
+                "title": "Send a Text Message to the current Background Process",
                 "category": "ActionGroupExec"
             },
             {
@@ -73,7 +73,7 @@
                     },
                     "actionGroupExecuter.defaultFileAssociation": {
                         "type": "string",
-                        "description": "Default file association of the tabs tabs spawned to display the process output.",
+                        "description": "Default file association of the file tabs spawned to display the process output.",
                         "default": "plaintext"
                     },
                     "actionGroupExecuter.defaultShowActionSource": {
@@ -142,7 +142,7 @@
                                             },
                                             "fileAssociation": {
                                                 "type": "string",
-                                                "description": "File association of the tabs tabs spawned to display the process output.",
+                                                "description": "File association of the file tabs spawned to display the process output.",
                                                 "default": "plaintext"
                                             },
                                             "command": {

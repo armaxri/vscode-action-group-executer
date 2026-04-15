@@ -162,9 +162,18 @@ The following settings illustrate the full range of available options:
             }]
         },
         {
+            // When an action group has processes with debug templates, executing it
+            // prompts you to optionally convert each eligible process to a debug
+            // session instead of running it as a background process.
+            //
+            // defaultProcessDebugTemplate is a group-level fallback: any process
+            // that does NOT have its own debugTemplate inherits this one.
+            // A per-process debugTemplate always takes priority over the fallback.
+            // The process program and args are merged into the template automatically.
             "name": "Example7 - Debug python processes",
             "processes": [
                 {
+                    // No debugTemplate — inherits defaultProcessDebugTemplate below.
                     "command": {
                         "name": "Process 1",
                         "call": [ "./script1.py" ],
@@ -172,6 +181,7 @@ The following settings illustrate the full range of available options:
                     }
                 },
                 {
+                    // No debugTemplate — inherits defaultProcessDebugTemplate below.
                     "command": {
                         "name": "Process 2",
                         "call": [ "./script2.py", "arg1", "arg2" ],
@@ -184,16 +194,37 @@ The following settings illustrate the full range of available options:
                         "call": [ "./script3.py" ],
                         "extendedOptions": { "cwd": "${workspaceFolder}" }
                     },
-                    // This process has a debug template, which is used merged with the
-                    // process setting to create a debug session.
+                    // Per-process debugTemplate takes priority over the group-level
+                    // defaultProcessDebugTemplate for this process only.
                     "debugTemplate": {
                         "type": "python",
                         "request": "launch"
                     }
                 }
             ],
-            // These settings are used together with the settings of process 1 and 2
-            // to create a debug session if selected.
+            // Fallback debug configuration used by Process 1 and Process 2.
+            "defaultProcessDebugTemplate": {
+                "type": "python",
+                "request": "launch",
+                "console": "integratedTerminal"
+            }
+        },
+        {
+            // useProcessDefaultDebugConfig on a terminal action lets that terminal
+            // be converted to a debug session instead of running in a terminal,
+            // using the group's defaultProcessDebugTemplate as the base config.
+            // The command string is split into program + args automatically.
+            "name": "Example7b - Debug a terminal as a process",
+            "terminals": [
+                {
+                    "name": "Run script",
+                    "command": "./script.py --verbose",
+                    // When true, this terminal can optionally be launched as a
+                    // debug session using defaultProcessDebugTemplate below.
+                    "useProcessDefaultDebugConfig": true,
+                    "extendedOptions": { "cwd": "${workspaceFolder}" }
+                }
+            ],
             "defaultProcessDebugTemplate": {
                 "type": "python",
                 "request": "launch",
