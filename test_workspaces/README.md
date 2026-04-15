@@ -29,3 +29,7 @@ Simple one directory workspace to test processes intensively.
 ## workspace06
 
 Simple one directory workspace to test process debugging functionality.
+
+## workspace07
+
+Single directory workspace to test hierarchical group nesting via `groupNames` and custom ordering via `sortingIndex`. Groups are configured to belong to other groups, forming a nested pick hierarchy with controlled sort positions.
