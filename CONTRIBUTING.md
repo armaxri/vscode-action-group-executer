@@ -50,7 +50,7 @@ The `test_workspaces/` directory contains ready-made workspaces for manual testi
 A VSIX is the self-contained package file used to distribute or install the extension manually.
 
 ```bash
-npx @vscode/vsce package
+npm run package
 ```
 
 This compiles the extension (runs `vscode:prepublish` → `npm run compile`) and produces a `.vsix` file in the project root, e.g. `action-group-executer-1.0.1.vsix`.
