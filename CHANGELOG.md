@@ -2,6 +2,15 @@
 
 ## [Unreleased]
 
+### Fixed
+
+* Resolved all reported audit vulnerabilities in dev dependencies (`npm audit fix` plus `@vscode/vsce` upgrade, which drops the vulnerable `secretlint` → `braces` chain).
+* Extension tests failed to launch on macOS with VS Code 1.142+ (`spawn ... Electron ENOENT`) because the app binary was renamed; fixed by the `@vscode/test-electron` upgrade.
+
+### Changed
+
+* Updated `@vscode/vsce` to 4 and `@vscode/test-electron` to 3 (both require Node.js 22+).
+
 ## [1.1.0]
 
 ### Added
