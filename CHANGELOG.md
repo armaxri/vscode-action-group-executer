@@ -5,6 +5,7 @@
 ### Added
 
 * Action groups can start VS Code tasks (from `tasks.json` or provided by other extensions) via the new `tasks` entry.
+* Action groups can execute VS Code commands (e.g. `clangd.restart`) via the new `commands` entry.
 
 ### Changed
 

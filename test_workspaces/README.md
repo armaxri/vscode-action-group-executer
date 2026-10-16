@@ -102,3 +102,7 @@ Tests starting VS Code tasks from `.vscode/tasks.json`: a single task, multiple 
 in parallel, a delayed task (`delayTask`), a lookup restricted by `source`, a group
 combining a task with a terminal, and a missing task name that should show an error
 message.
+
+It also tests VS Code commands: saving all files, opening Quick Open with an argument
+(`${fileBasename}`), a delayed command (`delayCommand`), a group combining a task with
+a command, and an unknown command ID that should show an error message.

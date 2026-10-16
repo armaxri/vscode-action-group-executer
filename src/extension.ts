@@ -10,6 +10,7 @@ import {
 import { runTerminalAction } from "./terminal";
 import { runDebugSession } from "./debugSession";
 import { runTaskAction } from "./task";
+import { runCommandAction } from "./vscodeCommand";
 import {
     runProcesses,
     controlRunningProcess,
@@ -55,6 +56,10 @@ async function selectAndRunGroup() {
 
     const selectedWorkspace = command.selectedWorkspace;
     command.tasks.forEach((task) => runTaskAction(task, selectedWorkspace));
+
+    command.commands.forEach((commandAction) =>
+        runCommandAction(commandAction)
+    );
 }
 
 // this method is called when your extension is activated

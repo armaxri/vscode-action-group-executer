@@ -490,6 +490,36 @@
                                         }
                                     }
                                 },
+                                "commands": {
+                                    "type": "array",
+                                    "default": [],
+                                    "description": "List of VS Code commands (e.g. \"clangd.restart\") that should be executed.",
+                                    "items": {
+                                        "type": "object",
+                                        "properties": {
+                                            "id": {
+                                                "type": "string",
+                                                "description": "ID of the VS Code command. Can be copied via \"Copy Command ID\" in the keyboard shortcuts editor."
+                                            },
+                                            "args": {
+                                                "type": "array",
+                                                "default": [],
+                                                "description": "Arguments that are passed to the command."
+                                            },
+                                            "delayCommand": {
+                                                "type": "number",
+                                                "default": 0,
+                                                "description": "Start delay in ms."
+                                            }
+                                        },
+                                        "required": [
+                                            "id"
+                                        ],
+                                        "default": {
+                                            "id": "Add command ID here!"
+                                        }
+                                    }
+                                },
                                 "debugSession": {
                                     "type": "object",
                                     "description": "Debug session based on a launch configuration.",

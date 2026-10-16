@@ -50,6 +50,12 @@ export interface EITaskAction {
     delayTask?: number;
 }
 
+export interface EICommandAction {
+    id: string;
+    args?: Array<any>;
+    delayCommand?: number;
+}
+
 export interface EIGroupNames {
     name: string;
     sortingIndex?: number;
@@ -63,6 +69,7 @@ export interface EIActionGroup {
     debugSession?: EIDebugSession;
     processes?: Array<EIProcessAction>;
     tasks?: Array<EITaskAction>;
+    commands?: Array<EICommandAction>;
     defaultProcessDebugTemplate?: vscode.DebugConfiguration;
 }
 
@@ -330,6 +337,23 @@ export class TaskAction {
     }
 }
 
+export class CommandAction {
+    id: string;
+    args: Array<any> = new Array<any>();
+    delayCommand: number = 0;
+
+    constructor(config: EICommandAction) {
+        this.id = config.id;
+        if (Array.isArray(config.args)) {
+            this.args = config.args;
+        }
+        this.delayCommand =
+            typeof config.delayCommand === "number"
+                ? config.delayCommand
+                : this.delayCommand;
+    }
+}
+
 enum GroupSource {
     default = "Default Settings",
     user = "User Settings",
@@ -368,6 +392,7 @@ export class ActionGroup extends SortableQuickPickItem {
     selectedWorkspace: vscode.WorkspaceFolder | null | undefined = null;
     processes: Array<ProcessAction> = new Array<ProcessAction>();
     tasks: Array<TaskAction> = new Array<TaskAction>();
+    commands: Array<CommandAction> = new Array<CommandAction>();
 
     constructor(
         config: EIActionGroup,
@@ -415,6 +440,9 @@ export class ActionGroup extends SortableQuickPickItem {
         });
         config.tasks?.forEach((taskAction) => {
             this.tasks.push(new TaskAction(taskAction));
+        });
+        config.commands?.forEach((commandAction) => {
+            this.commands.push(new CommandAction(commandAction));
         });
         if (config.debugSession) {
             // Simple cast for the moment. Add class functionality later.
