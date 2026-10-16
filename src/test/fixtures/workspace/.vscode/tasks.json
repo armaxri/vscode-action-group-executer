@@ -1,0 +1,15 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "integration echo",
+            "type": "shell",
+            "command": "echo integration"
+        },
+        {
+            "label": "integration fail",
+            "type": "shell",
+            "command": "exit 3"
+        }
+    ]
+}

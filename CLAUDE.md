@@ -42,4 +42,4 @@ Releases are triggered by pushing a lightweight tag `release/x.y.z` (no `-a`, no
 
 ## Testing
 
-Tests use Mocha via `@vscode/test-electron`. Test workspaces live in `test_workspaces/`. The test suite at `src/test/suite/utilsStringAdjustment.test.ts` has the most coverage (argument parsing edge cases).
+Tests use Mocha via `@vscode/test-electron`. The test instance opens `src/test/fixtures/workspace` (with workspace trust disabled so tasks can run); its `tasks.json` and `settings.json` back the task/command integration tests. Manual test workspaces live in `test_workspaces/`. The test suite at `src/test/suite/utilsStringAdjustment.test.ts` has the most coverage (argument parsing edge cases).

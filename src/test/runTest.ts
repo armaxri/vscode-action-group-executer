@@ -12,8 +12,23 @@ async function main() {
         // Passed to --extensionTestsPath
         const extensionTestsPath = path.resolve(__dirname, "./suite/index");
 
+        // Workspace with tasks and action groups used by the integration tests.
+        const testWorkspace = path.resolve(
+            __dirname,
+            "../../src/test/fixtures/workspace"
+        );
+
         // Download VS Code, unzip it and run the integration test
-        await runTests({ extensionDevelopmentPath, extensionTestsPath });
+        await runTests({
+            extensionDevelopmentPath,
+            extensionTestsPath,
+            launchArgs: [
+                testWorkspace,
+                // Tasks are blocked in untrusted workspaces.
+                "--disable-workspace-trust",
+                "--disable-extensions",
+            ],
+        });
     } catch (err) {
         console.error("Failed to run tests");
         process.exit(1);

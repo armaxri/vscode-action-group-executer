@@ -354,7 +354,7 @@ export class CommandAction {
     }
 }
 
-enum GroupSource {
+export enum GroupSource {
     default = "Default Settings",
     user = "User Settings",
     workspace = "Workspace Settings",
