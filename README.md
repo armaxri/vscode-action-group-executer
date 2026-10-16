@@ -8,15 +8,18 @@ Use `ActionGroupExec: Execute Action Group` (default keybinding: `Ctrl+Shift+A` 
 
 ### Setting up action groups
 
-Action groups can be set up step by step without writing JSON:
+`ActionGroupExec: Edit Action Groups` opens an editor tab for all action groups, without writing JSON. The left side lists the groups of all settings locations (workspace, workspace folders, user) by group folder. The right side shows the selected group as a form:
 
-* `ActionGroupExec: Create Action Group` asks for a name and lets you add actions. Tasks, VS Code commands and debug sessions are picked from the ones that actually exist in your workspace (from `tasks.json`, `launch.json` and installed extensions). Terminals and processes are entered as command lines. Finally you choose the group folder and whether the group is stored in the workspace, workspace folder or user settings.
-* `ActionGroupExec: Edit Action Group` lets you edit, add or remove actions, rename the group, move it to another group folder or delete it. Options the dialog doesn't cover (e.g. `extendedOptions`) are kept as they are.
-* `ActionGroupExec: Delete Action Group` removes a group after confirmation.
+* Tasks and debug sessions are selected from the tasks and launch configurations that exist in your workspace, including npm scripts and other tasks provided by extensions.
+* VS Code commands can be searched by ID or title, e.g. `clangd.restart`.
+* Terminals and processes are entered as command lines, with name, working directory and delay.
+* The group folder, sorting index and settings location can be changed. Changing the location moves the group.
 
-When no action group is configured yet, `Execute Action Group` offers to create one.
+`ActionGroupExec: Create Action Group` opens the same editor with a new group. When no action group is configured yet, `Execute Action Group` offers to create one.
 
-Saving rewrites the `actionGroupExecuter.actionGroups` setting, so comments inside that setting are lost. Sequential process `commands` and inline debug configurations (`newConfiguration`) can only be removed with the dialog; edit them in the settings JSON.
+Unsaved changes are kept per group while you switch between groups. Save with the button or `Ctrl+S` / `Cmd+S`. If the settings were changed elsewhere in the meantime, the editor refuses to overwrite them.
+
+Saving rewrites the `actionGroupExecuter.actionGroups` setting, so comments inside that setting are lost. Options the editor doesn't show (e.g. `extendedOptions.env`) are kept. Sequential process `commands` and inline debug configurations (`newConfiguration`) can only be removed in the editor; edit them in the settings JSON.
 
 ### Settings
 

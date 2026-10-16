@@ -89,13 +89,15 @@ This requires a Personal Access Token (PAT) for the `armaxri` publisher. See the
 
 | Path | Purpose |
 |---|---|
-| `src/extension.ts` | Entry point — registers the 8 commands |
+| `src/extension.ts` | Entry point — registers the 7 commands |
 | `src/configuration.ts` | Parses VS Code settings into typed class instances |
 | `src/terminal.ts` | Creates/reuses terminals and sends commands |
 | `src/process.ts` | Spawns background processes, captures output to document tabs |
 | `src/task.ts` | Looks up and executes VS Code tasks |
 | `src/vscodeCommand.ts` | Executes VS Code commands by ID |
-| `src/setupWizard.ts` | Step-by-step dialogs to create, edit and delete action groups |
+| `src/actionGroupEditor.ts` | Action group editor webview panel and its logic |
+| `src/webview/actionGroupEditor.ts` | Script running inside the editor webview |
+| `media/` | Editor webview styles |
 | `src/actionGroupSettings.ts` | Reads and writes the raw action group settings |
 | `src/debugSession.ts` | Starts VS Code debug sessions |
 | `src/utils.ts` | Variable substitution, argument splitting, user input prompts |

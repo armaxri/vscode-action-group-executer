@@ -11,11 +11,9 @@ import { runTerminalAction } from "./terminal";
 import { runDebugSession } from "./debugSession";
 import { runTaskAction } from "./task";
 import { runCommandAction } from "./vscodeCommand";
-import {
-    createActionGroupWizard,
-    editActionGroupWizard,
-    deleteActionGroupWizard,
-} from "./setupWizard";
+import { ActionGroupEditorPanel } from "./actionGroupEditor";
+
+var extensionUri: vscode.Uri;
 import {
     runProcesses,
     controlRunningProcess,
@@ -34,7 +32,7 @@ async function selectAndRunGroup() {
             createLabel
         );
         if (selection === createLabel) {
-            await createActionGroupWizard();
+            ActionGroupEditorPanel.show(extensionUri, true);
         }
         return;
     }
@@ -83,6 +81,7 @@ async function selectAndRunGroup() {
 export function activate(context: vscode.ExtensionContext) {
     // Use the console to output diagnostic information (console.log) and errors (console.error)
     // This line of code will only be executed once when your extension is activated
+    extensionUri = context.extensionUri;
     const version = context.extension.packageJSON.version as string;
     console.log(`action-group-executer version ${version} is now active.`);
     if (version === "99.99.99") {
@@ -127,19 +126,13 @@ export function activate(context: vscode.ExtensionContext) {
     context.subscriptions.push(
         vscode.commands.registerCommand(
             "action-group-executer.createActionGroup",
-            () => createActionGroupWizard()
+            () => ActionGroupEditorPanel.show(context.extensionUri, true)
         )
     );
     context.subscriptions.push(
         vscode.commands.registerCommand(
-            "action-group-executer.editActionGroup",
-            () => editActionGroupWizard()
-        )
-    );
-    context.subscriptions.push(
-        vscode.commands.registerCommand(
-            "action-group-executer.deleteActionGroup",
-            () => deleteActionGroupWizard()
+            "action-group-executer.editActionGroups",
+            () => ActionGroupEditorPanel.show(context.extensionUri, false)
         )
     );
 }

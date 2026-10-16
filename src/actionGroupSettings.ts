@@ -1,12 +1,14 @@
 import * as vscode from "vscode";
 
-import { EIActionGroup, GroupSource } from "./configuration";
+import { EIActionGroup, EIGroupNames, GroupSource } from "./configuration";
 
 const settingsSection = "actionGroupExecuter";
 const actionGroupsKey = "actionGroups";
 
 // A settings level the raw action group configuration can be read from and written to.
 export class SettingsTarget {
+    // Stable identifier, e.g. to reference the target from the editor webview.
+    id: string;
     label: string;
     configurationTarget: vscode.ConfigurationTarget;
     folder?: vscode.WorkspaceFolder;
@@ -17,6 +19,7 @@ export class SettingsTarget {
     ) {
         this.configurationTarget = configurationTarget;
         this.folder = folder;
+        this.id = `${configurationTarget}:${folder?.uri.toString() ?? ""}`;
         switch (configurationTarget) {
             case vscode.ConfigurationTarget.Global:
                 this.label = GroupSource.user;
@@ -121,8 +124,47 @@ export async function addActionGroup(
     await target.writeGroups(groups);
 }
 
+export function folderPathText(groupNames: Array<EIGroupNames> | undefined) {
+    return (groupNames ?? []).map((groupName) => groupName.name).join(" / ");
+}
+
+// Converts a folder path like "Backend / Build" (or "Backend/Build") to group names. Known
+// folders keep their sorting index, so the folder order doesn't change.
+export function groupNamesFromPath(pathText: string): Array<EIGroupNames> {
+    const knownPaths = new Map<string, EIGroupNames>();
+    getStoredActionGroups().forEach((storedGroup) => {
+        const groupNames = storedGroup.config.groupNames ?? [];
+        groupNames.forEach((groupName, index) => {
+            const key = folderPathText(groupNames.slice(0, index + 1));
+            if (!knownPaths.has(key)) {
+                knownPaths.set(key, groupName);
+            }
+        });
+    });
+
+    const names = pathText
+        .split("/")
+        .map((name) => name.trim())
+        .filter((name) => name !== "");
+    return names.map((name, index) => {
+        const known = knownPaths.get(names.slice(0, index + 1).join(" / "));
+        return known ? cloneJson(known) : { name: name };
+    });
+}
+
+export function getKnownFolderPaths() {
+    const paths = new Set<string>();
+    getStoredActionGroups().forEach((storedGroup) => {
+        const groupNames = storedGroup.config.groupNames ?? [];
+        groupNames.forEach((_, index) =>
+            paths.add(folderPathText(groupNames.slice(0, index + 1)))
+        );
+    });
+    return [...paths].sort();
+}
+
 // Re-reads the settings and makes sure the stored group was not changed in the meantime.
-function getVerifiedGroups(storedGroup: StoredActionGroup) {
+export function getVerifiedGroups(storedGroup: StoredActionGroup) {
     const groups = storedGroup.target.readGroups();
     if (
         JSON.stringify(groups[storedGroup.index]) !==

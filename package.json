@@ -61,13 +61,8 @@
                 "category": "ActionGroupExec"
             },
             {
-                "command": "action-group-executer.editActionGroup",
-                "title": "Edit Action Group",
-                "category": "ActionGroupExec"
-            },
-            {
-                "command": "action-group-executer.deleteActionGroup",
-                "title": "Delete Action Group",
+                "command": "action-group-executer.editActionGroups",
+                "title": "Edit Action Groups",
                 "category": "ActionGroupExec"
             }
         ],

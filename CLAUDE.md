@@ -17,7 +17,7 @@ To debug/run the extension interactively, use the "Run Extension" launch config 
 
 This is a VS Code extension that lets users trigger multiple actions simultaneously — terminals, background processes, VS Code tasks, VS Code commands, and debug sessions — organized into named "action groups".
 
-**Entry point**: `src/extension.ts` registers 8 commands and delegates to the other modules.
+**Entry point**: `src/extension.ts` registers 7 commands and delegates to the other modules.
 
 **Core modules**:
 - `src/configuration.ts` — All configuration parsing. Reads VS Code settings and constructs typed class instances (`ActionGroup`, `TerminalAction`, `ProcessAction`, `ProcessCommand`, `DebugSession`). This is the largest and most central file.
@@ -25,7 +25,8 @@ This is a VS Code extension that lets users trigger multiple actions simultaneou
 - `src/process.ts` — Spawns background child processes, captures output to file-backed document tabs, manages a registry of running processes keyed by document URI.
 - `src/task.ts` — Looks up VS Code tasks by name (optionally source/workspace folder) and executes them.
 - `src/vscodeCommand.ts` — Executes VS Code commands by ID with optional arguments.
-- `src/setupWizard.ts` — Create/edit/delete dialogs (QuickPick-based). All interaction goes through the `WizardUI` interface so tests can script it (`ScriptedWizardUI` in `src/test/suite/testHelpers.ts`).
+- `src/actionGroupEditor.ts` — Action group editor webview panel. All logic (state, validation, save/move/delete) lives in `ActionGroupEditorController`, which the tests drive directly. Messages are typed in `src/actionGroupEditorProtocol.ts`.
+- `src/webview/actionGroupEditor.ts` — Script running inside the webview (DOM, no imports except types; compiled to `out/webview/`, the page provides an `exports` shim). Styles in `media/actionGroupEditor.css` use the `--vscode-*` theme variables.
 - `src/actionGroupSettings.ts` — Reads and writes the raw (unsubstituted) `actionGroups` setting per settings level.
 - `src/debugSession.ts` — Starts VS Code debug sessions from named or inline configurations.
 - `src/utils.ts` — String utilities: variable substitution (`${file}`, `${env:VAR}`, VS Code predefined vars), argument splitting with quote/escape handling, user input prompts.

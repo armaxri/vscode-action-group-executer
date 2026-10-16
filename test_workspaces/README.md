@@ -111,24 +111,29 @@ a command, and an unknown command ID that should show an error message.
 
 Multi-root workspace. Open `workspace10/wizard.code-workspace` in VS Code.
 
-Tests the `Create`, `Edit` and `Delete Action Group` dialogs. The folders `app` and
-`lib` both have a `build` task. `app` also has npm scripts, which are a second task
-source. Launch configurations exist per folder, plus a compound one at workspace level.
-Existing groups are stored at workspace level and in the `app` folder, inside group
-folders with sorting indexes. All scripts use Node, so no extra extensions are needed.
+Tests the action group editor (`Edit Action Groups`, `Create Action Group`). The
+folders `app` and `lib` both have a `build` task. `app` also has npm scripts, which are
+a second task source. Launch configurations exist per folder, plus a compound one at
+workspace level. Existing groups are stored at workspace level and in the `app` folder,
+inside group folders with sorting indexes. All scripts use Node, so no extra extensions
+are needed.
 
-Saving in the dialogs changes the files in this directory. Reset them with
+Saving in the editor changes the files in this directory. Reset them with
 `git checkout -- test_workspaces/workspace10`.
 
 Things to try:
 - Create a group with the `build` task of `app`. It should be stored with
-  `"workspaceName": "app"`, because `lib` has a task with the same name.
-- Add the npm `build` script. It should be stored with `"source": "npm"`.
-- Add a command by its title, e.g. "ActionGroupExec: Kill all Background Processes",
-  or `clangd.restart` if clangd is installed.
+  `"source": "Workspace"` and `"workspaceName": "app"`, because an npm `build` script
+  and a `build` task in `lib` exist too.
+- Add a command by its title, e.g. "Kill all Background Processes", or `clangd.restart`
+  if clangd is installed.
 - Add the `App + Lib` compound launch configuration as the debug session.
 - Put the group in the existing `Build` folder and save it to the `lib` folder settings.
-- Edit `Serve app`: change the terminal command and check that `extendedOptions` is kept.
-- Edit a group, make a change and press Escape. You should be asked to discard the change.
+- Edit `Serve app`: change the terminal command and check in the settings JSON that
+  `extendedOptions` is kept.
+- Change a group, switch to another group and back. The change should still be there.
+- Change `Serve app` in the editor and, before saving, in `app/.vscode/settings.json`.
+  Saving in the editor should then fail with a message instead of overwriting.
+- Move a group to the user settings by changing "Saved in".
 - Delete a group, cancel once, then confirm.
 - Run the created groups with `Execute Action Group` to check that they work.
