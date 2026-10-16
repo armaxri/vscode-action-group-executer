@@ -20,7 +20,7 @@ export interface EIProcessCommand {
     call: Array<string>;
     requestUserInputArguments?: boolean;
     delayProcess?: number;
-    extendedOptions: child_process.SpawnOptionsWithoutStdio;
+    extendedOptions?: child_process.SpawnOptionsWithoutStdio;
     processEndMessage?: string;
     hideProcessEndMessage?: boolean;
     debugTemplate?: vscode.DebugConfiguration;
@@ -164,7 +164,7 @@ export class ProcessCommand {
     program: string;
     args: Array<string>;
     requestUserInputArguments: boolean = false;
-    extendedOptions: child_process.SpawnOptionsWithoutStdio;
+    extendedOptions?: child_process.SpawnOptionsWithoutStdio;
     delayProcess: number = 0;
     processEndMessage: string;
     hideProcessEndMessage: boolean = false;
@@ -199,7 +199,7 @@ export class ProcessCommand {
         if (debugSession.newConfiguration) {
             debugSession.newConfiguration.program = this.program;
             debugSession.newConfiguration.args = this.args;
-            if (this.extendedOptions.cwd) {
+            if (this.extendedOptions?.cwd) {
                 debugSession.newConfiguration.cwd = this.extendedOptions.cwd;
             }
         }

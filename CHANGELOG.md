@@ -9,6 +9,10 @@
 * New commands `Create Action Group`, `Edit Action Group` and `Delete Action Group` set up action groups step by step, picking from the existing tasks, commands and launch configurations.
 * `Execute Action Group` offers to create an action group when none is configured.
 
+### Fixed
+
+* Debugging a process without `extendedOptions` failed instead of starting the debug session.
+
 ### Changed
 
 * Updated dependencies.
