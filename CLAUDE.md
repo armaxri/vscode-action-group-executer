@@ -30,6 +30,14 @@ This is a VS Code extension that lets users trigger multiple actions simultaneou
 
 **Variable substitution** is applied recursively to command strings before execution. The `splitArguments()` function in `utils.ts` handles complex shell quoting/escape sequences — this logic has its own dedicated test file.
 
+## Changelog
+
+`CHANGELOG.md` documents only changes that users of the extension notice (features, behaviour, bug fixes, settings). Do not add entries for CI, tests, tooling, docs, refactorings, or dev dependency updates. Dependency updates are summarised as a single line: `* Updated dependencies.`
+
+## Releases
+
+Releases are triggered by pushing a lightweight tag `release/x.y.z` (no `-a`, no message). See `CONTRIBUTING.md` for the CI flow.
+
 ## Testing
 
 Tests use Mocha via `@vscode/test-electron`. Test workspaces live in `test_workspaces/`. The test suite at `src/test/suite/utilsStringAdjustment.test.ts` has the most coverage (argument parsing edge cases).
