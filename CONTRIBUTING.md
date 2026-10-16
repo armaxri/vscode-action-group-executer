@@ -65,6 +65,18 @@ Or via the Extensions panel: **⋯ → Install from VSIX…** and select the fil
 
 > **Note:** Before packaging, make sure the `version` field in `package.json` is set to the intended release version, not `99.99.99`.
 
+## Continuous integration
+
+`.github/workflows/ci.yml` compiles, lints, tests and packages the extension on every push and pull request.
+
+* **Development build** — every push to `master` replaces the `Development Build` pre-release (tag `dev`) on the GitHub Releases page with a fresh `action-group-executer-99.99.99.vsix`.
+* **Release build** — pushing a tag `release/x.y.z` builds with version `x.y.z` (set from the tag, `package.json` stays at `99.99.99`) and creates a GitHub Release with the `.vsix` attached. The release notes are taken from the `## [x.y.z]` section of `CHANGELOG.md`.
+
+```bash
+git tag -a release/1.2.0 -m "Release 1.2.0"
+git push github release/1.2.0
+```
+
 ## Publishing to the Marketplace
 
 ```bash
