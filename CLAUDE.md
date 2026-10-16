@@ -17,7 +17,7 @@ To debug/run the extension interactively, use the "Run Extension" launch config 
 
 This is a VS Code extension that lets users trigger multiple actions simultaneously — terminals, background processes, VS Code tasks, VS Code commands, and debug sessions — organized into named "action groups".
 
-**Entry point**: `src/extension.ts` registers 5 commands and delegates to the other modules.
+**Entry point**: `src/extension.ts` registers 8 commands and delegates to the other modules.
 
 **Core modules**:
 - `src/configuration.ts` — All configuration parsing. Reads VS Code settings and constructs typed class instances (`ActionGroup`, `TerminalAction`, `ProcessAction`, `ProcessCommand`, `DebugSession`). This is the largest and most central file.
@@ -25,6 +25,8 @@ This is a VS Code extension that lets users trigger multiple actions simultaneou
 - `src/process.ts` — Spawns background child processes, captures output to file-backed document tabs, manages a registry of running processes keyed by document URI.
 - `src/task.ts` — Looks up VS Code tasks by name (optionally source/workspace folder) and executes them.
 - `src/vscodeCommand.ts` — Executes VS Code commands by ID with optional arguments.
+- `src/setupWizard.ts` — Create/edit/delete dialogs (QuickPick-based). All interaction goes through the `WizardUI` interface so tests can script it (`ScriptedWizardUI` in `src/test/suite/testHelpers.ts`).
+- `src/actionGroupSettings.ts` — Reads and writes the raw (unsubstituted) `actionGroups` setting per settings level.
 - `src/debugSession.ts` — Starts VS Code debug sessions from named or inline configurations.
 - `src/utils.ts` — String utilities: variable substitution (`${file}`, `${env:VAR}`, VS Code predefined vars), argument splitting with quote/escape handling, user input prompts.
 
@@ -42,4 +44,4 @@ Releases are triggered by pushing a lightweight tag `release/x.y.z` (no `-a`, no
 
 ## Testing
 
-Tests use Mocha via `@vscode/test-electron`. The test instance opens `src/test/fixtures/workspace` (with workspace trust disabled so tasks can run); its `tasks.json` and `settings.json` back the task/command integration tests. Manual test workspaces live in `test_workspaces/`. The test suite at `src/test/suite/utilsStringAdjustment.test.ts` has the most coverage (argument parsing edge cases).
+Tests use Mocha via `@vscode/test-electron`. The test instance opens a temporary copy of `src/test/fixtures/workspace` (with workspace trust disabled so tasks can run); its `tasks.json` and `settings.json` back the task/command integration tests. Manual test workspaces live in `test_workspaces/`. The test suite at `src/test/suite/utilsStringAdjustment.test.ts` has the most coverage (argument parsing edge cases).

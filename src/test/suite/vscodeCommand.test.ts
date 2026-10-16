@@ -92,6 +92,17 @@ suite('ActionGroup Extension "vscodeCommand" Test Suite', () => {
         assert.deepStrictEqual(errors, []);
     });
 
+    test("accepts commands of extensions that are not activated yet", async () => {
+        const errors = await captureErrorMessages(() =>
+            runCommandAction(
+                new CommandAction({
+                    id: "action-group-executer.killAllProcesses",
+                })
+            )
+        );
+        assert.deepStrictEqual(errors, []);
+    });
+
     test("shows an error for an unknown command", async () => {
         const errors = await captureErrorMessages(() =>
             runCommandAction(new CommandAction({ id: "does.not.exist" }))

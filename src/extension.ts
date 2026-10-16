@@ -12,6 +12,11 @@ import { runDebugSession } from "./debugSession";
 import { runTaskAction } from "./task";
 import { runCommandAction } from "./vscodeCommand";
 import {
+    createActionGroupWizard,
+    editActionGroupWizard,
+    deleteActionGroupWizard,
+} from "./setupWizard";
+import {
     runProcesses,
     controlRunningProcess,
     sendMessage2RunningProcess,
@@ -22,6 +27,17 @@ import {
 async function selectAndRunGroup() {
     console.log(`selectAndRunGroup was triggered.`);
     const commands = getActionGroups();
+    if (commands.length === 0) {
+        const createLabel = "Create Action Group";
+        const selection = await vscode.window.showInformationMessage(
+            "No action groups are configured yet.",
+            createLabel
+        );
+        if (selection === createLabel) {
+            await createActionGroupWizard();
+        }
+        return;
+    }
     var command = await vscode.window.showQuickPick(commands);
 
     while (command instanceof ActionGroupPickGroup) {
@@ -106,6 +122,24 @@ export function activate(context: vscode.ExtensionContext) {
         vscode.commands.registerCommand(
             "action-group-executer.killAllProcesses",
             killAllProcesses
+        )
+    );
+    context.subscriptions.push(
+        vscode.commands.registerCommand(
+            "action-group-executer.createActionGroup",
+            () => createActionGroupWizard()
+        )
+    );
+    context.subscriptions.push(
+        vscode.commands.registerCommand(
+            "action-group-executer.editActionGroup",
+            () => editActionGroupWizard()
+        )
+    );
+    context.subscriptions.push(
+        vscode.commands.registerCommand(
+            "action-group-executer.deleteActionGroup",
+            () => deleteActionGroupWizard()
         )
     );
 }

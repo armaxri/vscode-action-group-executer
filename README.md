@@ -6,6 +6,20 @@ The "action-group-executer" extension lets you trigger multiple actions simultan
 
 Use `ActionGroupExec: Execute Action Group` (default keybinding: `Ctrl+Shift+A` / `Cmd+Shift+A`) to pick and run a configured action group.
 
+### Setting up action groups
+
+Action groups can be set up step by step without writing JSON:
+
+* `ActionGroupExec: Create Action Group` asks for a name and lets you add actions. Tasks, VS Code commands and debug sessions are picked from the ones that actually exist in your workspace (from `tasks.json`, `launch.json` and installed extensions). Terminals and processes are entered as command lines. Finally you choose the group folder and whether the group is stored in the workspace, workspace folder or user settings.
+* `ActionGroupExec: Edit Action Group` lets you edit, add or remove actions, rename the group, move it to another group folder or delete it. Options the dialog doesn't cover (e.g. `extendedOptions`) are kept as they are.
+* `ActionGroupExec: Delete Action Group` removes a group after confirmation.
+
+When no action group is configured yet, `Execute Action Group` offers to create one.
+
+Saving rewrites the `actionGroupExecuter.actionGroups` setting, so comments inside that setting are lost. Sequential process `commands` and inline debug configurations (`newConfiguration`) can only be removed with the dialog; edit them in the settings JSON.
+
+### Settings
+
 The following settings illustrate the full range of available options:
 
 ```jsonc

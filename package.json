@@ -54,6 +54,21 @@
                 "command": "action-group-executer.killAllProcesses",
                 "title": "Kill all Background Processes",
                 "category": "ActionGroupExec"
+            },
+            {
+                "command": "action-group-executer.createActionGroup",
+                "title": "Create Action Group",
+                "category": "ActionGroupExec"
+            },
+            {
+                "command": "action-group-executer.editActionGroup",
+                "title": "Edit Action Group",
+                "category": "ActionGroupExec"
+            },
+            {
+                "command": "action-group-executer.deleteActionGroup",
+                "title": "Delete Action Group",
+                "category": "ActionGroupExec"
             }
         ],
         "keybindings": [
