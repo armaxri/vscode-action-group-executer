@@ -93,3 +93,12 @@ Tests `${file}` variable resolution when the active tab is a webview. Open
 "Echo active file path". The terminal should print the full path to `sample.svg`,
 confirming the `TabInputCustom` fallback in the variable substitution logic works
 correctly.
+
+## workspace09
+
+Single-directory workspace. Open the `workspace09/` folder directly in VS Code.
+
+Tests starting VS Code tasks from `.vscode/tasks.json`: a single task, multiple tasks
+in parallel, a delayed task (`delayTask`), a lookup restricted by `source`, a group
+combining a task with a terminal, and a missing task name that should show an error
+message.

@@ -1,6 +1,6 @@
 # Action Group Executer
 
-The "action-group-executer" extension lets you trigger multiple actions simultaneously from a single VS Code command — start several terminals, launch background processes, and kick off debug sessions all at once. It is designed around workflows where a fixed set of tasks needs to be started together, and extends over time based on real-world usage needs.
+The "action-group-executer" extension lets you trigger multiple actions simultaneously from a single VS Code command — start several terminals, launch background processes, run VS Code tasks, and kick off debug sessions all at once. It is designed around workflows where a fixed set of tasks needs to be started together, and extends over time based on real-world usage needs.
 
 ## Features
 
@@ -249,6 +249,25 @@ The following settings illustrate the full range of available options:
             ],
             "sortingIndex": 1,
             "terminals": [{ "command": "echo Starting frontend client..." }]
+        },
+        {
+            "name": "Example9 - Run VS Code tasks",
+            // Start tasks defined in tasks.json or provided by other extensions.
+            "tasks": [
+                // Tasks are found by their name (label).
+                { "name": "build" },
+                {
+                    "name": "watch",
+                    // Optionally restrict the lookup to a task source, e.g.
+                    // "Workspace" for tasks.json or "npm" for npm scripts.
+                    "source": "npm",
+                    // Optionally pick the workspace folder in multi root
+                    // workspaces (default is based on the current file).
+                    "workspaceName": "dir00",
+                    // Optionally delay the start of the task.
+                    "delayTask": 2000
+                }
+            ]
         }
     ]
 }

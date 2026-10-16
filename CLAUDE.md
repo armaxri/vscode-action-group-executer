@@ -15,7 +15,7 @@ To debug/run the extension interactively, use the "Run Extension" launch config 
 
 ## Architecture
 
-This is a VS Code extension that lets users trigger multiple actions simultaneously — terminals, background processes, and debug sessions — organized into named "action groups".
+This is a VS Code extension that lets users trigger multiple actions simultaneously — terminals, background processes, VS Code tasks, and debug sessions — organized into named "action groups".
 
 **Entry point**: `src/extension.ts` registers 5 commands and delegates to the other modules.
 
@@ -23,10 +23,11 @@ This is a VS Code extension that lets users trigger multiple actions simultaneou
 - `src/configuration.ts` — All configuration parsing. Reads VS Code settings and constructs typed class instances (`ActionGroup`, `TerminalAction`, `ProcessAction`, `ProcessCommand`, `DebugSession`). This is the largest and most central file.
 - `src/terminal.ts` — Creates/reuses VS Code terminals and sends commands to them.
 - `src/process.ts` — Spawns background child processes, captures output to file-backed document tabs, manages a registry of running processes keyed by document URI.
+- `src/task.ts` — Looks up VS Code tasks by name (optionally source/workspace folder) and executes them.
 - `src/debugSession.ts` — Starts VS Code debug sessions from named or inline configurations.
 - `src/utils.ts` — String utilities: variable substitution (`${file}`, `${env:VAR}`, VS Code predefined vars), argument splitting with quote/escape handling, user input prompts.
 
-**Configuration hierarchy**: `ActionGroup` contains arrays of `TerminalAction`, `ProcessAction`, and an optional `DebugSession`. Groups can be nested hierarchically (directory-like structure). The `ActionGroupPickGroup` class handles the QuickPick UI for selecting groups.
+**Configuration hierarchy**: `ActionGroup` contains arrays of `TerminalAction`, `ProcessAction`, `TaskAction`, and an optional `DebugSession`. Groups can be nested hierarchically (directory-like structure). The `ActionGroupPickGroup` class handles the QuickPick UI for selecting groups.
 
 **Variable substitution** is applied recursively to command strings before execution. The `splitArguments()` function in `utils.ts` handles complex shell quoting/escape sequences — this logic has its own dedicated test file.
 

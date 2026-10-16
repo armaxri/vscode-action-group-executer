@@ -1,0 +1,29 @@
+{
+    "actionGroupExecuter.actionGroups": [
+        {
+            "name": "Task - single",
+            "tasks": [{ "name": "echo hello" }]
+        },
+        {
+            "name": "Task - parallel",
+            "tasks": [{ "name": "echo hello" }, { "name": "count" }]
+        },
+        {
+            "name": "Task - delayed by 3000 ms",
+            "tasks": [{ "name": "echo hello", "delayTask": 3000 }]
+        },
+        {
+            "name": "Task - restricted to source Workspace",
+            "tasks": [{ "name": "count", "source": "Workspace" }]
+        },
+        {
+            "name": "Task - combined with terminal",
+            "terminals": [{ "command": "echo Hello from terminal" }],
+            "tasks": [{ "name": "count" }]
+        },
+        {
+            "name": "Task - missing (shows error)",
+            "tasks": [{ "name": "does not exist" }]
+        }
+    ]
+}

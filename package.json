@@ -457,6 +457,39 @@
                                         }
                                     }
                                 },
+                                "tasks": {
+                                    "type": "array",
+                                    "default": [],
+                                    "description": "List of VS Code tasks (e.g. from tasks.json) that should be started.",
+                                    "items": {
+                                        "type": "object",
+                                        "properties": {
+                                            "name": {
+                                                "type": "string",
+                                                "description": "Name (label) of the task."
+                                            },
+                                            "source": {
+                                                "type": "string",
+                                                "description": "Source of the task, e.g. \"Workspace\" for tasks.json or \"npm\" for tasks provided by the npm extension. If not set, the first task with a matching name is used."
+                                            },
+                                            "workspaceName": {
+                                                "type": "string",
+                                                "description": "Name of the workspace folder the task belongs to (default is based on the current file)."
+                                            },
+                                            "delayTask": {
+                                                "type": "number",
+                                                "default": 0,
+                                                "description": "Start delay in ms."
+                                            }
+                                        },
+                                        "required": [
+                                            "name"
+                                        ],
+                                        "default": {
+                                            "name": "Add task name here!"
+                                        }
+                                    }
+                                },
                                 "debugSession": {
                                     "type": "object",
                                     "description": "Debug session based on a launch configuration.",

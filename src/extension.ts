@@ -9,6 +9,7 @@ import {
 } from "./configuration";
 import { runTerminalAction } from "./terminal";
 import { runDebugSession } from "./debugSession";
+import { runTaskAction } from "./task";
 import {
     runProcesses,
     controlRunningProcess,
@@ -51,6 +52,9 @@ async function selectAndRunGroup() {
     command.terminals.forEach((terminal) => runTerminalAction(terminal));
 
     runProcesses(command);
+
+    const selectedWorkspace = command.selectedWorkspace;
+    command.tasks.forEach((task) => runTaskAction(task, selectedWorkspace));
 }
 
 // this method is called when your extension is activated

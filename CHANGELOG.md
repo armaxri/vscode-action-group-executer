@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### Added
+
+* Action groups can start VS Code tasks (from `tasks.json` or provided by other extensions) via the new `tasks` entry.
+
 ### Changed
 
 * Updated dependencies.

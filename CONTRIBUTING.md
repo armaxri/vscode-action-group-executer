@@ -93,6 +93,7 @@ This requires a Personal Access Token (PAT) for the `armaxri` publisher. See the
 | `src/configuration.ts` | Parses VS Code settings into typed class instances |
 | `src/terminal.ts` | Creates/reuses terminals and sends commands |
 | `src/process.ts` | Spawns background processes, captures output to document tabs |
+| `src/task.ts` | Looks up and executes VS Code tasks |
 | `src/debugSession.ts` | Starts VS Code debug sessions |
 | `src/utils.ts` | Variable substitution, argument splitting, user input prompts |
 | `src/test/` | Mocha test suite |
