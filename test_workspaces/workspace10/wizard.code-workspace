@@ -1,0 +1,32 @@
+{
+    "folders": [{ "path": "app" }, { "path": "lib" }],
+    "settings": {
+        "actionGroupExecuter.actionGroups": [
+            {
+                "name": "Build everything",
+                "groupNames": [{ "name": "Build", "sortingIndex": 1 }],
+                "tasks": [
+                    { "name": "build", "workspaceName": "app" },
+                    { "name": "build", "workspaceName": "lib" }
+                ]
+            },
+            {
+                "name": "Debug app and lib",
+                "groupNames": [{ "name": "Debug", "sortingIndex": 2 }],
+                "debugSession": { "namedConfiguration": "App + Lib" }
+            }
+        ]
+    },
+    "launch": {
+        "configurations": [],
+        "compounds": [
+            {
+                "name": "App + Lib",
+                "configurations": [
+                    { "name": "Run app", "folder": "app" },
+                    { "name": "Run lib tests", "folder": "lib" }
+                ]
+            }
+        ]
+    }
+}
