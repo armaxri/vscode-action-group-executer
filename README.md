@@ -1,352 +1,297 @@
 # Action Group Executer
 
-The "action-group-executer" extension lets you trigger multiple actions simultaneously from a single VS Code command — start several terminals, launch background processes, run VS Code tasks and commands, and kick off debug sessions all at once. It is designed around workflows where a fixed set of tasks needs to be started together, and extends over time based on real-world usage needs.
+Start everything you need for a workflow with one shortcut. An action group combines VS Code tasks, VS Code commands, terminals, background processes and a debug session, and starts them all together.
 
-## Features
+![The action group editor](images/docs/editor-edit.png)
 
-Use `ActionGroupExec: Execute Action Group` (default keybinding: `Ctrl+Shift+A` / `Cmd+Shift+A`) to pick and run a configured action group.
+## Quick start
 
-### Setting up action groups
+1. Run `ActionGroupExec: Create Action Group` from the Command Palette.
+2. Give the group a name and add actions, e.g. your `build` task and the `clangd.restart` command, then click **Create**.
+3. Press `Ctrl+Shift+A` / `Cmd+Shift+A` (`ActionGroupExec: Execute Action Group`) and pick the group.
 
-`ActionGroupExec: Edit Action Groups` opens an editor tab for all action groups, without writing JSON. The left side lists the groups of all settings locations (workspace, workspace folders, user) by group folder. The right side shows the selected group as a form:
+## Commands
 
-* Tasks and debug sessions are selected from the tasks and launch configurations that exist in your workspace, including npm scripts and other tasks provided by extensions.
-* VS Code commands can be searched by ID or title, e.g. `clangd.restart`.
-* Terminals and processes are entered as command lines, with name, working directory and delay.
-* The group folder, sorting index and settings location can be changed. Changing the location moves the group.
+| Command | Description |
+|---|---|
+| `ActionGroupExec: Execute Action Group` | Pick an action group and start all of its actions. Default keybinding `Ctrl+Shift+A` / `Cmd+Shift+A`. |
+| `ActionGroupExec: Edit Action Groups` | Open the action group editor. |
+| `ActionGroupExec: Create Action Group` | Open the action group editor with a new group. |
+| `ActionGroupExec: Select a current Background Process and Control It` | Send input or kill signals to a running background process. |
+| `ActionGroupExec: Send a Text Message to the current Background Process` | Send text to the process of the active output tab. |
+| `ActionGroupExec: Kill current Background Process` | Kill the process of the active output tab. |
+| `ActionGroupExec: Kill all Background Processes` | Kill all background processes. |
 
-`ActionGroupExec: Create Action Group` opens the same editor with a new group. When no action group is configured yet, `Execute Action Group` offers to create one.
+## The action group editor
 
-Unsaved changes are kept per group while you switch between groups. Save with the button or `Ctrl+S` / `Cmd+S`. If the settings were changed elsewhere in the meantime, the editor refuses to overwrite them.
+`ActionGroupExec: Edit Action Groups` opens an editor tab for all action groups. The left side lists the groups of all settings locations (workspace, workspace folders and user settings) sorted by group folder. The right side shows the selected group as a form.
 
-Saving rewrites the `actionGroupExecuter.actionGroups` setting, so comments inside that setting are lost. Options the editor doesn't show (e.g. `extendedOptions.env`) are kept. Sequential process `commands` and inline debug configurations (`newConfiguration`) can only be removed in the editor; edit them in the settings JSON.
+![Creating an action group](images/docs/editor-new.png)
 
-### Settings
+* **Tasks** and **debug sessions** are selected from the tasks and launch configurations of your workspace, including npm scripts and tasks of other extensions.
+* **VS Code commands** can be searched by ID or title, e.g. `clangd.restart`.
+* **Terminals** and **processes** are entered as command lines, with name, working directory and delay.
+* **Saved in** decides where the group is stored. Workspace settings can be shared with your team, user settings apply to all your workspaces. Changing it moves the group.
 
-The following settings illustrate the full range of available options:
+![The editor follows the VS Code theme](images/docs/editor-light.png)
+
+Unsaved changes are kept per group while you switch between groups and marked with ●. Save with the button or `Ctrl+S` / `Cmd+S`. If the settings were changed elsewhere in the meantime, the editor doesn't overwrite them.
+
+Saving rewrites the `actionGroupExecuter.actionGroups` setting, so comments inside it are lost. Options the editor doesn't show, e.g. environment variables, are kept. Processes with sequential `commands` and inline debug configurations (`newConfiguration`) can only be removed in the editor, edit them in the settings JSON.
+
+## Configuring action groups in the settings
+
+Action groups are stored in the `actionGroupExecuter.actionGroups` setting, which you can also edit directly in the settings JSON. Every group needs a `name` and at least one action:
 
 ```jsonc
-{
-    "actionGroupExecuter.defaultProcessEndMessage": "\n\nStop of work!",
-    "actionGroupExecuter.defaultFileAssociation": "log",
-    "actionGroupExecuter.defaultShowActionSource": false,
-    "actionGroupExecuter.actionGroups": [
-        {
-            "name": "Example1",
-            "terminals": [
-                {
-                    // Optional name of the terminal window.
-                    // If not set it will use the action name.
-                    "name": "Window1Name",
-                    "command": "echo Hello",
-                    // Force the extension to create new terminal
-                    // instances. If a terminal with the name
-                    // "Window1Name" exists a new terminal with the
-                    // name "Window1Name (1)" will be created.
-                    "alwaysNewTerminal": true,
-                    // If set pushes the terminal in the front.
-                    "showTerminal": true
-                },
-                {
-                    "name": "Window2Name",
-                    "command": "echo Hello",
-                    // The command will be delayed by 5000 ms.
-                    "delayCommand": 5000,
-                    // If a terminal with the name "Window2Name"
-                    // already exists, the instance will be
-                    // destroyed and replaced by a new instance
-                    // with the same name.
-                    "disposeOldTerminal": true
-                }
-            ]
-        },
-        {
-            "name": "Example2",
-            "terminals": [{
-                // There is no need for a name since there
-                // is only one command. And the group
-                // name is enough.
-                "command": "echo Hello && sleep 5 && echo Hallo"
-            }],
-            // Debug the selected python file.
-            "debugSession": {
-                // Use a standard launch configuration and place it
-                // under "newConfiguration" for execution.
-                "newConfiguration": {
-                    "name": "debug_test_file",
-                    "type": "python",
-                    "request": "launch",
-                    "program": "${file}",
-                    "console": "integratedTerminal"
-                }
-            }
-        },
-        {
-            "name": "Example3",
-            "terminals": [{
-                "command": "echo Hallo && sleep 5 && cat ${file}",
-                // "extendedOptions" is used to simply pass
-                // arguments to the VS Code terminal creation
-                // function.
-                "extendedOptions": {
-                    "name": "Example3Override",
-                    "cwd": "C:\\"
-                }
-            }],
-            // Debug with a given launch configuration by it's name.
-            "debugSession": {
-                // Specify the launch configuration by it's name.
-                "namedConfiguration": "test00_file",
-                // Optionally add a workspace name, which is useful
-                // in multi root workspace environments to get
-                // a guaranteed workspace for the execution.
-                "workspaceName": "dir00",
-                // Optionally add a delay to allow terminal tasks
-                // to setup your execution environment.
-                "delaySession": 10000
-            }
-        },
-        {
-            // ${env:HOME} will be replaced with the content of the
-            // environment variable.
-            "name": "Example4 - list files in ${env:HOME}",
-            // Get environment variables for your commands.
-            "terminals": [{ "command": "ls -la ${env:HOME}" }]
-        },
-        {
-            "name": "Example5 - ls -la ${env:HOME}",
-            // This will open a new file tab and paste the stdout content into the tab.
-            "processes": [{
-                "command": {
-                    // Note that the command and all arguments are separated strings.
-                    "call": [ "ls", "-la", "${env:HOME}" ],
-                    // Print nothing after the end of the process.
-                    "hideProcessEndMessage": true
-                }
-            }]
-        },
-        {
-            "name": "Example5 - ls -la ${env:HOME} and / in sequence",
-            "processes": [{
-                // Print the command just starting with the arguments.
-                "printCommand": true,
-                // Select the way to display the output.
-                "fileAssociation": "plaintext",
-                // Note that each command group will be spawned in the same file tab.
-                "commands": [
-                    {
-                        // Note that "$HOME" will not work but "${env:HOME}" is a valid alternative.
-                        "call": [ "ls", "-la", "${env:HOME}" ],
-                        "processEndMessage": "\nEnded first process!"
-                    },
-                    {
-                        "call": [ "ls", "-la" ],
-                        // Use the "extendedOptions" to directly access node.js spawn process
-                        // "SpawnOptionsWithoutStdio" setting for configuration of the execution.
-                        "extendedOptions": {
-                            "cwd": "${workspaceFolder}",
-                            "env": { "TEST_WORLD": "Hello World." }
-                        },
-                        "processEndMessage": "\nEnded second process! Return code was ${returnCode}."
-                    }
-                ]
-            }]
-        },
-        {
-            "name": "Example6 - ls -la ${env:HOME} and / in parallel",
-            "processes": [{
-                // Note that each command group will be spawned in a separate file tab.
-                "command": {
-                    "call": [ "ls", "-la", "${env:HOME}" ],
-                    "processEndMessage": "\nEnded first process!"
-                },
-                // Print this given name at the start of the process.
-                "name": "ls in home ${env:HOME}"
-            },
-            {
-                // Print name of the whole command group at start of process.
-                "printName": true,
-                "command": {
-                    "call": [ "ls", "-la" ],
-                    // Use the "extendedOptions" to directly access node.js spawn process
-                    // "SpawnOptionsWithoutStdio" setting for configuration of the execution.
-                    "extendedOptions": {
-                        "cwd": "${workspaceFolder}",
-                        "env": { "TEST_WORLD": "Hello World." }
-                    },
-                    "processEndMessage": "\nEnded second process! Return code was ${returnCode}."
-                }
-            }]
-        },
-        {
-            // When an action group has processes with debug templates, executing it
-            // prompts you to optionally convert each eligible process to a debug
-            // session instead of running it as a background process.
-            //
-            // defaultProcessDebugTemplate is a group-level fallback: any process
-            // that does NOT have its own debugTemplate inherits this one.
-            // A per-process debugTemplate always takes priority over the fallback.
-            // The process program and args are merged into the template automatically.
-            "name": "Example7 - Debug python processes",
-            "processes": [
-                {
-                    // No debugTemplate — inherits defaultProcessDebugTemplate below.
-                    "command": {
-                        "name": "Process 1",
-                        "call": [ "./script1.py" ],
-                        "extendedOptions": { "cwd": "${workspaceFolder}" }
-                    }
-                },
-                {
-                    // No debugTemplate — inherits defaultProcessDebugTemplate below.
-                    "command": {
-                        "name": "Process 2",
-                        "call": [ "./script2.py", "arg1", "arg2" ],
-                        "extendedOptions": { "cwd": "${workspaceFolder}" }
-                    }
-                },
-                {
-                    "command": {
-                        "name": "Process 3",
-                        "call": [ "./script3.py" ],
-                        "extendedOptions": { "cwd": "${workspaceFolder}" }
-                    },
-                    // Per-process debugTemplate takes priority over the group-level
-                    // defaultProcessDebugTemplate for this process only.
-                    "debugTemplate": {
-                        "type": "python",
-                        "request": "launch"
-                    }
-                }
-            ],
-            // Fallback debug configuration used by Process 1 and Process 2.
-            "defaultProcessDebugTemplate": {
-                "type": "python",
-                "request": "launch",
-                "console": "integratedTerminal"
-            }
-        },
-        {
-            // useProcessDefaultDebugConfig on a terminal action lets that terminal
-            // be converted to a debug session instead of running in a terminal,
-            // using the group's defaultProcessDebugTemplate as the base config.
-            // The command string is split into program + args automatically.
-            "name": "Example7b - Debug a terminal as a process",
-            "terminals": [
-                {
-                    "name": "Run script",
-                    "command": "./script.py --verbose",
-                    // When true, this terminal can optionally be launched as a
-                    // debug session using defaultProcessDebugTemplate below.
-                    "useProcessDefaultDebugConfig": true,
-                    "extendedOptions": { "cwd": "${workspaceFolder}" }
-                }
-            ],
-            "defaultProcessDebugTemplate": {
-                "type": "python",
-                "request": "launch",
-                "console": "integratedTerminal"
-            }
-        },
-        {
-            // groupNames places this action inside a named group in the QuickPick list,
-            // creating a directory-like hierarchy. sortingIndex controls ordering within
-            // that level (lower numbers appear first; default is 9999999).
-            "name": "Example8 - Start server",
-            "groupNames": [
-                { "name": "Backend", "sortingIndex": 1 }
-            ],
-            "sortingIndex": 1,
-            "terminals": [{ "command": "echo Starting backend server..." }]
-        },
-        {
-            "name": "Example8 - Start client",
-            "groupNames": [
-                { "name": "Frontend", "sortingIndex": 2 }
-            ],
-            "sortingIndex": 1,
-            "terminals": [{ "command": "echo Starting frontend client..." }]
-        },
-        {
-            "name": "Example9 - Run VS Code tasks",
-            // Start tasks defined in tasks.json or provided by other extensions.
-            "tasks": [
-                // Tasks are found by their name (label).
-                { "name": "build" },
-                {
-                    "name": "watch",
-                    // Optionally restrict the lookup to a task source, e.g.
-                    // "Workspace" for tasks.json or "npm" for npm scripts.
-                    "source": "npm",
-                    // Optionally pick the workspace folder in multi root
-                    // workspaces (default is based on the current file).
-                    "workspaceName": "dir00",
-                    // Optionally delay the start of the task.
-                    "delayTask": 2000
-                }
-            ]
-        },
-        {
-            "name": "Example10 - Run VS Code commands",
-            // Execute any VS Code command by its ID. The ID can be copied via
-            // "Copy Command ID" in the keyboard shortcuts editor.
-            "commands": [
-                { "id": "workbench.action.files.saveAll" },
-                {
-                    "id": "clangd.restart",
-                    // Optionally delay the execution of the command.
-                    "delayCommand": 500
-                },
-                {
-                    "id": "workbench.action.quickOpen",
-                    // Optionally pass arguments to the command.
-                    "args": ["${fileBasename}"]
-                }
-            ]
+"actionGroupExecuter.actionGroups": [
+    {
+        "name": "Build and run",
+        "tasks": [{ "name": "build" }],
+        "terminals": [{ "command": "npm start" }]
+    }
+]
+```
+
+| Option | Description |
+|---|---|
+| `name` | Name shown in the `Execute Action Group` list. Required. |
+| `tasks` | [VS Code tasks](#tasks) to start. |
+| `commands` | [VS Code commands](#vs-code-commands) to execute. |
+| `terminals` | [Terminals](#terminals) to send commands to. |
+| `processes` | [Background processes](#processes) with their output in an editor tab. |
+| `debugSession` | A [debug session](#debug-sessions) to start. |
+| `groupNames` | [Group folders](#group-folders-and-order) the group is shown in. |
+| `sortingIndex` | [Position](#group-folders-and-order) in the list, lower numbers come first. |
+| `defaultProcessDebugTemplate` | Launch configuration template to [debug processes and terminals](#debugging-processes-and-terminals). |
+
+All actions of a group start at the same time. Use the delay options to start an action later, e.g. a debug session after a server is up.
+
+### Tasks
+
+Start tasks from `tasks.json` or tasks provided by extensions, e.g. npm scripts. Tasks are found by their name (label).
+
+```jsonc
+"tasks": [
+    { "name": "build" },
+    { "name": "watch", "source": "npm", "workspaceName": "app", "delayTask": 2000 }
+]
+```
+
+| Option | Description |
+|---|---|
+| `name` | Name (label) of the task. Required. |
+| `source` | Only use a task of this source, e.g. `Workspace` for `tasks.json` or `npm` for npm scripts. |
+| `workspaceName` | Workspace folder of the task in multi-root workspaces. By default the folder of the current file is preferred. |
+| `delayTask` | Start delay in ms. |
+
+### VS Code commands
+
+Execute any command from the Command Palette or an extension by its ID. You can copy the ID with "Copy Command ID" in the context menu of the Keyboard Shortcuts editor.
+
+```jsonc
+"commands": [
+    { "id": "workbench.action.files.saveAll" },
+    { "id": "clangd.restart", "delayCommand": 500 },
+    { "id": "workbench.action.quickOpen", "args": ["${fileBasename}"] }
+]
+```
+
+| Option | Description |
+|---|---|
+| `id` | ID of the command. Required. |
+| `args` | Arguments passed to the command. |
+| `delayCommand` | Start delay in ms. |
+
+### Terminals
+
+Send a command to an integrated terminal. The terminal is reused when one with the same name exists.
+
+```jsonc
+"terminals": [
+    { "command": "npm start" },
+    {
+        "name": "Logs",
+        "command": "tail -f server.log",
+        "delayCommand": 5000,
+        "disposeOldTerminal": true,
+        "extendedOptions": { "cwd": "${workspaceFolder}/logs" }
+    }
+]
+```
+
+| Option | Description |
+|---|---|
+| `command` | Command sent to the terminal. Required. |
+| `name` | Name of the terminal. Defaults to the action group name. |
+| `showTerminal` | Show the terminal. Default `true`. |
+| `alwaysNewTerminal` | Create a new terminal even if one with the name exists, e.g. "Logs (1)". |
+| `disposeOldTerminal` | Close an existing terminal with the name first. |
+| `delayCommand` | Delay in ms before the command is sent. |
+| `extendedOptions` | [VS Code TerminalOptions](https://code.visualstudio.com/api/references/vscode-api#TerminalOptions), e.g. `cwd`, `env` or `shellPath`. Close old terminals after changing them. |
+| `debugTemplate`, `useProcessDefaultDebugConfig` | See [debugging processes and terminals](#debugging-processes-and-terminals). |
+
+A terminal runs one command line. To run several commands, combine them, e.g. `echo Hello1 && sleep 10 && echo Hello2`.
+
+### Processes
+
+Run a program in the background and show its output in an editor tab. Program and arguments are separate strings, so no quoting is needed.
+
+```jsonc
+"processes": [
+    {
+        "name": "List home",
+        "command": {
+            "call": ["ls", "-la", "${env:HOME}"],
+            "extendedOptions": { "cwd": "${workspaceFolder}", "env": { "LANG": "C" } }
         }
-    ]
+    }
+]
+```
+
+Every entry of `processes` gets its own output tab, so several entries run in parallel. To run commands one after another in the same tab, use `commands` instead of `command`:
+
+```jsonc
+"processes": [
+    {
+        "printCommand": true,
+        "commands": [
+            { "call": ["npm", "ci"], "processEndMessage": "\nInstalled.\n" },
+            { "call": ["npm", "test"], "processEndMessage": "\nTests ended with ${returnCode}.\n" }
+        ]
+    }
+]
+```
+
+| Option | Description |
+|---|---|
+| `command` / `commands` | One command, or a list of commands that run one after another. One of them is required. |
+| `name` | Name printed at the top of the output tab. |
+| `printName` | Print the name. Default `true` when a name is set. |
+| `printCommand` | Print each command before it runs. |
+| `fileAssociation` | Language of the output tab, e.g. `log`. Defaults to `actionGroupExecuter.defaultFileAssociation`. |
+
+Options of each command:
+
+| Option | Description |
+|---|---|
+| `call` | Program and arguments as separate strings. Required. |
+| `delayProcess` | Start delay in ms. |
+| `requestUserInputArguments` | Ask for additional arguments when the group is started, e.g. a test filter. Recent inputs are offered again. |
+| `processEndMessage` | Message printed when the process ends. `${returnCode}` is replaced with the exit code. Defaults to `actionGroupExecuter.defaultProcessEndMessage`. |
+| `hideProcessEndMessage` | Don't print the end message. |
+| `extendedOptions` | Node.js [spawn options](https://nodejs.org/api/child_process.html#child_processspawncommand-args-options), e.g. `cwd`, `env`, `shell` or `timeout`. |
+| `debugTemplate` | See [debugging processes and terminals](#debugging-processes-and-terminals). |
+
+Environment variables like `$HOME` are not resolved in `call`, use `${env:HOME}` instead.
+
+### Debug sessions
+
+Start a launch configuration by its name, or define one inline.
+
+```jsonc
+"debugSession": {
+    "namedConfiguration": "Run app",
+    "workspaceName": "app",
+    "delaySession": 2000
 }
 ```
 
-`ActionGroupExec: Kill current Background Process` can be used to kill the process behind the currently selected document. For the extreme case use `ActionGroupExec: Kill all Background Processes` to kill all processes.
+```jsonc
+"debugSession": {
+    "newConfiguration": {
+        "name": "Debug current file",
+        "type": "python",
+        "request": "launch",
+        "program": "${file}",
+        "args": []
+    },
+    "requestUserInputArguments": true
+}
+```
 
-With the command `ActionGroupExec: Select a current Background Process and Control It` processes that are currently running can be selected and controlled, including sending kill signals or arbitrary input.
+| Option | Description |
+|---|---|
+| `namedConfiguration` | Name of a launch configuration or compound in `launch.json`. |
+| `newConfiguration` | An inline launch configuration. |
+| `workspaceName` | Workspace folder of the launch configuration in multi-root workspaces. By default the folder of the current file. |
+| `requestUserInputArguments` | Ask for additional arguments, which are appended to the `args` of `newConfiguration`. |
+| `delaySession` | Start delay in ms. |
 
-Due to the interface the extension is limited to only execute one command on the command line. Combinations of different commands need additional scripts or functions like `echo Hello1 && sleep 10 && echo Hello2`. As terminal `extendedOptions` the [VS Code TerminalOptions](https://code.visualstudio.com/api/references/vscode-api#TerminalOptions) can be used to pass VS Code terminal construction settings directly.
+### Debugging processes and terminals
 
-All elements can be configured using a subset of [VS Code predefined variables](https://code.visualstudio.com/docs/editor/variables-reference). The supported predefined variables are:
-`${cwd}`, `${fileBasenameNoExtensions}`, `${fileBasename}`, `${fileDirname}`, `${fileExtname}`, `${file}`, `${lineNumber}`, `${pathSeparator}`, `${relativeFileDirname}`, `${relativeFile}`, `${selectedText}`, `${workspaceFolderBasename}` and `${workspaceFolder}`.
-An additional `${env:<add env var name here>}` was added to allow the usage of environment variables.
+Processes and terminals can also be started in the debugger instead. When a group contains such actions, `Execute Action Group` asks which one to debug, or none.
 
-`${file}` and related file variables are resolved from the active text editor. When a non-text tab is active (e.g. an image viewer or SVG preview that renders as a webview), the file path is resolved from the active tab's input instead, so the variables still refer to the correct file.
+```jsonc
+{
+    "name": "Run scripts",
+    "processes": [
+        // Uses defaultProcessDebugTemplate.
+        { "name": "Script 1", "command": { "call": ["./script1.py", "--verbose"] } },
+        {
+            "name": "Script 2",
+            "command": {
+                "call": ["./script2.py"],
+                // Takes priority over defaultProcessDebugTemplate.
+                "debugTemplate": { "type": "python", "request": "launch", "justMyCode": false }
+            }
+        }
+    ],
+    "terminals": [
+        { "name": "Script 3", "command": "./script3.py", "useProcessDefaultDebugConfig": true }
+    ],
+    "defaultProcessDebugTemplate": { "type": "python", "request": "launch", "console": "integratedTerminal" }
+}
+```
 
-Processes allow adjustments of the `processEndMessage` in terms of replacing the pattern `${returnCode}` with the process return code.
+The program, arguments and working directory of the selected action are added to the template. A process is debuggable when it has a single `command` and a `debugTemplate` or `defaultProcessDebugTemplate`. A terminal is debuggable with a `debugTemplate`, or with `useProcessDefaultDebugConfig` and a `defaultProcessDebugTemplate`. Groups with a `debugSession` don't ask.
 
-The debug sessions `newConfiguration` and the `extendedOptions` for the terminals support the full [VS Code predefined variables](https://code.visualstudio.com/docs/editor/variables-reference) set.
+### Group folders and order
 
-## Extension Settings
+`groupNames` shows a group inside folders of the `Execute Action Group` list, like directories. `sortingIndex` orders groups and folders, lower numbers come first.
+
+```jsonc
+[
+    {
+        "name": "Start server",
+        "groupNames": [{ "name": "Backend", "sortingIndex": 1 }],
+        "terminals": [{ "command": "npm run server" }]
+    },
+    {
+        "name": "Run integration tests",
+        "groupNames": [{ "name": "Backend" }, { "name": "Tests" }],
+        "sortingIndex": 2,
+        "tasks": [{ "name": "integration-tests" }]
+    }
+]
+```
+
+## Variables
+
+All strings can use these [VS Code predefined variables](https://code.visualstudio.com/docs/editor/variables-reference): `${cwd}`, `${fileBasenameNoExtensions}`, `${fileBasename}`, `${fileDirname}`, `${fileExtname}`, `${file}`, `${lineNumber}`, `${pathSeparator}`, `${relativeFileDirname}`, `${relativeFile}`, `${selectedText}`, `${workspaceFolderBasename}` and `${workspaceFolder}`. `${env:NAME}` is replaced with the environment variable `NAME`.
+
+The file variables refer to the active editor. When a non-text tab is active, e.g. an image or SVG preview, they refer to the file of that tab.
+
+The `newConfiguration` of debug sessions and the `extendedOptions` of terminals support all [VS Code predefined variables](https://code.visualstudio.com/docs/editor/variables-reference).
+
+## Extension settings
 
 | Setting | Description |
 |---|---|
-| `actionGroupExecuter.actionGroups` | List of action groups to execute. |
-| `actionGroupExecuter.defaultProcessEndMessage` | Message appended to process output tabs when a process ends. Supports `${returnCode}`. |
-| `actionGroupExecuter.defaultFileAssociation` | Default language/file-type used for process output tabs (e.g. `plaintext`, `log`). |
-| `actionGroupExecuter.defaultShowActionSource` | Toggle whether the settings source (user/workspace) is shown in the QuickPick label. |
+| `actionGroupExecuter.actionGroups` | List of action groups, see [above](#configuring-action-groups-in-the-settings). |
+| `actionGroupExecuter.defaultProcessEndMessage` | Message added to process output tabs when a process ends. Supports `${returnCode}`. |
+| `actionGroupExecuter.defaultFileAssociation` | Language of process output tabs, e.g. `plaintext` or `log`. |
+| `actionGroupExecuter.defaultShowActionSource` | Show the settings location (user, workspace) next to the group names in the `Execute Action Group` list. Default `true`. |
 
-## Release Notes
+## Known issues
 
-See [CHANGELOG.md](CHANGELOG.md) for the full history.
+* Running processes are not restored when a window is closed.
+* Process output tabs are created with a 500 ms delay, otherwise VS Code fails to create the next tab.
+* When starting a debugger, VS Code asks to save the current file.
+* When a process is debugged, its output goes to the debug console instead of an output tab.
+* Sequential process `commands` don't check the exit code of the previous command.
+* Additional arguments entered for `requestUserInputArguments` are not validated.
 
-## Known Issues
+## Release notes
 
-* User input is currently not using the vscode `validateInput` argument to validate the user input and give feedback.
-* Process execution is not saved when a window is closed.
-* In processes resolving of environment variables like `$HOME` will not work and will just be interpreted as strings. Use `${env:HOME}` instead.
-* File tabs for processes are created with a 500 ms delay. Otherwise VS Code will fail creating the next window.
-* When starting a debugger, VS Code will ask to save the currently selected file.
-* When debugging a process, the output is no longer written to a file tab but instead to the debug console.
-* If commands are used spawning several processes after another, they will not check the return code of the previous process exit. How an end should be configured is still to decide.
-
-## Requirements
-
-Not applying (yet).
+See [CHANGELOG.md](CHANGELOG.md).
