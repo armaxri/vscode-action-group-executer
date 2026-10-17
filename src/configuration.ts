@@ -20,7 +20,7 @@ export interface EIProcessCommand {
     call: Array<string>;
     requestUserInputArguments?: boolean;
     delayProcess?: number;
-    extendedOptions: child_process.SpawnOptionsWithoutStdio;
+    extendedOptions?: child_process.SpawnOptionsWithoutStdio;
     processEndMessage?: string;
     hideProcessEndMessage?: boolean;
     debugTemplate?: vscode.DebugConfiguration;
@@ -43,6 +43,19 @@ export interface EIDebugSession {
     delaySession?: number;
 }
 
+export interface EITaskAction {
+    name: string;
+    source?: string;
+    workspaceName?: string;
+    delayTask?: number;
+}
+
+export interface EICommandAction {
+    id: string;
+    args?: Array<any>;
+    delayCommand?: number;
+}
+
 export interface EIGroupNames {
     name: string;
     sortingIndex?: number;
@@ -55,6 +68,8 @@ export interface EIActionGroup {
     terminals?: Array<EITerminalAction>;
     debugSession?: EIDebugSession;
     processes?: Array<EIProcessAction>;
+    tasks?: Array<EITaskAction>;
+    commands?: Array<EICommandAction>;
     defaultProcessDebugTemplate?: vscode.DebugConfiguration;
 }
 
@@ -149,7 +164,7 @@ export class ProcessCommand {
     program: string;
     args: Array<string>;
     requestUserInputArguments: boolean = false;
-    extendedOptions: child_process.SpawnOptionsWithoutStdio;
+    extendedOptions?: child_process.SpawnOptionsWithoutStdio;
     delayProcess: number = 0;
     processEndMessage: string;
     hideProcessEndMessage: boolean = false;
@@ -184,7 +199,7 @@ export class ProcessCommand {
         if (debugSession.newConfiguration) {
             debugSession.newConfiguration.program = this.program;
             debugSession.newConfiguration.args = this.args;
-            if (this.extendedOptions.cwd) {
+            if (this.extendedOptions?.cwd) {
                 debugSession.newConfiguration.cwd = this.extendedOptions.cwd;
             }
         }
@@ -305,7 +320,41 @@ export class DebugSession {
     }
 }
 
-enum GroupSource {
+export class TaskAction {
+    name: string;
+    source: string | undefined;
+    workspaceName: string | undefined;
+    delayTask: number = 0;
+
+    constructor(config: EITaskAction) {
+        this.name = config.name;
+        this.source = config.source;
+        this.workspaceName = config.workspaceName;
+        this.delayTask =
+            typeof config.delayTask === "number"
+                ? config.delayTask
+                : this.delayTask;
+    }
+}
+
+export class CommandAction {
+    id: string;
+    args: Array<any> = new Array<any>();
+    delayCommand: number = 0;
+
+    constructor(config: EICommandAction) {
+        this.id = config.id;
+        if (Array.isArray(config.args)) {
+            this.args = config.args;
+        }
+        this.delayCommand =
+            typeof config.delayCommand === "number"
+                ? config.delayCommand
+                : this.delayCommand;
+    }
+}
+
+export enum GroupSource {
     default = "Default Settings",
     user = "User Settings",
     workspace = "Workspace Settings",
@@ -342,6 +391,8 @@ export class ActionGroup extends SortableQuickPickItem {
     debugSession?: DebugSession;
     selectedWorkspace: vscode.WorkspaceFolder | null | undefined = null;
     processes: Array<ProcessAction> = new Array<ProcessAction>();
+    tasks: Array<TaskAction> = new Array<TaskAction>();
+    commands: Array<CommandAction> = new Array<CommandAction>();
 
     constructor(
         config: EIActionGroup,
@@ -386,6 +437,12 @@ export class ActionGroup extends SortableQuickPickItem {
                 config.defaultProcessDebugTemplate
             );
             this.processes.push(newProcessAction);
+        });
+        config.tasks?.forEach((taskAction) => {
+            this.tasks.push(new TaskAction(taskAction));
+        });
+        config.commands?.forEach((commandAction) => {
+            this.commands.push(new CommandAction(commandAction));
         });
         if (config.debugSession) {
             // Simple cast for the moment. Add class functionality later.

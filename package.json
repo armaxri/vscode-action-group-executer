@@ -54,6 +54,16 @@
                 "command": "action-group-executer.killAllProcesses",
                 "title": "Kill all Background Processes",
                 "category": "ActionGroupExec"
+            },
+            {
+                "command": "action-group-executer.createActionGroup",
+                "title": "Create Action Group",
+                "category": "ActionGroupExec"
+            },
+            {
+                "command": "action-group-executer.editActionGroups",
+                "title": "Edit Action Groups",
+                "category": "ActionGroupExec"
             }
         ],
         "keybindings": [
@@ -454,6 +464,69 @@
                                         "default": {
                                             "name": "Optional Name",
                                             "command": "echo Hello"
+                                        }
+                                    }
+                                },
+                                "tasks": {
+                                    "type": "array",
+                                    "default": [],
+                                    "description": "List of VS Code tasks (e.g. from tasks.json) that should be started.",
+                                    "items": {
+                                        "type": "object",
+                                        "properties": {
+                                            "name": {
+                                                "type": "string",
+                                                "description": "Name (label) of the task."
+                                            },
+                                            "source": {
+                                                "type": "string",
+                                                "description": "Source of the task, e.g. \"Workspace\" for tasks.json or \"npm\" for tasks provided by the npm extension. If not set, the first task with a matching name is used."
+                                            },
+                                            "workspaceName": {
+                                                "type": "string",
+                                                "description": "Name of the workspace folder the task belongs to (default is based on the current file)."
+                                            },
+                                            "delayTask": {
+                                                "type": "number",
+                                                "default": 0,
+                                                "description": "Start delay in ms."
+                                            }
+                                        },
+                                        "required": [
+                                            "name"
+                                        ],
+                                        "default": {
+                                            "name": "Add task name here!"
+                                        }
+                                    }
+                                },
+                                "commands": {
+                                    "type": "array",
+                                    "default": [],
+                                    "description": "List of VS Code commands (e.g. \"clangd.restart\") that should be executed.",
+                                    "items": {
+                                        "type": "object",
+                                        "properties": {
+                                            "id": {
+                                                "type": "string",
+                                                "description": "ID of the VS Code command. Can be copied via \"Copy Command ID\" in the keyboard shortcuts editor."
+                                            },
+                                            "args": {
+                                                "type": "array",
+                                                "default": [],
+                                                "description": "Arguments that are passed to the command."
+                                            },
+                                            "delayCommand": {
+                                                "type": "number",
+                                                "default": 0,
+                                                "description": "Start delay in ms."
+                                            }
+                                        },
+                                        "required": [
+                                            "id"
+                                        ],
+                                        "default": {
+                                            "id": "Add command ID here!"
                                         }
                                     }
                                 },

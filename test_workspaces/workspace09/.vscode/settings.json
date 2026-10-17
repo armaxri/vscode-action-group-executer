@@ -1,0 +1,54 @@
+{
+    "actionGroupExecuter.actionGroups": [
+        {
+            "name": "Task - single",
+            "tasks": [{ "name": "echo hello" }]
+        },
+        {
+            "name": "Task - parallel",
+            "tasks": [{ "name": "echo hello" }, { "name": "count" }]
+        },
+        {
+            "name": "Task - delayed by 3000 ms",
+            "tasks": [{ "name": "echo hello", "delayTask": 3000 }]
+        },
+        {
+            "name": "Task - restricted to source Workspace",
+            "tasks": [{ "name": "count", "source": "Workspace" }]
+        },
+        {
+            "name": "Task - combined with terminal",
+            "terminals": [{ "command": "echo Hello from terminal" }],
+            "tasks": [{ "name": "count" }]
+        },
+        {
+            "name": "Task - missing (shows error)",
+            "tasks": [{ "name": "does not exist" }]
+        },
+        {
+            "name": "Command - save all",
+            "commands": [{ "id": "workbench.action.files.saveAll" }]
+        },
+        {
+            "name": "Command - quick open with argument",
+            "commands": [
+                { "id": "workbench.action.quickOpen", "args": ["${fileBasename}"] }
+            ]
+        },
+        {
+            "name": "Command - toggle terminal delayed by 2000 ms",
+            "commands": [
+                { "id": "workbench.action.terminal.toggleTerminal", "delayCommand": 2000 }
+            ]
+        },
+        {
+            "name": "Command - combined with task",
+            "tasks": [{ "name": "count" }],
+            "commands": [{ "id": "workbench.action.showCommands" }]
+        },
+        {
+            "name": "Command - missing (shows error)",
+            "commands": [{ "id": "does.not.exist" }]
+        }
+    ]
+}

@@ -197,6 +197,35 @@ export function splitArguments(inputString: string): Array<string> {
     return args;
 }
 
+const argumentEscapes = new Map<string, string>([
+    ["\\", "\\\\"],
+    ['"', '\\"'],
+    ["\0", "\\0"],
+    ["\b", "\\b"],
+    ["\t", "\\t"],
+    ["\n", "\\n"],
+    ["\v", "\\v"],
+    ["\f", "\\f"],
+    ["\r", "\\r"],
+]);
+
+// Inverse of splitArguments: joins arguments to a string that splits back into the same arguments.
+// Empty arguments can't be represented, since splitArguments drops them.
+export function joinArguments(args: Array<string>): string {
+    return args
+        .map((arg) => {
+            if (arg !== "" && !/[\s"'\\\0\b\t\n\v\f\r]/.test(arg)) {
+                return arg;
+            }
+            var escapedArg = "";
+            for (const char of arg) {
+                escapedArg = escapedArg + (argumentEscapes.get(char) ?? char);
+            }
+            return '"' + escapedArg + '"';
+        })
+        .join(" ");
+}
+
 export class ArgumentsInputBoxOptions implements vscode.InputBoxOptions {
     title: string = "Add additional arguments here.";
     value: string = "";

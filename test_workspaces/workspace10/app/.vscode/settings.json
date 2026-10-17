@@ -1,0 +1,28 @@
+{
+    "actionGroupExecuter.actionGroups": [
+        {
+            "name": "Serve app",
+            "groupNames": [{ "name": "Run", "sortingIndex": 3 }],
+            "terminals": [
+                {
+                    "name": "App server",
+                    "command": "node app.js terminal",
+                    "extendedOptions": { "cwd": "${workspaceFolder}" }
+                }
+            ],
+            "processes": [
+                {
+                    "name": "App process",
+                    "command": {
+                        "call": ["node", "app.js", "process"],
+                        "extendedOptions": { "cwd": "${workspaceFolder}" }
+                    }
+                }
+            ],
+            "defaultProcessDebugTemplate": {
+                "type": "node",
+                "request": "launch"
+            }
+        }
+    ]
+}

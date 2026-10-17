@@ -45,6 +45,18 @@ npm run lint   # lint only
 
 The `test_workspaces/` directory contains ready-made workspaces for manual testing. Open them in the extension development host to exercise specific scenarios. See [`test_workspaces/README.md`](test_workspaces/README.md) for a description of each workspace.
 
+## README screenshot
+
+The screenshot in `images/docs/` shows the action group editor webview rendered in
+headless Chrome with sample data. Regenerate it after changing the editor:
+
+```bash
+npm run compile
+scripts/editor-screenshots/take-screenshots.sh
+```
+
+See `scripts/editor-screenshots/README.md` for details.
+
 ## Building a VSIX package
 
 A VSIX is the self-contained package file used to distribute or install the extension manually.
@@ -89,10 +101,17 @@ This requires a Personal Access Token (PAT) for the `armaxri` publisher. See the
 
 | Path | Purpose |
 |---|---|
-| `src/extension.ts` | Entry point — registers the 5 commands |
+| `src/extension.ts` | Entry point — registers the 7 commands |
 | `src/configuration.ts` | Parses VS Code settings into typed class instances |
 | `src/terminal.ts` | Creates/reuses terminals and sends commands |
 | `src/process.ts` | Spawns background processes, captures output to document tabs |
+| `src/task.ts` | Looks up and executes VS Code tasks |
+| `src/vscodeCommand.ts` | Executes VS Code commands by ID |
+| `src/actionGroupEditor.ts` | Action group editor webview panel and its logic |
+| `src/webview/actionGroupEditor.ts` | Script running inside the editor webview |
+| `media/` | Editor webview styles |
+| `scripts/editor-screenshots/` | Renders the editor for the README screenshot |
+| `src/actionGroupSettings.ts` | Reads and writes the raw action group settings |
 | `src/debugSession.ts` | Starts VS Code debug sessions |
 | `src/utils.ts` | Variable substitution, argument splitting, user input prompts |
 | `src/test/` | Mocha test suite |

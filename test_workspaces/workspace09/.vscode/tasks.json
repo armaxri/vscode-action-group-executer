@@ -1,0 +1,15 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "echo hello",
+            "type": "shell",
+            "command": "echo Hello from task"
+        },
+        {
+            "label": "count",
+            "type": "shell",
+            "command": "for i in 1 2 3 4 5; do echo $i; sleep 1; done"
+        }
+    ]
+}

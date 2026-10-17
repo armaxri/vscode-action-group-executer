@@ -1,3 +1,5 @@
+import * as fs from "fs";
+import * as os from "os";
 import * as path from "path";
 
 import { runTests } from "@vscode/test-electron";
@@ -12,8 +14,29 @@ async function main() {
         // Passed to --extensionTestsPath
         const extensionTestsPath = path.resolve(__dirname, "./suite/index");
 
+        // Workspace with tasks and action groups used by the integration tests.
+        // Tests write settings, so they work on a temporary copy.
+        const fixtureWorkspace = path.resolve(
+            __dirname,
+            "../../src/test/fixtures/workspace"
+        );
+        const testWorkspace = path.join(
+            fs.mkdtempSync(path.join(os.tmpdir(), "action-group-executer-")),
+            "workspace"
+        );
+        fs.cpSync(fixtureWorkspace, testWorkspace, { recursive: true });
+
         // Download VS Code, unzip it and run the integration test
-        await runTests({ extensionDevelopmentPath, extensionTestsPath });
+        await runTests({
+            extensionDevelopmentPath,
+            extensionTestsPath,
+            launchArgs: [
+                testWorkspace,
+                // Tasks are blocked in untrusted workspaces.
+                "--disable-workspace-trust",
+                "--disable-extensions",
+            ],
+        });
     } catch (err) {
         console.error("Failed to run tests");
         process.exit(1);

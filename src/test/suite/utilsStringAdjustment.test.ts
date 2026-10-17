@@ -59,3 +59,29 @@ suite("ActionGroup Extension utils string adjustment Test Suite", () => {
         assert.deepStrictEqual(result, expected);
     });
 });
+
+suite('ActionGroup Extension "joinArguments" Test Suite', () => {
+    const cases: Array<Array<string>> = [
+        ["ls", "-la"],
+        ["echo", "with space", "${file}"],
+        ['say "hi"', "it's", "back\\slash"],
+        ["tab\there", "new\nline", "mixed 'quotes' \"too\""],
+        ["--flag=value with space"],
+    ];
+
+    cases.forEach((args) => {
+        test(`round trip ${JSON.stringify(args)}`, () => {
+            assert.deepStrictEqual(
+                utils.splitArguments(utils.joinArguments(args)),
+                args
+            );
+        });
+    });
+
+    test("does not quote plain arguments", () => {
+        assert.strictEqual(
+            utils.joinArguments(["ls", "-la", "${env:HOME}"]),
+            "ls -la ${env:HOME}"
+        );
+    });
+});

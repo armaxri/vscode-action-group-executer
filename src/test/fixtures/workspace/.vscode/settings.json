@@ -1,0 +1,22 @@
+{
+    "actionGroupExecuter.actionGroups": [
+        {
+            "name": "Integration tasks and commands",
+            "tasks": [
+                {
+                    "name": "integration echo",
+                    "source": "Workspace",
+                    "workspaceName": "${workspaceFolderBasename}",
+                    "delayTask": 10
+                }
+            ],
+            "commands": [
+                {
+                    "id": "actionGroupExecuterTest.record",
+                    "args": ["${workspaceFolderBasename}", 42, { "nested": "${pathSeparator}" }],
+                    "delayCommand": 20
+                }
+            ]
+        }
+    ]
+}

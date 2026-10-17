@@ -9,6 +9,11 @@ import {
 } from "./configuration";
 import { runTerminalAction } from "./terminal";
 import { runDebugSession } from "./debugSession";
+import { runTaskAction } from "./task";
+import { runCommandAction } from "./vscodeCommand";
+import { ActionGroupEditorPanel } from "./actionGroupEditor";
+
+var extensionUri: vscode.Uri;
 import {
     runProcesses,
     controlRunningProcess,
@@ -20,6 +25,17 @@ import {
 async function selectAndRunGroup() {
     console.log(`selectAndRunGroup was triggered.`);
     const commands = getActionGroups();
+    if (commands.length === 0) {
+        const createLabel = "Create Action Group";
+        const selection = await vscode.window.showInformationMessage(
+            "No action groups are configured yet.",
+            createLabel
+        );
+        if (selection === createLabel) {
+            ActionGroupEditorPanel.show(extensionUri, true);
+        }
+        return;
+    }
     var command = await vscode.window.showQuickPick(commands);
 
     while (command instanceof ActionGroupPickGroup) {
@@ -51,6 +67,13 @@ async function selectAndRunGroup() {
     command.terminals.forEach((terminal) => runTerminalAction(terminal));
 
     runProcesses(command);
+
+    const selectedWorkspace = command.selectedWorkspace;
+    command.tasks.forEach((task) => runTaskAction(task, selectedWorkspace));
+
+    command.commands.forEach((commandAction) =>
+        runCommandAction(commandAction)
+    );
 }
 
 // this method is called when your extension is activated
@@ -58,6 +81,7 @@ async function selectAndRunGroup() {
 export function activate(context: vscode.ExtensionContext) {
     // Use the console to output diagnostic information (console.log) and errors (console.error)
     // This line of code will only be executed once when your extension is activated
+    extensionUri = context.extensionUri;
     const version = context.extension.packageJSON.version as string;
     console.log(`action-group-executer version ${version} is now active.`);
     if (version === "99.99.99") {
@@ -97,6 +121,18 @@ export function activate(context: vscode.ExtensionContext) {
         vscode.commands.registerCommand(
             "action-group-executer.killAllProcesses",
             killAllProcesses
+        )
+    );
+    context.subscriptions.push(
+        vscode.commands.registerCommand(
+            "action-group-executer.createActionGroup",
+            () => ActionGroupEditorPanel.show(context.extensionUri, true)
+        )
+    );
+    context.subscriptions.push(
+        vscode.commands.registerCommand(
+            "action-group-executer.editActionGroups",
+            () => ActionGroupEditorPanel.show(context.extensionUri, false)
         )
     );
 }

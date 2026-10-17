@@ -1,0 +1,15 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "build",
+            "type": "shell",
+            "command": "echo Building lib && sleep 1 && echo Lib built"
+        },
+        {
+            "label": "test",
+            "type": "shell",
+            "command": "node lib.js"
+        }
+    ]
+}

@@ -2,6 +2,17 @@
 
 ## [Unreleased]
 
+### Added
+
+* Action groups can start VS Code tasks (from `tasks.json` or provided by other extensions) via the new `tasks` entry.
+* Action groups can execute VS Code commands (e.g. `clangd.restart`) via the new `commands` entry.
+* New editor (`Edit Action Groups`, `Create Action Group`) to create, edit, move and delete action groups in a form, selecting from the existing tasks, commands and launch configurations.
+* `Execute Action Group` offers to create an action group when none is configured.
+
+### Fixed
+
+* Debugging a process without `extendedOptions` failed instead of starting the debug session.
+
 ### Changed
 
 * Updated dependencies.
