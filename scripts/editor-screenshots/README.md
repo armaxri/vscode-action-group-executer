@@ -9,7 +9,7 @@ variables approximate VS Code's Dark Modern and Light Modern themes.
 `?scenario=edit|new|saved|invalid`. `?section=debugSession` (or another section) scrolls
 the form, and `?theme=light` switches the theme.
 
-To update the README screenshots in `images/docs/`:
+To update the README screenshot in `images/docs/`:
 
 ```bash
 npm run compile

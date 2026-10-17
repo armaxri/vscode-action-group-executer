@@ -45,10 +45,10 @@ npm run lint   # lint only
 
 The `test_workspaces/` directory contains ready-made workspaces for manual testing. Open them in the extension development host to exercise specific scenarios. See [`test_workspaces/README.md`](test_workspaces/README.md) for a description of each workspace.
 
-## README screenshots
+## README screenshot
 
-The screenshots in `images/docs/` show the action group editor webview rendered in
-headless Chrome with sample data. Regenerate them after changing the editor:
+The screenshot in `images/docs/` shows the action group editor webview rendered in
+headless Chrome with sample data. Regenerate it after changing the editor:
 
 ```bash
 npm run compile
@@ -110,7 +110,7 @@ This requires a Personal Access Token (PAT) for the `armaxri` publisher. See the
 | `src/actionGroupEditor.ts` | Action group editor webview panel and its logic |
 | `src/webview/actionGroupEditor.ts` | Script running inside the editor webview |
 | `media/` | Editor webview styles |
-| `scripts/editor-screenshots/` | Renders the editor for the README screenshots |
+| `scripts/editor-screenshots/` | Renders the editor for the README screenshot |
 | `src/actionGroupSettings.ts` | Reads and writes the raw action group settings |
 | `src/debugSession.ts` | Starts VS Code debug sessions |
 | `src/utils.ts` | Variable substitution, argument splitting, user input prompts |

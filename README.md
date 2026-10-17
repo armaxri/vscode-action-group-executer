@@ -2,7 +2,7 @@
 
 Start everything you need for a workflow with one shortcut. An action group combines VS Code tasks, VS Code commands, terminals, background processes and a debug session, and starts them all together.
 
-![The action group editor](images/docs/editor-edit.png)
+![The action group editor](images/docs/editor-new.png)
 
 ## Quick start
 
@@ -26,14 +26,10 @@ Start everything you need for a workflow with one shortcut. An action group comb
 
 `ActionGroupExec: Edit Action Groups` opens an editor tab for all action groups. The left side lists the groups of all settings locations (workspace, workspace folders and user settings) sorted by group folder. The right side shows the selected group as a form.
 
-![Creating an action group](images/docs/editor-new.png)
-
 * **Tasks** and **debug sessions** are selected from the tasks and launch configurations of your workspace, including npm scripts and tasks of other extensions.
 * **VS Code commands** can be searched by ID or title, e.g. `clangd.restart`.
 * **Terminals** and **processes** are entered as command lines, with name, working directory and delay.
 * **Saved in** decides where the group is stored. Workspace settings can be shared with your team, user settings apply to all your workspaces. Changing it moves the group.
-
-![The editor follows the VS Code theme](images/docs/editor-light.png)
 
 Unsaved changes are kept per group while you switch between groups and marked with ●. Save with the button or `Ctrl+S` / `Cmd+S`. If the settings were changed elsewhere in the meantime, the editor doesn't overwrite them.
 

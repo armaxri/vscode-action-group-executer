@@ -9,7 +9,7 @@ npm run compile       # Compile TypeScript to out/
 npm run watch         # Watch and recompile on changes
 npm run lint          # Run ESLint on src/
 npm test              # Compile, lint, then run Mocha tests via VS Code electron runner
-scripts/editor-screenshots/take-screenshots.sh  # Regenerate the README screenshots in images/docs/ (needs Chrome, run compile first)
+scripts/editor-screenshots/take-screenshots.sh  # Regenerate the README screenshot in images/docs/ (needs Chrome, run compile first)
 ```
 
 To debug/run the extension interactively, use the "Run Extension" launch config in `.vscode/launch.json` (opens a new VS Code window with the extension loaded).

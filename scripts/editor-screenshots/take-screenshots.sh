@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Renders the action group editor webview with sample data in headless Chrome and
-# writes the README screenshots to images/docs/. Run "npm run compile" first.
+# writes the README screenshot to images/docs/. Run "npm run compile" first.
 set -euo pipefail
 
 root="$(cd "$(dirname "$0")/../.." && pwd)"
@@ -22,6 +22,4 @@ shoot() {
     echo "images/docs/$name.png"
 }
 
-shoot editor-edit "scenario=edit" 1100,800
 shoot editor-new "scenario=new" 1100,800
-shoot editor-light "scenario=new&theme=light&section=terminals" 1100,640
