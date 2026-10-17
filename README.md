@@ -41,16 +41,18 @@ Saving rewrites the `actionGroupExecuter.actionGroups` setting, so comments insi
 
 ## Configuring action groups in the settings
 
-Action groups are stored in the `actionGroupExecuter.actionGroups` setting, which you can also edit directly in the settings JSON. Every group needs a `name` and at least one action:
+Action groups are stored in the `actionGroupExecuter.actionGroups` setting. Besides using the editor, you can edit them in the settings JSON: in the workspace settings (`.vscode/settings.json`), the user settings or a `.code-workspace` file. Every group needs a `name` and at least one action:
 
 ```jsonc
-"actionGroupExecuter.actionGroups": [
-    {
-        "name": "Build and run",
-        "tasks": [{ "name": "build" }],
-        "terminals": [{ "command": "npm start" }]
-    }
-]
+// .vscode/settings.json
+{
+    "actionGroupExecuter.actionGroups": [
+        {
+            "name": "Build and run",
+            "terminals": [{ "command": "npm run build && npm start" }]
+        }
+    ]
+}
 ```
 
 | Option | Description |
@@ -69,13 +71,39 @@ All actions of a group start at the same time. Use the delay options to start an
 
 ### Tasks
 
-Start tasks from `tasks.json` or tasks provided by extensions, e.g. npm scripts. Tasks are found by their name (label).
+Start tasks from `tasks.json` or tasks provided by extensions, e.g. npm scripts. Tasks are found by their name (label). This group starts the `build` task of `tasks.json` and, two seconds later, the `watch` script of `package.json`:
 
 ```jsonc
-"tasks": [
-    { "name": "build" },
-    { "name": "watch", "source": "npm", "workspaceName": "app", "delayTask": 2000 }
-]
+// .vscode/settings.json
+{
+    "actionGroupExecuter.actionGroups": [
+        {
+            "name": "Build and watch",
+            "tasks": [
+                { "name": "build" },
+                { "name": "watch", "source": "npm", "delayTask": 2000 }
+            ]
+        }
+    ]
+}
+```
+
+```jsonc
+// .vscode/tasks.json
+{
+    "version": "2.0.0",
+    "tasks": [
+        { "label": "build", "type": "shell", "command": "make" }
+    ]
+}
+```
+
+```jsonc
+// package.json
+{
+    "name": "my-app",
+    "scripts": { "watch": "tsc --watch" }
+}
 ```
 
 | Option | Description |
@@ -90,11 +118,19 @@ Start tasks from `tasks.json` or tasks provided by extensions, e.g. npm scripts.
 Execute any command from the Command Palette or an extension by its ID. You can copy the ID with "Copy Command ID" in the context menu of the Keyboard Shortcuts editor.
 
 ```jsonc
-"commands": [
-    { "id": "workbench.action.files.saveAll" },
-    { "id": "clangd.restart", "delayCommand": 500 },
-    { "id": "workbench.action.quickOpen", "args": ["${fileBasename}"] }
-]
+// .vscode/settings.json
+{
+    "actionGroupExecuter.actionGroups": [
+        {
+            "name": "Save and restart clangd",
+            "commands": [
+                { "id": "workbench.action.files.saveAll" },
+                { "id": "clangd.restart", "delayCommand": 500 },
+                { "id": "workbench.action.quickOpen", "args": ["${fileBasename}"] }
+            ]
+        }
+    ]
+}
 ```
 
 | Option | Description |
@@ -108,16 +144,24 @@ Execute any command from the Command Palette or an extension by its ID. You can 
 Send a command to an integrated terminal. The terminal is reused when one with the same name exists.
 
 ```jsonc
-"terminals": [
-    { "command": "npm start" },
-    {
-        "name": "Logs",
-        "command": "tail -f server.log",
-        "delayCommand": 5000,
-        "disposeOldTerminal": true,
-        "extendedOptions": { "cwd": "${workspaceFolder}/logs" }
-    }
-]
+// .vscode/settings.json
+{
+    "actionGroupExecuter.actionGroups": [
+        {
+            "name": "Server with logs",
+            "terminals": [
+                { "name": "Server", "command": "npm start" },
+                {
+                    "name": "Logs",
+                    "command": "tail -f server.log",
+                    "delayCommand": 5000,
+                    "disposeOldTerminal": true,
+                    "extendedOptions": { "cwd": "${workspaceFolder}/logs" }
+                }
+            ]
+        }
+    ]
+}
 ```
 
 | Option | Description |
@@ -135,32 +179,52 @@ A terminal runs one command line. To run several commands, combine them, e.g. `e
 
 ### Processes
 
-Run a program in the background and show its output in an editor tab. Program and arguments are separate strings, so no quoting is needed.
+Run a program in the background and show its output in an editor tab. Program and arguments are separate strings, so no quoting is needed. Every entry of `processes` gets its own output tab, so several entries run in parallel:
 
 ```jsonc
-"processes": [
-    {
-        "name": "List home",
-        "command": {
-            "call": ["ls", "-la", "${env:HOME}"],
-            "extendedOptions": { "cwd": "${workspaceFolder}", "env": { "LANG": "C" } }
+// .vscode/settings.json
+{
+    "actionGroupExecuter.actionGroups": [
+        {
+            "name": "List files",
+            "processes": [
+                {
+                    "name": "Home",
+                    "command": { "call": ["ls", "-la", "${env:HOME}"] }
+                },
+                {
+                    "name": "Workspace",
+                    "command": {
+                        "call": ["ls", "-la"],
+                        "extendedOptions": { "cwd": "${workspaceFolder}", "env": { "LANG": "C" } }
+                    }
+                }
+            ]
         }
-    }
-]
+    ]
+}
 ```
 
-Every entry of `processes` gets its own output tab, so several entries run in parallel. To run commands one after another in the same tab, use `commands` instead of `command`:
+To run commands one after another in the same tab, use `commands` instead of `command`:
 
 ```jsonc
-"processes": [
-    {
-        "printCommand": true,
-        "commands": [
-            { "call": ["npm", "ci"], "processEndMessage": "\nInstalled.\n" },
-            { "call": ["npm", "test"], "processEndMessage": "\nTests ended with ${returnCode}.\n" }
-        ]
-    }
-]
+// .vscode/settings.json
+{
+    "actionGroupExecuter.actionGroups": [
+        {
+            "name": "Install and test",
+            "processes": [
+                {
+                    "printCommand": true,
+                    "commands": [
+                        { "call": ["npm", "ci"], "processEndMessage": "\nInstalled.\n" },
+                        { "call": ["npm", "test"], "processEndMessage": "\nTests ended with ${returnCode}.\n" }
+                    ]
+                }
+            ]
+        }
+    ]
+}
 ```
 
 | Option | Description |
@@ -187,26 +251,54 @@ Environment variables like `$HOME` are not resolved in `call`, use `${env:HOME}`
 
 ### Debug sessions
 
-Start a launch configuration by its name, or define one inline.
+Start a launch configuration from `launch.json` by its name. This group starts the server in a terminal and attaches the debugger three seconds later:
 
 ```jsonc
-"debugSession": {
-    "namedConfiguration": "Run app",
-    "workspaceName": "app",
-    "delaySession": 2000
+// .vscode/settings.json
+{
+    "actionGroupExecuter.actionGroups": [
+        {
+            "name": "Debug server",
+            "terminals": [{ "command": "node --inspect server.js" }],
+            "debugSession": {
+                "namedConfiguration": "Attach to server",
+                "delaySession": 3000
+            }
+        }
+    ]
 }
 ```
 
 ```jsonc
-"debugSession": {
-    "newConfiguration": {
-        "name": "Debug current file",
-        "type": "python",
-        "request": "launch",
-        "program": "${file}",
-        "args": []
-    },
-    "requestUserInputArguments": true
+// .vscode/launch.json
+{
+    "version": "0.2.0",
+    "configurations": [
+        { "name": "Attach to server", "type": "node", "request": "attach", "port": 9229 }
+    ]
+}
+```
+
+A launch configuration can also be defined inline with `newConfiguration`. Here the debugger asks for additional arguments when the group starts:
+
+```jsonc
+// .vscode/settings.json
+{
+    "actionGroupExecuter.actionGroups": [
+        {
+            "name": "Debug current Python file",
+            "debugSession": {
+                "newConfiguration": {
+                    "name": "Debug current file",
+                    "type": "python",
+                    "request": "launch",
+                    "program": "${file}",
+                    "args": []
+                },
+                "requestUserInputArguments": true
+            }
+        }
+    ]
 }
 ```
 
@@ -223,24 +315,29 @@ Start a launch configuration by its name, or define one inline.
 Processes and terminals can also be started in the debugger instead. When a group contains such actions, `Execute Action Group` asks which one to debug, or none.
 
 ```jsonc
+// .vscode/settings.json
 {
-    "name": "Run scripts",
-    "processes": [
-        // Uses defaultProcessDebugTemplate.
-        { "name": "Script 1", "command": { "call": ["./script1.py", "--verbose"] } },
+    "actionGroupExecuter.actionGroups": [
         {
-            "name": "Script 2",
-            "command": {
-                "call": ["./script2.py"],
-                // Takes priority over defaultProcessDebugTemplate.
-                "debugTemplate": { "type": "python", "request": "launch", "justMyCode": false }
-            }
+            "name": "Run scripts",
+            "processes": [
+                // Uses defaultProcessDebugTemplate.
+                { "name": "Script 1", "command": { "call": ["./script1.py", "--verbose"] } },
+                {
+                    "name": "Script 2",
+                    "command": {
+                        "call": ["./script2.py"],
+                        // Takes priority over defaultProcessDebugTemplate.
+                        "debugTemplate": { "type": "python", "request": "launch", "justMyCode": false }
+                    }
+                }
+            ],
+            "terminals": [
+                { "name": "Script 3", "command": "./script3.py", "useProcessDefaultDebugConfig": true }
+            ],
+            "defaultProcessDebugTemplate": { "type": "python", "request": "launch", "console": "integratedTerminal" }
         }
-    ],
-    "terminals": [
-        { "name": "Script 3", "command": "./script3.py", "useProcessDefaultDebugConfig": true }
-    ],
-    "defaultProcessDebugTemplate": { "type": "python", "request": "launch", "console": "integratedTerminal" }
+    ]
 }
 ```
 
@@ -251,19 +348,22 @@ The program, arguments and working directory of the selected action are added to
 `groupNames` shows a group inside folders of the `Execute Action Group` list, like directories. `sortingIndex` orders groups and folders, lower numbers come first.
 
 ```jsonc
-[
-    {
-        "name": "Start server",
-        "groupNames": [{ "name": "Backend", "sortingIndex": 1 }],
-        "terminals": [{ "command": "npm run server" }]
-    },
-    {
-        "name": "Run integration tests",
-        "groupNames": [{ "name": "Backend" }, { "name": "Tests" }],
-        "sortingIndex": 2,
-        "tasks": [{ "name": "integration-tests" }]
-    }
-]
+// .vscode/settings.json
+{
+    "actionGroupExecuter.actionGroups": [
+        {
+            "name": "Start server",
+            "groupNames": [{ "name": "Backend", "sortingIndex": 1 }],
+            "terminals": [{ "command": "npm run server" }]
+        },
+        {
+            "name": "Run integration tests",
+            "groupNames": [{ "name": "Backend" }, { "name": "Tests" }],
+            "sortingIndex": 2,
+            "terminals": [{ "command": "npm run test:integration" }]
+        }
+    ]
+}
 ```
 
 ## Variables
@@ -282,6 +382,15 @@ The `newConfiguration` of debug sessions and the `extendedOptions` of terminals 
 | `actionGroupExecuter.defaultProcessEndMessage` | Message added to process output tabs when a process ends. Supports `${returnCode}`. |
 | `actionGroupExecuter.defaultFileAssociation` | Language of process output tabs, e.g. `plaintext` or `log`. |
 | `actionGroupExecuter.defaultShowActionSource` | Show the settings location (user, workspace) next to the group names in the `Execute Action Group` list. Default `true`. |
+
+```jsonc
+// User settings (settings.json)
+{
+    "actionGroupExecuter.defaultProcessEndMessage": "\n\nProcess ended with ${returnCode}.\n",
+    "actionGroupExecuter.defaultFileAssociation": "log",
+    "actionGroupExecuter.defaultShowActionSource": false
+}
+```
 
 ## Known issues
 
