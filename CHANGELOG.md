@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+## [1.3.0]
+
 ### Added
 
 * Searching in `Execute Action Group` also finds the action groups inside subgroups of the current group.
