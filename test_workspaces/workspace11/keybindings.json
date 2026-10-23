@@ -1,0 +1,38 @@
+// Copy into your keybindings.json (Preferences: Open Keyboard Shortcuts (JSON)).
+[
+    {
+        // Top level group, found by name.
+        "key": "ctrl+alt+1",
+        "command": "action-group-executer.executeActionGroup",
+        "args": { "name": "Format code" }
+    },
+    {
+        // Group three folders deep, found by name only because it is unique.
+        "key": "ctrl+alt+2",
+        "command": "action-group-executer.executeActionGroup",
+        "args": { "name": "Smoke test" }
+    },
+    {
+        // "Unit tests" exists twice, the group path selects the frontend one.
+        "key": "ctrl+alt+3",
+        "command": "action-group-executer.executeActionGroup",
+        "args": { "name": "Unit tests", "groupNames": ["Frontend", "Tests"] }
+    },
+    {
+        // Ambiguous: should show an error asking for "groupNames".
+        "key": "ctrl+alt+4",
+        "command": "action-group-executer.executeActionGroup",
+        "args": { "name": "Unit tests" }
+    },
+    {
+        // Unknown group: should show a "was not found" error.
+        "key": "ctrl+alt+5",
+        "command": "action-group-executer.executeActionGroup",
+        "args": { "name": "Deploy staging", "groupNames": ["Ops"] }
+    },
+    {
+        // Without arguments the picker opens as before.
+        "key": "ctrl+alt+6",
+        "command": "action-group-executer.executeActionGroup"
+    }
+]

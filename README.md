@@ -14,7 +14,7 @@ Start everything you need for a workflow with one shortcut. An action group comb
 
 | Command | Description |
 |---|---|
-| `ActionGroupExec: Execute Action Group` | Pick an action group and start all of its actions. Default keybinding `Ctrl+Shift+A` / `Cmd+Shift+A`. |
+| `ActionGroupExec: Execute Action Group` | Pick an action group and start all of its actions. Default keybinding `Ctrl+Shift+A` / `Cmd+Shift+A`. Single groups can get [their own shortcut](#keyboard-shortcuts). |
 | `ActionGroupExec: Edit Action Groups` | Open the action group editor. |
 | `ActionGroupExec: Create Action Group` | Open the action group editor with a new group. |
 | `ActionGroupExec: Select a current Background Process and Control It` | Send input or kill signals to a running background process. |
@@ -360,6 +360,35 @@ The program, arguments and working directory of the selected action are added to
         }
     ]
 }
+```
+
+### Keyboard shortcuts
+
+A single action group can get its own keyboard shortcut. Add it in `Preferences: Open Keyboard Shortcuts (JSON)` and pass the group's `name` as argument. `groupNames` (the folder names, outermost first) is only needed when several groups have the same name.
+
+```jsonc
+// .vscode/settings.json
+{
+    "actionGroupExecuter.actionGroups": [
+        {
+            "name": "Run unit tests",
+            "groupNames": [{ "name": "Backend" }],
+            "terminals": [{ "command": "npm test" }]
+        }
+    ]
+}
+```
+
+```jsonc
+// keybindings.json
+[
+    {
+        "key": "ctrl+alt+t",
+        "mac": "cmd+alt+t",
+        "command": "action-group-executer.executeActionGroup",
+        "args": { "name": "Run unit tests", "groupNames": ["Backend"] }
+    }
+]
 ```
 
 ## Variables

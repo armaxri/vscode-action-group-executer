@@ -163,6 +163,28 @@ suite('ActionGroup Extension "README examples" Test Suite', () => {
         });
     });
 
+    test("keybinding examples run action groups of the same section", () => {
+        const keybindingExamples = examples.filter((example) => example.file.endsWith("keybindings.json"));
+        assert.ok(keybindingExamples.length > 0);
+        keybindingExamples.forEach((example) => {
+            const groups: Array<EIActionGroup> = examples
+                .filter((other) => other.section === example.section)
+                .flatMap((other) => other.content["actionGroupExecuter.actionGroups"] ?? []);
+            example.content.forEach((keybinding: any) => {
+                assert.strictEqual(keybinding.command, "action-group-executer.executeActionGroup");
+                const args = keybinding.args;
+                const defined = groups.some(
+                    (group) =>
+                        group.name === args.name &&
+                        (args.groupNames === undefined ||
+                            JSON.stringify(args.groupNames) ===
+                                JSON.stringify((group.groupNames ?? []).map((groupName) => groupName.name)))
+                );
+                assert.ok(defined, `Keybinding for "${args.name}" doesn't match a group in "${example.section}".`);
+            });
+        });
+    });
+
     test("referenced tasks and launch configurations are defined in the same section", () => {
         const sections = [...new Set(examples.map((example) => example.section))];
         sections.forEach((section) => {

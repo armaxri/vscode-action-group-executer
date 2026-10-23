@@ -5,6 +5,7 @@
 ### Added
 
 * Searching in `Execute Action Group` also finds the action groups inside subgroups of the current group.
+* Single action groups can be bound to keyboard shortcuts by passing their `name` (and optionally `groupNames`) as `args` of `action-group-executer.executeActionGroup` in `keybindings.json`.
 
 ## [1.2.0]
 

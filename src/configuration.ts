@@ -604,6 +604,58 @@ export function getNestedActionGroupItems(
     return nestedItems;
 }
 
+// Identifies an action group, e.g. in the arguments of a keybinding.
+export interface ActionGroupReference {
+    name: string;
+    groupNames?: Array<string>;
+}
+
+export function isActionGroupReference(
+    value: unknown
+): value is ActionGroupReference {
+    const reference = value as ActionGroupReference | undefined;
+    return (
+        typeof reference?.name === "string" &&
+        (reference.groupNames === undefined ||
+            (Array.isArray(reference.groupNames) &&
+                reference.groupNames.every(
+                    (groupName) => typeof groupName === "string"
+                )))
+    );
+}
+
+// Without groupNames, the action group is searched in all groups.
+export function findActionGroups(
+    members: Array<vscode.QuickPickItem>,
+    reference: ActionGroupReference
+): Array<ActionGroup> {
+    if (reference.groupNames === undefined) {
+        return [
+            ...members.filter((member) => member instanceof ActionGroup),
+            ...getNestedActionGroupItems(members).map(
+                (item) => item.actionGroup
+            ),
+        ].filter((actionGroup) => actionGroup.name === reference.name);
+    }
+
+    var levelMembers: Array<vscode.QuickPickItem> = members;
+    for (const groupName of reference.groupNames) {
+        const group = levelMembers.find(
+            (member) =>
+                member instanceof ActionGroupPickGroup &&
+                member.label === groupName
+        );
+        if (!(group instanceof ActionGroupPickGroup)) {
+            return [];
+        }
+        levelMembers = group.getSortedMembers();
+    }
+    return levelMembers.filter(
+        (member): member is ActionGroup =>
+            member instanceof ActionGroup && member.name === reference.name
+    );
+}
+
 class StringReplacer {
     cwd: string = "";
     fileBasenameNoExtensions: string = "";

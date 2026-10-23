@@ -5,9 +5,12 @@ import * as vscode from "vscode";
 import {
     ActionGroup,
     ActionGroupPickGroup,
+    ActionGroupReference,
     NestedActionGroupPickItem,
+    findActionGroups,
     getActionGroups,
     getNestedActionGroupItems,
+    isActionGroupReference,
 } from "./configuration";
 import { runTerminalAction } from "./terminal";
 import { runDebugSession } from "./debugSession";
@@ -60,9 +63,43 @@ async function pickActionGroupItem(
     });
 }
 
-async function selectAndRunGroup() {
+function findReferencedActionGroup(
+    commands: Array<vscode.QuickPickItem>,
+    reference: ActionGroupReference
+): ActionGroup | undefined {
+    const matches = findActionGroups(commands, reference);
+    const description = reference.groupNames
+        ? `"${[...reference.groupNames, reference.name].join(" / ")}"`
+        : `"${reference.name}"`;
+    if (matches.length === 0) {
+        vscode.window.showErrorMessage(
+            `Action group ${description} was not found.`
+        );
+        return undefined;
+    }
+    if (matches.length > 1) {
+        vscode.window.showErrorMessage(
+            reference.groupNames
+                ? `Several action groups match ${description}.`
+                : `Several action groups are named ${description}. Add "groupNames" to the arguments to select one.`
+        );
+        return undefined;
+    }
+    return matches[0];
+}
+
+// Runs the action group given as argument (e.g. from a keybinding) or lets
+// the user pick one.
+async function selectAndRunGroup(args?: unknown) {
     console.log(`selectAndRunGroup was triggered.`);
     const commands = getActionGroups();
+    if (isActionGroupReference(args)) {
+        const command = findReferencedActionGroup(commands, args);
+        if (command) {
+            await runActionGroup(command);
+        }
+        return;
+    }
     if (commands.length === 0) {
         const createLabel = "Create Action Group";
         const selection = await vscode.window.showInformationMessage(
@@ -89,6 +126,10 @@ async function selectAndRunGroup() {
         console.log(`No valid selection was taken.`);
         return;
     }
+    await runActionGroup(command);
+}
+
+async function runActionGroup(command: ActionGroup) {
     console.log(`Executing command selection "${command.label}".`);
     vscode.window.showInformationMessage(
         `Executing command selection "${command.label}".`

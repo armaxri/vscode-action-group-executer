@@ -142,7 +142,8 @@ Things to try:
 
 Single-directory workspace. Open the `workspace11/` folder directly in VS Code.
 
-Tests the search across subgroups in `Execute Action Group`. The groups are nested up
+Tests the search across subgroups in `Execute Action Group` and keyboard shortcuts for
+single action groups. The groups are nested up
 to three folders deep (`Backend / Tests / Quick`, `Ops / Monitoring / Logs`), and
 `Unit tests` exists in both `Backend / Tests` and `Frontend / Tests`. Every group only
 echoes its folder path and name in a terminal.
@@ -156,3 +157,13 @@ Things to try:
 - Type `logs`: `Tail server logs` is found by its folder name.
 - Open `Backend` and type `deploy`: nothing from `Ops` appears.
 - Clear the search again: the list returns to the current level only.
+
+Keyboard shortcuts: copy `workspace11/keybindings.json` into your keybindings (or start
+VS Code with a separate, short `--user-data-dir` such as `/tmp/age-ws11` whose
+`User/keybindings.json` is that file; longer paths fail on macOS).
+- `Ctrl+Alt+1` runs `Format code` (top level).
+- `Ctrl+Alt+2` runs `Smoke test` (nested, unique name).
+- `Ctrl+Alt+3` runs the frontend `Unit tests` (selected by `groupNames`).
+- `Ctrl+Alt+4` shows an error, because `Unit tests` exists twice.
+- `Ctrl+Alt+5` shows a "was not found" error (`Deploy staging` is in `Ops / Deploy`).
+- `Ctrl+Alt+6` opens the picker, as without arguments.

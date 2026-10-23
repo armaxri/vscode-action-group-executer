@@ -5,7 +5,9 @@ import {
     ActionGroupPickGroup,
     GroupSource,
     ProcessAction,
+    findActionGroups,
     getNestedActionGroupItems,
+    isActionGroupReference,
 } from "../../configuration";
 
 suite('ActionGroup Extension "configuration" Test Suite', () => {
@@ -46,20 +48,22 @@ suite('ActionGroup Extension "configuration" Test Suite', () => {
         assert.strictEqual(debugSession?.newConfiguration?.cwd, "/some/dir");
     });
 
-    test("collects the action groups of all subgroups with their path", () => {
-        const createGroup = (name: string, groupNames: Array<string>) =>
-            new ActionGroup(
-                {
-                    name,
-                    groupNames: groupNames.map((groupName) => ({
-                        name: groupName,
-                    })),
-                },
-                undefined,
-                undefined,
-                false,
-                GroupSource.user
-            );
+    const createGroup = (name: string, groupNames: Array<string>) =>
+        new ActionGroup(
+            {
+                name,
+                groupNames: groupNames.map((groupName) => ({
+                    name: groupName,
+                })),
+            },
+            undefined,
+            undefined,
+            false,
+            GroupSource.user
+        );
+
+    // Top level of the group structure: Backend and Frontend folders, "Top" group.
+    const createGroupStructure = () => {
         const backend = new ActionGroupPickGroup({
             name: "Backend",
             sortingIndex: 1,
@@ -72,7 +76,18 @@ suite('ActionGroup Extension "configuration" Test Suite', () => {
             group.groupNames.shift();
             backend.recursivelyAddAction(group);
         });
-        const topLevel = createGroup("Top", []);
+        const frontend = new ActionGroupPickGroup({
+            name: "Frontend",
+            sortingIndex: 2,
+        });
+        const frontendUnit = createGroup("Unit", ["Frontend", "Tests"]);
+        frontendUnit.groupNames.shift();
+        frontend.recursivelyAddAction(frontendUnit);
+        return [backend, frontend, createGroup("Top", [])];
+    };
+
+    test("collects the action groups of all subgroups with their path", () => {
+        const [backend, , topLevel] = createGroupStructure();
 
         const nestedItems = getNestedActionGroupItems([backend, topLevel]);
 
@@ -85,5 +100,42 @@ suite('ActionGroup Extension "configuration" Test Suite', () => {
             ]
         );
         assert.strictEqual(nestedItems[1].actionGroup.name, "Unit");
+    });
+
+    test("finds action groups by name and group path", () => {
+        const structure = createGroupStructure();
+        const find = (name: string, groupNames?: Array<string>) =>
+            findActionGroups(structure, { name, groupNames }).map(
+                (group) => group.name
+            );
+
+        assert.deepStrictEqual(find("Top"), ["Top"]);
+        assert.deepStrictEqual(find("Smoke"), ["Smoke"]);
+        assert.deepStrictEqual(find("Unit"), ["Unit", "Unit"]);
+        assert.deepStrictEqual(find("Unit", ["Frontend", "Tests"]), ["Unit"]);
+        assert.strictEqual(
+            findActionGroups(structure, {
+                name: "Unit",
+                groupNames: ["Frontend", "Tests"],
+            })[0],
+            (structure[1] as ActionGroupPickGroup).groups[0].elements[0]
+        );
+        assert.deepStrictEqual(find("Top", []), ["Top"]);
+        assert.deepStrictEqual(find("Smoke", ["Backend"]), []);
+        assert.deepStrictEqual(find("Missing"), []);
+        assert.deepStrictEqual(find("Build", ["Missing"]), []);
+    });
+
+    test("accepts only valid action group references", () => {
+        assert.ok(isActionGroupReference({ name: "Build" }));
+        assert.ok(
+            isActionGroupReference({ name: "Unit", groupNames: ["Backend"] })
+        );
+        assert.ok(!isActionGroupReference(undefined));
+        assert.ok(!isActionGroupReference({}));
+        assert.ok(!isActionGroupReference({ name: 1 }));
+        assert.ok(
+            !isActionGroupReference({ name: "Unit", groupNames: "Backend" })
+        );
     });
 });
