@@ -1,6 +1,12 @@
 import * as assert from "assert";
 
-import { ProcessAction } from "../../configuration";
+import {
+    ActionGroup,
+    ActionGroupPickGroup,
+    GroupSource,
+    ProcessAction,
+    getNestedActionGroupItems,
+} from "../../configuration";
 
 suite('ActionGroup Extension "configuration" Test Suite', () => {
     const debugTemplate = { type: "node", request: "launch", name: "" };
@@ -38,5 +44,46 @@ suite('ActionGroup Extension "configuration" Test Suite', () => {
         );
         const debugSession = processAction.convert2DebugSession();
         assert.strictEqual(debugSession?.newConfiguration?.cwd, "/some/dir");
+    });
+
+    test("collects the action groups of all subgroups with their path", () => {
+        const createGroup = (name: string, groupNames: Array<string>) =>
+            new ActionGroup(
+                {
+                    name,
+                    groupNames: groupNames.map((groupName) => ({
+                        name: groupName,
+                    })),
+                },
+                undefined,
+                undefined,
+                false,
+                GroupSource.user
+            );
+        const backend = new ActionGroupPickGroup({
+            name: "Backend",
+            sortingIndex: 1,
+        });
+        [
+            createGroup("Build", ["Backend"]),
+            createGroup("Unit", ["Backend", "Tests"]),
+            createGroup("Smoke", ["Backend", "Tests", "Quick"]),
+        ].forEach((group) => {
+            group.groupNames.shift();
+            backend.recursivelyAddAction(group);
+        });
+        const topLevel = createGroup("Top", []);
+
+        const nestedItems = getNestedActionGroupItems([backend, topLevel]);
+
+        assert.deepStrictEqual(
+            nestedItems.map((item) => [item.label, item.description]),
+            [
+                ["Build", "Backend"],
+                ["Unit", "Backend / Tests"],
+                ["Smoke", "Backend / Tests / Quick"],
+            ]
+        );
+        assert.strictEqual(nestedItems[1].actionGroup.name, "Unit");
     });
 });

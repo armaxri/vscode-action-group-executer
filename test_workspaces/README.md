@@ -137,3 +137,22 @@ Things to try:
 - Move a group to the user settings by changing "Saved in".
 - Delete a group, cancel once, then confirm.
 - Run the created groups with `Execute Action Group` to check that they work.
+
+## workspace11
+
+Single-directory workspace. Open the `workspace11/` folder directly in VS Code.
+
+Tests the search across subgroups in `Execute Action Group`. The groups are nested up
+to three folders deep (`Backend / Tests / Quick`, `Ops / Monitoring / Logs`), and
+`Unit tests` exists in both `Backend / Tests` and `Frontend / Tests`. Every group only
+echoes its folder path and name in a terminal.
+
+Things to try:
+- With an empty search, only the top level (`Backend`, `Frontend`, `Ops`, two groups)
+  is shown.
+- Type `smoke` at the top level: `Smoke test` appears with `Backend / Tests / Quick`.
+  Selecting it runs it directly.
+- Type `unit`: both `Unit tests` appear, told apart by their path.
+- Type `logs`: `Tail server logs` is found by its folder name.
+- Open `Backend` and type `deploy`: nothing from `Ops` appears.
+- Clear the search again: the list returns to the current level only.

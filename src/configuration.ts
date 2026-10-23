@@ -568,6 +568,42 @@ export class ActionGroupPickGroup extends SortableQuickPickItem {
     }
 }
 
+// Action group from a subgroup, offered while searching in a parent level.
+export class NestedActionGroupPickItem implements vscode.QuickPickItem {
+    label: string;
+    description: string;
+    actionGroup: ActionGroup;
+
+    constructor(actionGroup: ActionGroup, groupPath: Array<string>) {
+        this.label = actionGroup.label;
+        this.description = groupPath.join(" / ");
+        this.actionGroup = actionGroup;
+    }
+}
+
+export function getNestedActionGroupItems(
+    members: Array<vscode.QuickPickItem>,
+    groupPath: Array<string> = []
+): Array<NestedActionGroupPickItem> {
+    const nestedItems = new Array<NestedActionGroupPickItem>();
+    members.forEach((member) => {
+        if (member instanceof ActionGroupPickGroup) {
+            const memberPath = [...groupPath, member.label];
+            member.getSortedMembers().forEach((subMember) => {
+                if (subMember instanceof ActionGroup) {
+                    nestedItems.push(
+                        new NestedActionGroupPickItem(subMember, memberPath)
+                    );
+                }
+            });
+            nestedItems.push(
+                ...getNestedActionGroupItems(member.groups, memberPath)
+            );
+        }
+    });
+    return nestedItems;
+}
+
 class StringReplacer {
     cwd: string = "";
     fileBasenameNoExtensions: string = "";

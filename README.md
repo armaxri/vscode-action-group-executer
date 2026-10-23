@@ -341,7 +341,7 @@ The program, arguments and working directory of the selected action are added to
 
 ### Group folders and order
 
-`groupNames` shows a group inside folders of the `Execute Action Group` list, like directories. `sortingIndex` orders groups and folders, lower numbers come first.
+`groupNames` shows a group inside folders of the `Execute Action Group` list, like directories. `sortingIndex` orders groups and folders, lower numbers come first. Typing a search term also finds the groups inside the subfolders of the current folder, shown with their folder path.
 
 ```jsonc
 // .vscode/settings.json

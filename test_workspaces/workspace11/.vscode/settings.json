@@ -1,0 +1,244 @@
+{
+    "actionGroupExecuter.actionGroups": [
+        {
+            "name": "Format code",
+            "sortingIndex": 1,
+            "terminals": [
+                {
+                    "name": "Subgroup search",
+                    "command": "echo \"Ran: Format code\""
+                }
+            ]
+        },
+        {
+            "name": "Clean everything",
+            "sortingIndex": 2,
+            "terminals": [
+                {
+                    "name": "Subgroup search",
+                    "command": "echo \"Ran: Clean everything\""
+                }
+            ]
+        },
+        {
+            "name": "Build backend",
+            "groupNames": [
+                {
+                    "name": "Backend",
+                    "sortingIndex": 1
+                }
+            ],
+            "terminals": [
+                {
+                    "name": "Subgroup search",
+                    "command": "echo \"Ran: Backend / Build backend\""
+                }
+            ]
+        },
+        {
+            "name": "Start backend server",
+            "groupNames": [
+                {
+                    "name": "Backend",
+                    "sortingIndex": 1
+                }
+            ],
+            "terminals": [
+                {
+                    "name": "Subgroup search",
+                    "command": "echo \"Ran: Backend / Start backend server\""
+                }
+            ]
+        },
+        {
+            "name": "Unit tests",
+            "groupNames": [
+                {
+                    "name": "Backend",
+                    "sortingIndex": 1
+                },
+                {
+                    "name": "Tests",
+                    "sortingIndex": 1
+                }
+            ],
+            "terminals": [
+                {
+                    "name": "Subgroup search",
+                    "command": "echo \"Ran: Backend / Tests / Unit tests\""
+                }
+            ]
+        },
+        {
+            "name": "Integration tests",
+            "groupNames": [
+                {
+                    "name": "Backend",
+                    "sortingIndex": 1
+                },
+                {
+                    "name": "Tests",
+                    "sortingIndex": 1
+                }
+            ],
+            "terminals": [
+                {
+                    "name": "Subgroup search",
+                    "command": "echo \"Ran: Backend / Tests / Integration tests\""
+                }
+            ]
+        },
+        {
+            "name": "Smoke test",
+            "groupNames": [
+                {
+                    "name": "Backend",
+                    "sortingIndex": 1
+                },
+                {
+                    "name": "Tests",
+                    "sortingIndex": 1
+                },
+                {
+                    "name": "Quick",
+                    "sortingIndex": 1
+                }
+            ],
+            "terminals": [
+                {
+                    "name": "Subgroup search",
+                    "command": "echo \"Ran: Backend / Tests / Quick / Smoke test\""
+                }
+            ]
+        },
+        {
+            "name": "Build frontend",
+            "groupNames": [
+                {
+                    "name": "Frontend",
+                    "sortingIndex": 2
+                }
+            ],
+            "terminals": [
+                {
+                    "name": "Subgroup search",
+                    "command": "echo \"Ran: Frontend / Build frontend\""
+                }
+            ]
+        },
+        {
+            "name": "Start dev server",
+            "groupNames": [
+                {
+                    "name": "Frontend",
+                    "sortingIndex": 2
+                }
+            ],
+            "terminals": [
+                {
+                    "name": "Subgroup search",
+                    "command": "echo \"Ran: Frontend / Start dev server\""
+                }
+            ]
+        },
+        {
+            "name": "Unit tests",
+            "groupNames": [
+                {
+                    "name": "Frontend",
+                    "sortingIndex": 2
+                },
+                {
+                    "name": "Tests",
+                    "sortingIndex": 1
+                }
+            ],
+            "terminals": [
+                {
+                    "name": "Subgroup search",
+                    "command": "echo \"Ran: Frontend / Tests / Unit tests\""
+                }
+            ]
+        },
+        {
+            "name": "End-to-end tests",
+            "groupNames": [
+                {
+                    "name": "Frontend",
+                    "sortingIndex": 2
+                },
+                {
+                    "name": "Tests",
+                    "sortingIndex": 1
+                }
+            ],
+            "terminals": [
+                {
+                    "name": "Subgroup search",
+                    "command": "echo \"Ran: Frontend / Tests / End-to-end tests\""
+                }
+            ]
+        },
+        {
+            "name": "Deploy staging",
+            "groupNames": [
+                {
+                    "name": "Ops",
+                    "sortingIndex": 3
+                },
+                {
+                    "name": "Deploy",
+                    "sortingIndex": 1
+                }
+            ],
+            "terminals": [
+                {
+                    "name": "Subgroup search",
+                    "command": "echo \"Ran: Ops / Deploy / Deploy staging\""
+                }
+            ]
+        },
+        {
+            "name": "Deploy production",
+            "groupNames": [
+                {
+                    "name": "Ops",
+                    "sortingIndex": 3
+                },
+                {
+                    "name": "Deploy",
+                    "sortingIndex": 1
+                }
+            ],
+            "terminals": [
+                {
+                    "name": "Subgroup search",
+                    "command": "echo \"Ran: Ops / Deploy / Deploy production\""
+                }
+            ]
+        },
+        {
+            "name": "Tail server logs",
+            "groupNames": [
+                {
+                    "name": "Ops",
+                    "sortingIndex": 3
+                },
+                {
+                    "name": "Monitoring",
+                    "sortingIndex": 2
+                },
+                {
+                    "name": "Logs",
+                    "sortingIndex": 1
+                }
+            ],
+            "terminals": [
+                {
+                    "name": "Subgroup search",
+                    "command": "echo \"Ran: Ops / Monitoring / Logs / Tail server logs\""
+                }
+            ]
+        }
+    ]
+}

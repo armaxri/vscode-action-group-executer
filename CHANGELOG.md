@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### Added
+
+* Searching in `Execute Action Group` also finds the action groups inside subgroups of the current group.
+
 ## [1.2.0]
 
 ### Added

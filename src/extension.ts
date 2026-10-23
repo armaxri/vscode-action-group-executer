@@ -5,7 +5,9 @@ import * as vscode from "vscode";
 import {
     ActionGroup,
     ActionGroupPickGroup,
+    NestedActionGroupPickItem,
     getActionGroups,
+    getNestedActionGroupItems,
 } from "./configuration";
 import { runTerminalAction } from "./terminal";
 import { runDebugSession } from "./debugSession";
@@ -22,6 +24,42 @@ import {
     killAllProcesses,
 } from "./process";
 
+// Shows one level of the group structure. While a search term is entered, the
+// action groups of all subgroups are searchable as well.
+async function pickActionGroupItem(
+    members: Array<vscode.QuickPickItem>
+): Promise<vscode.QuickPickItem | undefined> {
+    const nestedItems = getNestedActionGroupItems(members);
+    const quickPick = vscode.window.createQuickPick<vscode.QuickPickItem>();
+    quickPick.items = members;
+    quickPick.matchOnDescription = true;
+    if (nestedItems.length > 0) {
+        quickPick.placeholder = "Type to search, including subgroups";
+        var showsNestedItems = false;
+        quickPick.onDidChangeValue((value) => {
+            const showNestedItems = value.length > 0;
+            if (showNestedItems !== showsNestedItems) {
+                showsNestedItems = showNestedItems;
+                quickPick.items = showNestedItems
+                    ? [...members, ...nestedItems]
+                    : members;
+            }
+        });
+    }
+
+    return new Promise((resolve) => {
+        quickPick.onDidAccept(() => {
+            resolve(quickPick.selectedItems[0]);
+            quickPick.hide();
+        });
+        quickPick.onDidHide(() => {
+            resolve(undefined);
+            quickPick.dispose();
+        });
+        quickPick.show();
+    });
+}
+
 async function selectAndRunGroup() {
     console.log(`selectAndRunGroup was triggered.`);
     const commands = getActionGroups();
@@ -36,11 +74,15 @@ async function selectAndRunGroup() {
         }
         return;
     }
-    var command = await vscode.window.showQuickPick(commands);
+    var command = await pickActionGroupItem(commands);
 
     while (command instanceof ActionGroupPickGroup) {
         console.log(`Selected group "${command.label}".`);
-        command = await vscode.window.showQuickPick(command.getSortedMembers());
+        command = await pickActionGroupItem(command.getSortedMembers());
+    }
+
+    if (command instanceof NestedActionGroupPickItem) {
+        command = command.actionGroup;
     }
 
     if (!(command instanceof ActionGroup)) {
